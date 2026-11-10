@@ -1,0 +1,35 @@
+/* Keep the centering transform throughout the dropdown entrance. */
+.editorial-site .rusd-nav-link {
+  flex-shrink: 0;
+  transition: background-color .16s ease, color .16s ease;
+}
+.editorial-site .nav-dropdown-menu {
+  transform: translateX(-50%);
+  animation: navigation-dropdown-in .18s ease-out;
+}
+/* Bridge the visual gap so moving into the panel does not close it. */
+.editorial-site .nav-dropdown-menu::before {
+  content: "";
+  position: absolute;
+  inset: -16px 0 auto;
+  height: 16px;
+}
+@keyframes navigation-dropdown-in {
+  from { opacity: 0; transform: translate(-50%, 4px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@media(max-width:768px) {
+  .editorial-site .nav-dropdown-menu {
+    transform: none;
+    animation: navigation-dropdown-mobile .16s ease-out;
+  }
+  .editorial-site .nav-dropdown-menu::before { display: none; }
+}
+@keyframes navigation-dropdown-mobile {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .editorial-site .nav-dropdown-menu { animation: none; }
+  .editorial-site .rusd-nav-link { transition: none; }
+}

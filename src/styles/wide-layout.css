@@ -1,0 +1,28 @@
+/* Shared gutters keep the floating header, sections and footer aligned. */
+:root {
+  --site-max-width: 1440px;
+  --site-gutter: clamp(24px, 3.333vw, 64px);
+}
+
+.site-container,
+.editorial-site .site-container,
+.editorial-site .rusd-frame,
+.editorial-site .ed-product-page {
+  width: min(calc(100% - var(--site-gutter) * 2), var(--site-max-width));
+  max-width: var(--site-max-width);
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+.siro-workspace .workspace-header,
+.siro-workspace .workspace-main,
+.siro-workspace .workspace-sections {
+  width: min(calc(100% - var(--site-gutter) * 2), var(--site-max-width));
+  max-width: var(--site-max-width);
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+@media (max-width: 420px) {
+  :root { --site-gutter: 20px; }
+}

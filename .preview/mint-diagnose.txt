@@ -1,0 +1,6 @@
+try {
+await cmd('Runtime.enable');await cmd('Page.enable');await cmd('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:'dark'},{name:'prefers-reduced-motion',value:'reduce'}]});await cmd('Emulation.setDeviceMetricsOverride',{width:1280,height:1000,deviceScaleFactor:1,mobile:false});await navigate('/');await delay(500);
+console.log(await evaluate('JSON.stringify([...document.querySelectorAll(".headline-pill,.headline-pill span,.ed-actions .btn-primary,.ed-actions .btn-primary::after")].map(e=>{const s=getComputedStyle(e);return {tag:e.tagName,cls:e.className,text:e.innerText,color:s.color,fill:s.webkitTextFillColor,bg:s.backgroundColor,opacity:s.opacity,visibility:s.visibility,blend:s.mixBlendMode,font:s.fontFamily,shadow:s.textShadow}}))'));
+console.log(await evaluate('JSON.stringify([...document.styleSheets].flatMap(s=>{try{return [...s.cssRules].flatMap(r=>r.cssRules?[...r.cssRules]:[r]).filter(r=>r.selectorText?.includes("btn-primary")||r.selectorText?.includes("headline-pill")).map(r=>r.cssText)}catch{return []}}))'));
+await screenshot('mint/dark-diagnosis');
+}finally{await call('Browser.close').catch(()=>{});socket.close();}

@@ -1,0 +1,7 @@
+.editorial-site .ed-product-page { position:relative; }
+.ed-product-intro-art { position:absolute; top:88px; right:32px; width:220px; opacity:.75; }
+.product-block-icon { display:block; color:var(--secondary); }
+.editorial-site .ed-product-page[data-artwork="true"]>section:first-of-type { padding-right:280px!important; min-height:320px; }
+.editorial-site .ed-product-page>section:first-of-type>p:first-child:not(:only-child) { color:var(--fg-70); }
+.editorial-site .ed-product-page :is(input,select,textarea) { background:var(--surface-2); color:var(--fg); border-color:var(--line); }
+@media(max-width:900px) { .ed-product-intro-art { display:none; }.editorial-site .ed-product-page[data-artwork="true"]>section:first-of-type { padding-right:0!important; min-height:0; } }

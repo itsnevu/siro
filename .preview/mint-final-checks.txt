@@ -1,0 +1,18 @@
+mkdirSync('.preview/mint',{recursive:true});
+try {
+ await cmd('Runtime.enable');await cmd('Page.enable');
+ await cmd('Emulation.setDeviceMetricsOverride',{width:1280,height:1000,deviceScaleFactor:1,mobile:false});
+ for(const mode of ['light','dark']) {
+  await cmd('Page.navigate',{url:'about:blank'});await delay(150);
+  await cmd('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:mode},{name:'prefers-reduced-motion',value:'reduce'}]});await navigate('/');await delay(800);
+  await evaluate('document.documentElement.style.scrollBehavior="auto"');await screenshot(`mint/${mode}-hero`);
+  console.log(mode,await evaluate('JSON.stringify({bg:getComputedStyle(document.body).backgroundColor,primaryText:getComputedStyle(document.querySelector(".btn-primary")).color,headlineText:getComputedStyle(document.querySelector(".headline-pill")).color,themeMeta:document.querySelector("meta[name=theme-color]").content})'));
+  for(const [name,selector] of [['visual','.ed-hero-visual'],['cards','.ed-strategies'],['dark-section','.ed-home > [data-tone=dark]'],['footer','.ed-footer']]){await evaluate(`document.querySelector(${JSON.stringify(selector)}).scrollIntoView({behavior:'instant',block:'center'})`);await delay(1000);await screenshot(`mint/${mode}-${name}`);}
+  await cmd('Emulation.setDeviceMetricsOverride',{width:375,height:900,deviceScaleFactor:1,mobile:true});await navigate('/');await screenshot(`mint/${mode}-mobile`);
+  await evaluate('document.querySelector(".dockyard-nav-toggle").click()');await delay(200);console.log(mode+' mobile menu',await evaluate('JSON.stringify({width:document.querySelector("#nav").getBoundingClientRect().width,overflow:document.documentElement.scrollWidth>innerWidth})'));
+  await cmd('Emulation.setDeviceMetricsOverride',{width:1280,height:1000,deviceScaleFactor:1,mobile:false});
+ }
+ for(const path of ['/strategies','/token','/buyback']){await navigate(path);console.log('Financial copy '+path,await evaluate('JSON.stringify({meta:[...document.querySelectorAll("main [style*=color]")].slice(0,3).map(e=>({color:getComputedStyle(e).color,text:e.textContent.slice(0,20)})),overflow:document.documentElement.scrollWidth>innerWidth})'));}
+ for(const path of ['/favicon.ico','/icon','/opengraph-image','/brand/mark?mint=1']){const r=await fetch('http://localhost:3111'+path);console.log('Asset',path,r.status,r.headers.get('content-type'));}
+ console.log('Browser errors',errors);
+}finally{await call('Browser.close').catch(()=>{});socket.close();}

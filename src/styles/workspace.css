@@ -1,0 +1,21 @@
+.siro-workspace { min-height:100dvh; font-family:var(--font-instrument); }
+.workspace-header { position:sticky; top:14px; z-index:30; margin-top:18px; }
+.workspace-nav-panel { height:76px; gap:20px; padding:0 20px; border:1px solid var(--line); border-radius:24px; background:color-mix(in srgb,var(--card) 93%,transparent); backdrop-filter:blur(20px); box-shadow:var(--shadow-sm),var(--shadow-md); }
+.workspace-nav { gap:10px; }
+.workspace-nav-link { padding:8px 12px; border-radius:999px; color:var(--fg); background:var(--surface-2); text-decoration:none; font-size:12px; transition:background-color .16s,color .16s; white-space:nowrap; }
+.workspace-nav-link[aria-current="page"],.workspace-nav-link:hover { background:var(--primary); color:var(--primary-fg); }
+.workspace-sections { display:flex; gap:8px; width:min(100% - 48px,992px); margin:30px auto 34px; padding:2px 0 14px; border-bottom:1px solid var(--line); overflow-x:auto; }
+.workspace-sections a { flex-shrink:0; padding:8px 12px; border-radius:10px; color:var(--fg-70); text-decoration:none; font-size:12px; white-space:nowrap; }
+.workspace-sections a:hover { background:var(--surface-2); color:var(--fg); }
+.workspace-sections a[aria-current="page"] { color:var(--primary-fg); background:var(--primary); }
+.workspace-main h1 { font-family:var(--font-display); font-weight:400; font-size:clamp(32px,3.6vw,46px); line-height:1.1; letter-spacing:-.035em; }
+.siro-workspace .workspace-main>div { min-width:0; }
+.siro-workspace :is(input,textarea,select) { background:var(--surface-2); color:var(--fg); }
+.siro-workspace :is(input,textarea)::placeholder { color:var(--fg-70); }
+.siro-workspace table { font-variant-numeric:tabular-nums; }
+.siro-workspace table th { color:var(--fg-70); font-weight:500; }
+.siro-workspace table td { font-family:ui-monospace,monospace; }
+.siro-workspace .bg-surface { background:var(--card); }
+.siro-workspace .rounded-\[12px\] { border-radius:20px; }
+.siro-workspace main [class*="rounded-[12px]"] { box-shadow:var(--shadow-sm)!important; }
+@media(max-width:768px) { .workspace-header { top:10px; margin-top:12px; }.workspace-nav-panel { height:66px; padding:0 14px; gap:12px; border-radius:20px; }.workspace-sections { width:calc(100% - 40px); margin-top:20px; margin-bottom:28px; }.workspace-sections a { padding:8px 10px; font-size:11px; }.workspace-nav-panel>.flex:last-child { gap:8px; }.siro-workspace .workspace-main h1 { font-size:34px; } }

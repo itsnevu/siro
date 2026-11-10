@@ -1,0 +1,38 @@
+/* A quiet money-flow backdrop; the existing hero remains the foreground. */
+.editorial-site .ed-home .ed-hero { overflow:clip; }
+.ed-hero-copy { position:relative; isolation:isolate; }
+.capital-flow { --flow-ink:var(--secondary); position:absolute; top:-28px; bottom:-20px; left:50%; width:min(100vw,1600px); transform:translateX(-50%); z-index:-1; pointer-events:none; user-select:none; mask-image:radial-gradient(ellipse 35% 65% at 50% 40%,transparent 55%,var(--fg) 100%); -webkit-mask-image:radial-gradient(ellipse 35% 65% at 50% 40%,transparent 55%,var(--fg) 100%); }
+.dark .capital-flow { --flow-ink:var(--primary); }
+.capital-flow-lines { position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
+.capital-stream-base { stroke:var(--flow-ink); stroke-width:1; opacity:.15; }
+.capital-stream-trace { stroke:var(--flow-ink); stroke-width:1; stroke-dasharray:2 25; opacity:.26; animation:capital-stream-drift 14s linear infinite; }
+.capital-orbit { stroke:var(--flow-ink); stroke-width:.8; stroke-dasharray:3 9; opacity:.15; }
+.capital-token-edge { fill:var(--secondary); opacity:.5; }
+.capital-token-art { transform:scaleX(var(--capital-token-aspect,1)); transform-box:fill-box; transform-origin:center; }
+.capital-token-face { fill:var(--primary); stroke:var(--flow-ink); stroke-width:.8; }
+.capital-token-ring { fill:none; stroke:var(--primary-fg); stroke-width:.6; opacity:.3; }
+.capital-token-symbol { fill:var(--primary-fg); font:500 18px ui-monospace,monospace; }
+.capital-flow-dot { fill:var(--flow-ink); opacity:.55; }
+.capital-static-coins { opacity:.4; }
+.capital-wallet-anchor { position:absolute; right:4%; top:58%; width:clamp(128px,13.5vw,190px); aspect-ratio:1.35; perspective:800px; opacity:.78; }
+.capital-wallet-float { width:100%; height:100%; transform-style:preserve-3d; animation:capital-wallet-hover 12s ease-in-out infinite; }
+.capital-wallet { width:100%; height:100%; position:relative; transform-style:preserve-3d; transform:rotateX(12deg) rotateY(-22deg) rotateZ(-9deg); }
+.capital-wallet-back { position:absolute; inset:-5px 5px 6px -5px; border-radius:24px; background:var(--secondary); transform:translateZ(-9px); opacity:.6; }
+.capital-wallet-card { position:absolute; top:-14px; left:10%; width:76%; height:55%; border-radius:9px; background:var(--primary); border:1px solid color-mix(in srgb,var(--primary) 35%,transparent); transform:translateZ(-5px) rotate(-5deg); }
+.capital-wallet-card-back { top:-20px; left:15%; background:var(--secondary); transform:translateZ(-8px) rotate(3deg); }
+.capital-wallet-card-front::after { content:""; position:absolute; left:12%; right:12%; top:10px; height:1px; background:color-mix(in srgb,var(--primary-fg) 18%,transparent); }
+.capital-wallet-face { display:block; position:absolute; inset:0; border-radius:24px; background:linear-gradient(145deg,var(--dark-surface-2),var(--dark-card) 50%,var(--dark-bg)); border:1px solid color-mix(in srgb,var(--mint) 28%,transparent); box-shadow:inset 1px 1px 2px color-mix(in srgb,var(--mint) 20%,transparent),10px 18px 24px color-mix(in srgb,var(--dark-bg) 16%,transparent); }
+.capital-wallet-face::before,.capital-wallet-face::after { content:""; position:absolute; height:1px; left:12px; right:12px; border-top:1px dashed color-mix(in srgb,var(--mint) 18%,transparent); }
+.capital-wallet-face::before { top:10px; }.capital-wallet-face::after { bottom:10px; }
+.capital-wallet-mark { position:absolute; width:34px; height:34px; left:22px; top:calc(50% - 17px); background:var(--mint); mask:url('/brand/mark') center/contain no-repeat; -webkit-mask:url('/brand/mark') center/contain no-repeat; opacity:.85; }
+.capital-wallet-clasp { position:absolute; top:34%; right:-8px; width:36%; height:34%; display:grid; place-items:center; border-radius:12px; background:linear-gradient(135deg,var(--dark-surface-2),var(--dark-card)); border:1px solid color-mix(in srgb,var(--mint) 27%,transparent); transform:translateZ(12px); box-shadow:-3px 5px 10px color-mix(in srgb,var(--dark-bg) 28%,transparent); }
+.capital-wallet-clasp>span { display:block; width:8px; height:8px; border:1px solid var(--mint); border-radius:50%; background:color-mix(in srgb,var(--mint) 20%,var(--dark-bg)); }
+.capital-wallet-receive { position:absolute; inset:0; border-radius:24px; box-shadow:0 0 30px color-mix(in srgb,var(--mint) 2%,transparent); animation:capital-wallet-receive 12s ease-in-out infinite; }
+.capital-flow[data-moving="false"] :is(.capital-stream-trace,.capital-wallet-float,.capital-wallet-receive) { animation-play-state:paused; }
+@keyframes capital-stream-drift { to { stroke-dashoffset:-162; } }
+@keyframes capital-wallet-hover { 0%,100% { transform:translateY(0) rotateZ(0); } 50% { transform:translateY(-9px) rotateZ(2deg); } }
+@keyframes capital-wallet-receive { 0%,78%,100% { box-shadow:0 0 30px color-mix(in srgb,var(--mint) 2%,transparent); } 88% { box-shadow:0 0 30px color-mix(in srgb,var(--mint) 18%,transparent); } }
+@media(max-width:1000px) { .capital-wallet-anchor { width:125px; right:1%; top:62%; opacity:.55; }.capital-flow { opacity:.75; } }
+@media(max-width:640px) { .capital-flow { top:-20px; bottom:-14px; opacity:.65; mask-image:radial-gradient(ellipse 40% 70% at 50% 40%,transparent 55%,var(--fg) 100%); -webkit-mask-image:radial-gradient(ellipse 40% 70% at 50% 40%,transparent 55%,var(--fg) 100%); }.capital-wallet-anchor { width:78px; top:auto; bottom:12%; right:2%; opacity:.45; }.capital-wallet-face,.capital-wallet-back { border-radius:12px; }.capital-wallet-clasp { border-radius:7px; }.capital-wallet-mark { width:18px; height:18px; left:11px; top:calc(50% - 9px); }.capital-wallet-clasp>span { width:5px; height:5px; }.capital-wallet-face::before { top:6px; }.capital-wallet-face::after { bottom:6px; }.capital-wallet-card { top:-8px; border-radius:5px; }.capital-wallet-card-back { top:-11px; }.capital-wallet-card-front::after { top:5px; }.capital-wallet-float { animation:none; }.capital-stream-1,.capital-orbit,.capital-travelling-token-1,.capital-travelling-token-2,.capital-travelling-token-4 { display:none; }.capital-token-symbol { font-size:20px; }.capital-flow .capital-token-ring { display:none; } }
+@media(prefers-reduced-motion:reduce) { .capital-flow :is(.capital-stream-trace,.capital-wallet-float,.capital-wallet-receive) { animation:none!important; }.capital-wallet-float { transform:none; } }
+@media(max-width:640px) { .capital-token-art { transform:scaleX(calc(var(--capital-token-aspect,1) * .5)) scaleY(.5); } }

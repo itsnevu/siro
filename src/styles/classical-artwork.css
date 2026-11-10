@@ -1,0 +1,16 @@
+/* Reserved illustration spaces keep the engravings clear of text and controls. */
+.classical-art { width:100%; margin:0; color:var(--secondary); pointer-events:none; user-select:none; }
+.classical-art-drawing { display:block; width:100%; height:100%; background:currentColor; mask-position:center; mask-size:contain; mask-repeat:no-repeat; -webkit-mask-position:center; -webkit-mask-size:contain; -webkit-mask-repeat:no-repeat; }
+.classical-art--column { aspect-ratio:1194 / 988; }
+.classical-art--column .classical-art-drawing { mask-image:url('/assets/illustrations/siro-column.svg?framed=1'); -webkit-mask-image:url('/assets/illustrations/siro-column.svg?framed=1'); }
+.classical-art--urn { aspect-ratio:1076 / 756; }
+.classical-art--urn .classical-art-drawing { mask-image:url('/assets/illustrations/siro-urn.svg?framed=1'); -webkit-mask-image:url('/assets/illustrations/siro-urn.svg?framed=1'); }
+.classical-art--arch { aspect-ratio:1076 / 694; }
+.classical-art--arch .classical-art-drawing { mask-image:url('/assets/illustrations/siro-arch.svg?framed=1'); -webkit-mask-image:url('/assets/illustrations/siro-arch.svg?framed=1'); }
+.ed-why .classical-why { max-width:285px; margin-top:36px; opacity:.88; }
+.ed-manifesto-layout { display:grid; grid-template-columns:minmax(0,1fr) 260px; align-items:center; gap:56px; }
+.ed-manifesto .classical-manifesto { align-self:end; margin-bottom:12px; }
+.editorial-site .rusd-faq-heading .classical-faq { max-width:270px; margin-top:36px; opacity:.8; }
+.dark .classical-art { color:var(--primary); opacity:.65; }
+@media(max-width:1000px) { .ed-manifesto-layout { grid-template-columns:minmax(0,1fr) 210px; gap:36px; }.ed-why .classical-why { max-width:250px; } }
+@media(max-width:768px) { .ed-why .classical-why { display:none; }.ed-manifesto-layout { grid-template-columns:1fr; gap:24px; }.ed-manifesto .classical-manifesto { width:200px; justify-self:end; margin-bottom:0; }.editorial-site .rusd-faq-heading .classical-faq { display:none; } }

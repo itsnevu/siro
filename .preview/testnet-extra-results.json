@@ -1,0 +1,96 @@
+{
+  "routes": [
+    {
+      "path": "/status",
+      "h1": "System status",
+      "notFound": false,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "path": "/changelog",
+      "h1": "What's new",
+      "notFound": false,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "path": "/how-it-works",
+      "h1": "How Siro Works",
+      "notFound": false,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "path": "/brand",
+      "h1": "Brand assets",
+      "notFound": false,
+      "overflow": false,
+      "broken": [
+        "http://localhost:3001/_next/image?url=%2Fbrand%2FS-transparent.png&w=128&q=75",
+        "http://localhost:3001/_next/image?url=%2Fbrand%2FS-transparent.png&w=128&q=75"
+      ]
+    },
+    {
+      "path": "/referral",
+      "h1": "Share Siro, earn $SIRO.",
+      "notFound": false,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "path": "/contact",
+      "h1": "Get in touch.",
+      "notFound": false,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "path": "/community",
+      "h1": "Better together.",
+      "notFound": false,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "path": "/cookies",
+      "h1": "Cookie Policy",
+      "notFound": false,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "path": "/x402",
+      "h1": "Pay per call.\nNo subscriptions.",
+      "notFound": false,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "path": "/app/onboarding",
+      "h1": "Welcome to Siro",
+      "notFound": false,
+      "overflow": false,
+      "broken": []
+    },
+    {
+      "path": "/markets/tAAPL",
+      "h1": "Apple Inc.",
+      "notFound": false,
+      "overflow": false
+    },
+    {
+      "path": "/strategies/alpha-momentum",
+      "h1": "Alpha Momentum",
+      "notFound": false,
+      "overflow": false
+    },
+    {
+      "path": "/blog/every-hole-you-can-poke-in-siro",
+      "h1": "Every Hole You Can Poke in Siro, and What the Contract Actually Does About It",
+      "notFound": false,
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,8 @@
+try{
+ await cmd('Runtime.enable');await cmd('Page.enable');await cmd('Emulation.setDeviceMetricsOverride',{width:1280,height:1000,deviceScaleFactor:1,mobile:false});
+ for(const mode of ['light','dark']){await cmd('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:mode},{name:'prefers-reduced-motion',value:'reduce'}]});await navigate('/launch');await screenshot(`launch/${mode}-desktop`);console.log(mode,await evaluate('JSON.stringify({overflow:document.documentElement.scrollWidth>innerWidth,panelClips:getComputedStyle(document.querySelector(".launch-left")).overflow})'));}
+ await navigate('/studio');await screenshot('launch/studio');console.log('Consistent Studio icons',await evaluate('document.querySelectorAll(".product-block-icon").length'));
+ await navigate('/app/token');await delay(300);console.log('Token hydration',await evaluate('JSON.stringify({h1:document.querySelector("h1").innerText,balance:document.querySelector(".workspace-main").innerText.includes("4,250 SIRO"),overflow:document.documentElement.scrollWidth>innerWidth})'));
+ await navigate('/app');await screenshot('launch/workspace');
+ console.log('Browser errors',errors);
+}finally{await call('Browser.close').catch(()=>{});socket.close();}

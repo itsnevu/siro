@@ -1,0 +1,12 @@
+mkdirSync('.preview/antique',{recursive:true});
+try {
+ await cmd('Runtime.enable');await cmd('Page.enable');
+ for(const mode of ['light','dark']){
+  await cmd('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:mode},{name:'prefers-reduced-motion',value:'reduce'}]});await cmd('Emulation.setDeviceMetricsOverride',{width:1440,height:1050,deviceScaleFactor:1,mobile:false});await navigate('/');await evaluate('document.documentElement.style.scrollBehavior="auto"');
+  for(const [name,selector] of [['pillar','#why'],['urn','.ed-manifesto'],['arch','.ed-faq-section']]){await evaluate(`document.querySelector(${JSON.stringify(selector)}).scrollIntoView({behavior:'instant',block:'center'})`);await delay(800);await screenshot(`antique/${mode}-${name}`);}
+  console.log(mode,await evaluate('JSON.stringify({overflow:document.documentElement.scrollWidth>innerWidth,art:[...document.querySelectorAll(".classical-art")].map(e=>({name:e.className,width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height,color:getComputedStyle(e).color,mask:getComputedStyle(e.firstElementChild).maskImage})),faqPlus:getComputedStyle(document.querySelector(".rusd-faq-toggle"),"::before").margin})'));
+ }
+ for(const width of [375,768]){await cmd('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:true});await navigate('/');await evaluate('document.documentElement.style.scrollBehavior="auto";document.querySelector(".ed-manifesto").scrollIntoView({behavior:"instant",block:"center"})');await delay(500);await screenshot(`antique/mobile-${width}`);console.log(width,await evaluate('JSON.stringify({overflow:document.documentElement.scrollWidth>innerWidth,column:getComputedStyle(document.querySelector(".classical-why")).display,urn:document.querySelector(".classical-manifesto").getBoundingClientRect().toJSON(),arch:getComputedStyle(document.querySelector(".classical-faq")).display})'));}
+ for(const name of ['column','urn','arch']){const r=await fetch(`http://localhost:3114/assets/illustrations/pyris-${name}.svg?framed=1`);console.log('Asset',name,r.status,(await r.text()).match(/viewBox="([^"]+)"/)?.[1]);}
+ console.log('Browser errors',errors);
+}finally{await call('Browser.close').catch(()=>{});socket.close();}

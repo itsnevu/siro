@@ -1,0 +1,36 @@
+:root {
+  --bg:#F8F9F9; --surface:#F0F1F1; --surface-2:#E8EAEA; --card:#FFFFFF;
+  --fg:#03211C; --fg-70:rgba(3,33,28,.70); --muted:rgba(3,33,28,.40); --line:rgba(3,33,28,.10);
+  --primary:#97FCE3; --primary-fg:#03211C; --primary-soft:rgba(151,252,227,.25);
+  --secondary:#447259; --secondary-soft:rgba(68,114,89,.10);
+  --success:#2BB58A; --danger:#E5484D; --warning:#D9A21B;
+  --light-bg:#F8F9F9; --dark-bg:#03211C; --dark-surface:#072B25; --dark-surface-2:#0C3730; --dark-card:#0A302A;
+  --light-fg:#F8F9F9; --mint:#97FCE3; --ink-rgb:3 33 28; --mint-rgb:151 252 227;
+  --focus:#447259; --chart-1:#03211C; --chart-2:#447259;
+  --allocation-1:#03211C; --allocation-2:#447259; --allocation-3:#97FCE3; --allocation-4:var(--surface-2);
+  --shadow-sm:0 1px 2px rgba(3,33,28,.06); --shadow-md:0 12px 32px rgba(3,33,28,.08);
+  --font-instrument:"Instrument Sans",ui-sans-serif,system-ui,sans-serif;
+  --font-display:"Hedvig Letters Serif",ui-serif,Georgia,serif;
+  --font-italic:"Instrument Serif",ui-serif,Georgia,serif;
+  /* Compatibility aliases keep the established layouts and components intact. */
+  --page-bg:var(--bg); --ink:var(--fg); --soft:var(--surface); --control:var(--muted); --faint:var(--muted);
+  --cream:var(--light-fg); --paper:var(--light-fg); --accent:var(--secondary); --accent-soft:var(--primary-soft);
+  --accent-dark:var(--fg); --forest:var(--fg); --forest-soft:var(--secondary); --sage:var(--secondary);
+  --sage-deep:var(--secondary); --moss:var(--fg-70); --lime:var(--primary);
+  --brand-gradient:linear-gradient(120deg,var(--fg),var(--secondary));
+  --rusd-bg:var(--bg); --rusd-surface:var(--card); --rusd-ink:var(--fg); --rusd-muted:var(--fg-70);
+  --rusd-line:var(--line); --rusd-primary:var(--fg); --rusd-primary-hover:var(--secondary);
+  --rusd-bright:var(--secondary); --rusd-soft:var(--surface-2); --rusd-frost:var(--surface);
+  --rusd-warning:var(--warning); --rusd-display:var(--font-instrument); --rusd-max-width:1200px;
+}
+.dark,[data-tone="dark"] {
+  --bg:#03211C; --surface:#072B25; --surface-2:#0C3730; --card:#0A302A;
+  --fg:#F8F9F9; --fg-70:rgba(248,249,249,.70); --muted:rgba(248,249,249,.45); --line:rgba(255,255,255,.12);
+  --primary:#97FCE3; --primary-fg:#03211C; --secondary:#6FA88A;
+  --secondary-soft:rgba(111,168,138,.10); --success:#97FCE3; --danger:#FF6B6F; --warning:#FFC94D;
+  --focus:#97FCE3; --chart-1:#97FCE3; --chart-2:#6FA88A;
+  --allocation-1:#F8F9F9; --allocation-2:#6FA88A; --allocation-3:#97FCE3;
+  --page-bg:var(--bg); --ink:var(--fg); --soft:var(--surface); --accent:var(--secondary);
+  --rusd-bg:var(--bg); --rusd-surface:var(--card); --rusd-ink:var(--fg); --rusd-muted:var(--fg-70);
+  --rusd-line:var(--line); --rusd-primary:var(--fg); --rusd-soft:var(--surface-2); --rusd-frost:var(--surface);
+}

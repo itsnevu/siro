@@ -1,0 +1,22 @@
+/* Motion enhancement of the existing hero; the original composition stays intact. */
+.ed-hero-depth { perspective:1100px; }
+.ed-sculpture-anchor { position:absolute; top:52%; left:50%; width:280px; height:280px; transform:translate(-50%,-50%); }
+.ed-sculpture-float { width:100%; height:100%; transform-style:preserve-3d; animation:ed-sculpture-hover 8s ease-in-out infinite; }
+.ed-hero-depth .ed-brand-sculpture { position:relative; top:auto; left:auto; width:100%; height:100%; transform-style:preserve-3d; }
+.ed-hero-depth .ed-brand-sculpture img { transform:translateZ(10px); user-select:none; }
+.ed-sculpture-sheen { position:absolute; inset:0; border-radius:inherit; pointer-events:none; background:linear-gradient(145deg,color-mix(in srgb,var(--card) 24%,transparent),transparent 45%,color-mix(in srgb,var(--fg) 4%,transparent)); transform:translateZ(1px); }
+.ed-depth-shadow { position:absolute; top:calc(52% + 120px); left:50%; width:230px; height:30px; border-radius:50%; transform:translateX(-50%); background:color-mix(in srgb,var(--fg) 13%,transparent); filter:blur(14px); animation:ed-shadow-breathe 8s ease-in-out infinite; }
+.ed-hero-depth .ed-notification { animation:ed-notification-hover 9s ease-in-out infinite; }
+.ed-hero-depth .ed-notification-two { animation-duration:11s; animation-delay:-4s; }
+.ed-hero-depth .ed-orbit-one { animation:ed-orbit-drift-one 24s ease-in-out infinite; }
+.ed-hero-depth .ed-orbit-two { animation:ed-orbit-drift-two 30s ease-in-out infinite; }
+.ed-hero-depth[data-moving="false"] :is(.ed-sculpture-float,.ed-depth-shadow,.ed-notification,.ed-orbit) { animation-play-state:paused; }
+@keyframes ed-sculpture-hover { 0%,100% { transform:translate3d(0,0,0) rotateX(0deg); } 50% { transform:translate3d(0,-11px,0) rotateX(2deg); } }
+@keyframes ed-notification-hover { 0%,100% { translate:0 0; } 50% { translate:0 -7px; } }
+@keyframes ed-shadow-breathe { 0%,100% { opacity:1; scale:1; } 50% { opacity:.65; scale:.93; } }
+@keyframes ed-orbit-drift-one { 0%,100% { transform:translate(-50%,-50%) rotate(-24deg); } 50% { transform:translate(-50%,-50%) rotate(-18deg); } }
+@keyframes ed-orbit-drift-two { 0%,100% { transform:translate(-50%,-50%) rotate(24deg); } 50% { transform:translate(-50%,-50%) rotate(18deg); } }
+@media(max-width:768px) { .ed-sculpture-anchor { width:220px; height:220px; }.ed-depth-shadow { top:calc(52% + 94px); width:180px; height:24px; }.ed-sculpture-float { animation-name:ed-sculpture-hover-mobile; }.ed-hero-depth .ed-orbit { animation:none; } }
+@media(max-width:420px) { .ed-sculpture-anchor { width:185px; height:185px; }.ed-depth-shadow { top:calc(52% + 78px); width:150px; } }
+@keyframes ed-sculpture-hover-mobile { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+@media(prefers-reduced-motion:reduce) { .ed-hero-depth :is(.ed-sculpture-float,.ed-depth-shadow,.ed-notification,.ed-orbit) { animation:none!important; translate:none; }.ed-sculpture-float { transform:none; } }

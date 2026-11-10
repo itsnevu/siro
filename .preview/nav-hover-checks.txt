@@ -1,0 +1,22 @@
+try {
+ await cmd('Runtime.enable');await cmd('Page.enable');await cmd('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false});await cmd('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});await navigate('/');
+ const chipBefore=await evaluate('[...document.querySelectorAll("#nav>.nav-dropdown>button,#nav>a")].map(e=>({x:e.getBoundingClientRect().x,width:e.getBoundingClientRect().width}))');
+ const trigger=await evaluate('(()=>{const r=document.querySelector(".nav-dropdown-trigger").getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2,bottom:r.bottom}})()');
+ await cmd('Input.dispatchMouseEvent',{type:'mouseMoved',x:trigger.x,y:trigger.y});await delay(35);
+ const opening=await evaluate('(()=>{const e=document.querySelector(".nav-dropdown-menu");const r=e.getBoundingClientRect();return {center:r.x+r.width/2,animation:getComputedStyle(e).animationName}})()');await delay(250);
+ const settled=await evaluate('(()=>{const r=document.querySelector(".nav-dropdown-menu").getBoundingClientRect();return {center:r.x+r.width/2,top:r.top}})()');
+ console.log('Dropdown positioning',{opening,settled,horizontalJump:Math.abs(opening.center-settled.center)});
+ await cmd('Input.dispatchMouseEvent',{type:'mouseMoved',x:trigger.x,y:trigger.bottom+4});await delay(100);
+ console.log('Hover bridge',await evaluate('document.querySelector(".nav-dropdown-trigger").getAttribute("aria-expanded")'));
+ await cmd('Input.dispatchMouseEvent',{type:'mouseMoved',x:trigger.x,y:settled.top+30});await delay(100);
+ console.log('Pointer reaches panel',await evaluate('!!document.querySelector(".nav-dropdown-menu")'));
+ await cmd('Input.dispatchMouseEvent',{type:'mouseMoved',x:trigger.x,y:trigger.y});await cmd('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,x:trigger.x,y:trigger.y});await cmd('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,x:trigger.x,y:trigger.y});
+ console.log('Click after hover stays open',await evaluate('document.querySelector(".nav-dropdown-trigger").getAttribute("aria-expanded")'));
+ console.log('Chip geometry stable',await evaluate(`JSON.stringify([...document.querySelectorAll('#nav>.nav-dropdown>button,#nav>a')].map(e=>({x:e.getBoundingClientRect().x,width:e.getBoundingClientRect().width})))===${JSON.stringify(JSON.stringify(chipBefore))}`));
+ await cmd('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await cmd('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});console.log('Escape closes',await evaluate('!document.querySelector(".nav-dropdown-menu")'));
+ await cmd('Emulation.setDeviceMetricsOverride',{width:375,height:900,deviceScaleFactor:1,mobile:true});await cmd('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});await navigate('/');await evaluate('document.querySelector(".dockyard-nav-toggle").click()');
+ const touch=await evaluate('(()=>{const r=document.querySelector(".nav-dropdown-trigger").getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()');
+ async function tap(){await cmd('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[touch]});await cmd('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await delay(250);}
+ await tap();console.log('Touch opens',await evaluate('document.querySelector(".nav-dropdown-trigger").getAttribute("aria-expanded")'));await tap();console.log('Touch closes',await evaluate('document.querySelector(".nav-dropdown-trigger").getAttribute("aria-expanded")'));
+ console.log('Browser errors',errors);
+}finally{await call('Browser.close').catch(()=>{});socket.close();}

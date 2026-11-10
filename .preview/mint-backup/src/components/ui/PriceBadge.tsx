@@ -1,0 +1,11 @@
+export function PriceBadge({ change }: { change: number }) {
+  const positive = change >= 0;
+  return (
+    <span className={`inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-medium ${positive ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className={positive ? "" : "rotate-180"}>
+        <path d="M5 2l3.5 5h-7L5 2z" fill="currentColor"/>
+      </svg>
+      {Math.abs(change).toFixed(2)}%
+    </span>
+  );
+}

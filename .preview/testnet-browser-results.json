@@ -1,0 +1,269 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Good instincts.\nOnchain intelligence.\nAlways \nyour rules.\nyour rules.\n|",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/launch",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Capital follows\nintelligence.",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/strategies",
+      "title": "Strategies Siro",
+      "h1": "Strategy Marketplace",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/studio",
+      "title": "Studio Siro",
+      "h1": "Build strategies\nwithout writing code.",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/agent",
+      "title": "Agent Siro",
+      "h1": "Describe it.\nThe agent builds it.",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/markets",
+      "title": "Markets Siro",
+      "h1": "Tokenized Stocks",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/token",
+      "title": "$SIRO Token Siro",
+      "h1": "$SIRO",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/tokenomics",
+      "title": "Tokenomics Siro",
+      "h1": "$SIRO Supply & Allocation",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/buyback",
+      "title": "Buyback & Burn Siro",
+      "h1": "Buyback & Burn",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/api",
+      "title": "API Siro",
+      "h1": "Build with a clearer foundation.",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/stats",
+      "title": "Stats Siro",
+      "h1": "Transparent by default.",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/pricing",
+      "title": "Pricing Siro",
+      "h1": "Simple, transparent pricing",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/security",
+      "title": "Security Siro",
+      "h1": "Your keys. Your funds. Always.",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/roadmap",
+      "title": "Roadmap Siro",
+      "h1": "Roadmap",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/about",
+      "title": "About Siro",
+      "h1": "About Siro",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/faq",
+      "title": "FAQ Siro",
+      "h1": "Good questions. Clear answers.",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/blog",
+      "title": "Blog Siro",
+      "h1": "Blog",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/legal",
+      "title": "Legal Siro",
+      "h1": "Clarity, in writing.",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/docs",
+      "title": "Docs Siro",
+      "h1": "Siro: AI-Powered Copy Trading",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/whitepaper",
+      "title": "Whitepaper Siro",
+      "h1": "AI-Powered Copy Trading Vaults",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/risk",
+      "title": "Risk Siro",
+      "h1": "What can go wrong",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/terms",
+      "title": "Terms Siro",
+      "h1": "Terms of Use",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/privacy",
+      "title": "Privacy Siro",
+      "h1": "Privacy",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Copy Vault",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app/portfolio",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Portfolio",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app/strategies",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "My Strategies",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app/studio",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Strategy Studio",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app/agent",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Agent",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app/approvals",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Pending Approvals",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app/schedules",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Automated Schedules",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app/policies",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Policies",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app/token",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "$SIRO Token",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    },
+    {
+      "path": "/app/settings",
+      "title": "Siro | Agentic Investing on Tokenized Stocks",
+      "h1": "Settings",
+      "notFound": false,
+      "overflow": false,
+      "brokenImages": []
+    }
+  ],
+  "errors": []
+}

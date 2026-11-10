@@ -1,0 +1,43 @@
+"use client";
+
+import { useNetwork } from "@/lib/network";
+import { explorerAddress, explorerTx } from "@/lib/links";
+import { truncateAddress } from "@/lib/contracts";
+
+const linkClass = "font-mono text-ink underline decoration-dotted underline-offset-2 hover:text-fg-70";
+
+/** An address that links to the selected network's block explorer when it has one. */
+export function AddressLink({ address, className }: { address: string; className?: string }) {
+  const net = useNetwork();
+  const href = explorerAddress(net.explorerUrl, address);
+  const text = truncateAddress(address);
+  if (!href) return <span className={`font-mono ${className ?? ""}`}>{text}</span>;
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" title={`${address} on ${net.name}`} className={`${linkClass} ${className ?? ""}`}>
+      {text}
+    </a>
+  );
+}
+
+/** A transaction hash that links to the selected network's block explorer. */
+export function TxLink({ hash, className, label }: { hash: string; className?: string; label?: string }) {
+  const net = useNetwork();
+  const href = explorerTx(net.explorerUrl, hash);
+  const text = label ?? `${hash.slice(0, 10)}…${hash.slice(-6)}`;
+  if (!href) return <span className={`font-mono ${className ?? ""}`}>{text}</span>;
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" title={`${hash} on ${net.name}`} className={`${linkClass} ${className ?? ""}`}>
+      {text} ↗
+    </a>
+  );
+}
+
+/** A submission note rendered as a link when it is a URL. */
+export function ProofLink({ note, className }: { note: string; className?: string }) {
+  if (!/^https?:\/\//i.test(note)) return <span className={className}>{note}</span>;
+  return (
+    <a href={note} target="_blank" rel="noopener noreferrer" className={`text-fg-70 underline break-all ${className ?? ""}`}>
+      {note}
+    </a>
+  );
+}

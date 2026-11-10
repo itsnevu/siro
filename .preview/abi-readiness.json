@@ -1,0 +1,39 @@
+[
+  {
+    "contract": "SiroCopyVault",
+    "missingFrontendFunctions": [
+      "pause()",
+      "unpause()",
+      "getVaultBalance(address)",
+      "claimFees()",
+      "token()",
+      "vaultCount()"
+    ],
+    "outputShapeNeedsReview": [
+      "getVault"
+    ]
+  },
+  {
+    "contract": "SiroRiskGuard",
+    "missingFrontendFunctions": [
+      "setRiskParams(uint16,uint16,uint16,uint16)",
+      "setTokenWhitelist(address[],bool)",
+      "killSwitch()",
+      "unkill()",
+      "getRiskParams(address)",
+      "isKilled(address)"
+    ],
+    "outputShapeNeedsReview": []
+  },
+  {
+    "contract": "SiroLeaderboard",
+    "missingFrontendFunctions": [
+      "registerLeader(string)",
+      "getTopLeaders(uint256,uint256)",
+      "leaderCount()"
+    ],
+    "outputShapeNeedsReview": [
+      "getLeaderStats"
+    ]
+  }
+]

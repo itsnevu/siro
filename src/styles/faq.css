@@ -1,0 +1,6 @@
+/* Center both strokes within the circle while retaining the open/close motion. */
+.rusd-faq-list .rusd-faq-toggle::before,
+.rusd-faq-list .rusd-faq-toggle::after {
+  inset: 0;
+  margin: auto;
+}

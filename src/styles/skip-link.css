@@ -1,0 +1,21 @@
+/* Keep keyboard access without an offscreen element shifting the scroll position. */
+.editorial-site .ed-skip-link {
+  position: fixed;
+  inset: 16px auto auto 24px;
+  z-index: 100;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  transform: none;
+  background: var(--primary);
+  color: var(--primary-fg);
+}
+.editorial-site .ed-skip-link:focus-visible {
+  width: auto;
+  height: auto;
+  padding: 10px 16px;
+  clip-path: none;
+}

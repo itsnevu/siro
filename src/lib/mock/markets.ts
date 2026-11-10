@@ -1,0 +1,26 @@
+import type { Market } from "./types";
+
+export const markets: Market[] = [
+  { ticker: "AAPL", name: "Apple Inc.", issuer: "Backed Finance", price: 234.82, change24h: 1.24, volume24h: 8_420_000, liquidity: 12_500_000, marketCap: 3_580_000_000_000, sector: "Technology" },
+  { ticker: "TSLA", name: "Tesla Inc.", issuer: "Backed Finance", price: 312.45, change24h: -2.18, volume24h: 11_300_000, liquidity: 9_800_000, marketCap: 1_005_000_000_000, sector: "Automotive" },
+  { ticker: "NVDA", name: "NVIDIA Corp.", issuer: "Backed Finance", price: 148.63, change24h: 3.42, volume24h: 14_700_000, liquidity: 15_200_000, marketCap: 3_640_000_000_000, sector: "Semiconductors" },
+  { ticker: "MSFT", name: "Microsoft Corp.", issuer: "Backed Finance", price: 467.21, change24h: 0.87, volume24h: 6_100_000, liquidity: 11_800_000, marketCap: 3_470_000_000_000, sector: "Technology" },
+  { ticker: "AMZN", name: "Amazon.com Inc.", issuer: "Backed Finance", price: 215.38, change24h: 1.56, volume24h: 7_800_000, liquidity: 10_400_000, marketCap: 2_250_000_000_000, sector: "Consumer Cyclical" },
+  { ticker: "GOOGL", name: "Alphabet Inc.", issuer: "Backed Finance", price: 192.74, change24h: 0.43, volume24h: 5_600_000, liquidity: 9_200_000, marketCap: 2_380_000_000_000, sector: "Technology" },
+  { ticker: "META", name: "Meta Platforms", issuer: "Backed Finance", price: 612.30, change24h: 2.15, volume24h: 5_200_000, liquidity: 8_700_000, marketCap: 1_560_000_000_000, sector: "Technology" },
+  { ticker: "JPM", name: "JPMorgan Chase", issuer: "Backed Finance", price: 248.15, change24h: -0.32, volume24h: 3_100_000, liquidity: 6_400_000, marketCap: 710_000_000_000, sector: "Financial Services" },
+  { ticker: "V", name: "Visa Inc.", issuer: "Backed Finance", price: 315.60, change24h: 0.68, volume24h: 2_800_000, liquidity: 5_900_000, marketCap: 620_000_000_000, sector: "Financial Services" },
+  { ticker: "MA", name: "Mastercard Inc.", issuer: "Backed Finance", price: 528.42, change24h: 0.91, volume24h: 2_400_000, liquidity: 5_100_000, marketCap: 490_000_000_000, sector: "Financial Services" },
+  { ticker: "UNH", name: "UnitedHealth Group", issuer: "Backed Finance", price: 562.18, change24h: -0.54, volume24h: 2_100_000, liquidity: 4_800_000, marketCap: 520_000_000_000, sector: "Healthcare" },
+  { ticker: "JNJ", name: "Johnson & Johnson", issuer: "Backed Finance", price: 158.93, change24h: 0.12, volume24h: 1_900_000, liquidity: 4_200_000, marketCap: 382_000_000_000, sector: "Healthcare" },
+  { ticker: "PG", name: "Procter & Gamble", issuer: "Backed Finance", price: 172.45, change24h: 0.28, volume24h: 1_700_000, liquidity: 3_800_000, marketCap: 405_000_000_000, sector: "Consumer Defensive" },
+  { ticker: "KO", name: "Coca-Cola Co.", issuer: "Backed Finance", price: 63.82, change24h: -0.15, volume24h: 1_500_000, liquidity: 3_400_000, marketCap: 275_000_000_000, sector: "Consumer Defensive" },
+  { ticker: "DIS", name: "Walt Disney Co.", issuer: "Backed Finance", price: 112.67, change24h: 1.73, volume24h: 2_200_000, liquidity: 4_000_000, marketCap: 205_000_000_000, sector: "Communication" },
+  { ticker: "NFLX", name: "Netflix Inc.", issuer: "Backed Finance", price: 892.14, change24h: 2.84, volume24h: 3_400_000, liquidity: 6_100_000, marketCap: 385_000_000_000, sector: "Communication" },
+  { ticker: "AMD", name: "Advanced Micro Devices", issuer: "Backed Finance", price: 174.28, change24h: 4.12, volume24h: 6_800_000, liquidity: 8_300_000, marketCap: 282_000_000_000, sector: "Semiconductors" },
+  { ticker: "CRM", name: "Salesforce Inc.", issuer: "Backed Finance", price: 342.56, change24h: 1.05, volume24h: 2_600_000, liquidity: 5_500_000, marketCap: 330_000_000_000, sector: "Technology" },
+  { ticker: "PYPL", name: "PayPal Holdings", issuer: "Backed Finance", price: 82.34, change24h: -1.42, volume24h: 3_200_000, liquidity: 4_600_000, marketCap: 87_000_000_000, sector: "Financial Services" },
+  { ticker: "SQ", name: "Block Inc.", issuer: "Backed Finance", price: 78.91, change24h: -0.87, volume24h: 2_900_000, liquidity: 4_100_000, marketCap: 48_000_000_000, sector: "Financial Services" },
+  { ticker: "COIN", name: "Coinbase Global", issuer: "Backed Finance", price: 265.73, change24h: 5.31, volume24h: 4_500_000, liquidity: 7_200_000, marketCap: 65_000_000_000, sector: "Financial Services" },
+  { ticker: "PLTR", name: "Palantir Technologies", issuer: "Backed Finance", price: 68.42, change24h: 3.67, volume24h: 5_100_000, liquidity: 6_800_000, marketCap: 155_000_000_000, sector: "Technology" },
+];

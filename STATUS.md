@@ -1,0 +1,76 @@
+# Siro — Catatan Status (20 Sep 2026)
+
+## Dual chain (20 Sep 2026)
+- Siro sekarang jalan di **Arc** (native USDC, mode native) dan **Robinhood Chain** (chain 4663, mode ERC-20, escrow USDG 6 desimal, gas ETH).
+- Registry network `src/lib/chains.ts`; network terpilih `src/lib/network.tsx` (switcher di header, link `?chain=4663`); relay RPC `/api/rpc/4663` karena RPC Robinhood diblokir ISP Indonesia.
+- **Sudah terdeploy di Robinhood Chain (20 Sep 2026): `0xf7c81a882594b3f3ddd969ebfa750e30eedaead3`**, block 67358826, deployer `0xCd44c4c02F0bfb464B6FbeA8eC8603d1797F9793` (`contracts/deployments/4663.json`).
+- Deploy Robinhood tanpa Foundry: `PRIVATE_KEY=0x… npm run deploy:robinhood` (`scripts/deploy-robinhood.mjs`, pakai bytecode di `contracts/out`). Hasil ditulis ke `contracts/deployments/4663.json` dan `src/lib/generated/deployments.ts`.
+- Di VPS: `git pull`, `npm install`, `npm run abi:sync` (tanpa DEPLOYMENT_FILE, map semua chain), `npm run build`, restart.
+
+
+## Sudah Selesai ✅
+
+### 1. Rebrand & Shifting Produk
+- **Identitas Baru**: Shifting total dari collateral lending ke **Siro (01 · B2B Programmable Payments & Milestone Escrow)** di jaringan **Arc Chain**.
+- **Domain Resmi**: **[siro.tech](https://siro.tech)** (terkonfigurasi sebagai canonical origin, sitemap, robots, OpenGraph, email `support@siro.tech`).
+
+### 2. Smart Contract & Test Suite (`contracts/`)
+- `SiroPact.sol`:
+  - Kontrak escrow terdesentralisasi khusus Arc Chain dengan akuntansi native USDC (msg.value, 18 desimal di EVM).
+  - State machine: `FUNDED (0)`, `SUBMITTED (1)`, `RELEASED (2)`, `REFUNDED (3)`, `DISPUTED (4)`, `RESOLVED (5)`.
+  - Fungsi: `createPact`, `submitWork`, `releaseFunds`, `refund`, `dispute`, `extendDeadline`, `proposeResolution`, `arbitrate`, `withdraw`, serta view helpers pagination.
+  - Zero dependencies: tidak memerlukan oracle eksternal maupun swap DEX, sehingga sangat aman dan efisien gas.
+- `SiroPact.t.sol`:
+  - Test suite Foundry lengkap menguji seluruh transisi state, pembatasan hak akses vendor vs klien, serta logika refund otomatis setelah deadline lewat.
+- `DeployPact.s.sol`:
+  - Script deployment untuk Arc Mainnet (`5042`) dan Anvil lokal (`31337`). **Sudah terdeploy di Arc Mainnet: `0xb5f905f48321F44e379d8680e947dDd05830AF62`** (`contracts/deployments/5042.json`).
+
+### 3. Frontend App & UI
+- **Dashboard (`/app`)**:
+  - Metrik akumulatif: *Total Escrow Volume*, *Active in Escrow*, *Settled Payouts*, *Network Gas Currency (USDC)*.
+  - Filter tab: *All Pacts*, *Outgoing (Klien)*, *Incoming (Kontraktor)*.
+  - Modal interaktif **"Create New Pact"** untuk mendanai escrow milestone baru.
+  - Tombol aksi satu klik: **Release Funds**, **Submit Deliverable**, **Claim Refund**.
+- **Detail Milestone (`/app/[asset]`)**:
+  - Halaman verifikasi milestone dan review proof-of-work onchain.
+- **Landing Page (`/`)**:
+  - Hero baru, direktori public pacts live, dan tabel komparasi biaya (Upwork 10–20% fee vs Wire transfer $45 vs Siro 0% fee di Arc Chain).
+- **Dokumentasi & Legal**:
+  - `/docs` (panduan lengkap B2B escrow).
+  - `/whitepaper` (arsitektur teknis Siro).
+  - `/terms` & `/privacy` (ketentuan software non-custodial).
+  - `/blog` (4 artikel baru seputar ekonomi B2B di Arc Chain).
+
+---
+
+## Yang Perlu Dilakukan Saat Deploy ke VPS 🚀
+
+1. **Pull Kode ke VPS**:
+   ```bash
+   git pull origin main
+   ```
+2. **Install & Build**:
+   ```bash
+   npm install
+   npm run contracts:build   # forge build
+   npm run contracts:test    # forge test
+   npm run build             # next build
+   ```
+3. **Environment (.env di VPS)**:
+   File `.env` sudah disiapkan dengan:
+   ```env
+   NEXT_PUBLIC_SITE_URL=https://siro.tech
+   NEXT_PUBLIC_CHAIN_ID=5042
+   NEXT_PUBLIC_RPC_URL=https://rpc.mainnet.arc.io
+   NEXT_PUBLIC_CHAIN_NAME=Arc Mainnet
+   NEXT_PUBLIC_EXPLORER_URL=https://explorer.arc.io
+   ```
+4. **Smart Contract (sudah terdeploy di Arc Mainnet)**:
+   Tidak perlu deploy ulang. Sinkronkan ABI + alamat mainnet ke frontend sebelum build:
+   ```bash
+   DEPLOYMENT_FILE=contracts/deployments/5042.json npm run abi:sync
+   ```
+   Hanya jika perlu redeploy (mis. upgrade kontrak):
+   ```bash
+   PRIVATE_KEY=0x... forge script script/DeployPact.s.sol:DeployPact --rpc-url https://rpc.mainnet.arc.io --broadcast
+   ```
