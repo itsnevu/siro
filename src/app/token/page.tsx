@@ -31,7 +31,7 @@ export default function TokenPage() {
     >
       <Section id="useful" heading="Useful, Not Required">
         <p>
-          You can use Siro without holding any $SIRO. The platform is fully functional with USDC.
+          You can use Siro without holding any $SIRO. The platform is fully functional with USDG.
           $SIRO gives you perks  lower fees, more agent credits, staking boosts  but it is never
           a gate. No token required to copy trade, create strategies, or run agents.
         </p>
@@ -100,7 +100,7 @@ export default function TokenPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gridTemplateColumns: "repeat(2, 1fr)",
             gap: 16,
             marginTop: 16,
           }}

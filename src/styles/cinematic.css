@@ -49,7 +49,6 @@
 .ed-home>[data-tone="dark"].cinematic-section h2 em { color:transparent; }
 /* These existing reading-oriented intros receive only a static transition glow. */
 .blog-index-heading,
-body:has(.siro-doc-toc a[href="#useful"]) .siro-doc-head,
 main.glow-header { background-image:radial-gradient(ellipse at 0 0,var(--glow-subtle),transparent 38%); background-size:100% 320px; background-repeat:no-repeat; }
 /* Hero sky dissolves into the page at both ends, so no edge shows under the navbar or above the next block. */
 .ed-hero-copy.cinematic-section>.cinematic-background { background:transparent; -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 70%,transparent 100%); mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 70%,transparent 100%); }

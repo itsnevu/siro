@@ -6,4 +6,5 @@ export const C = {
 } as const;
 export const F={sans:'Instrument Sans',display:'Hedvig Letters Serif',italic:'Instrument Serif'} as const;
 export const EASE = [0.16,1,0.3,1] as const;
-export const W=1920,H=1080,FPS=30,DUR=600;
+export {TOTAL_FRAMES as DUR} from './timing';
+export const W=1920,H=1080,FPS=30;

@@ -6,7 +6,21 @@ const fs=require('node:fs/promises');
  await fs.mkdir('out/audit',{recursive:true});
  const serveUrl=await bundle({entryPoint:require('node:path').resolve('src/index.ts')});
  const composition=await selectComposition({serveUrl,id:'SIRO-AGENT-LAUNCH'});
- const frames=[12,40,53,77,100,110,128,147,158,175,193,200,222,252,260,285,312,320,342,363,372,398,432,440,470,507,517,537,550,575,599];
+ const timing=await fs.readFile('src/timing.ts','utf8');
+ const shots=JSON.parse(timing.match(/SHOTS = (\[[^;]+\])/)[1]);
+ const transitions=JSON.parse(timing.match(/TRANSITIONS = (\[[^;]+\])/)[1]);
+ const intro=Number(timing.match(/INTRO_OVERLAP = (\d+)/)[1]);
+ const strategy=Number(timing.match(/STRATEGY_OVERLAP = (\d+)/)[1]);
+ const overlaps=[intro,transitions[0],transitions[1],strategy,...transitions.slice(2)];
+ let start=0;
+ const sampled=[0,18,44,66,82,100,115,composition.durationInFrames-1];
+ for(let i=1;i<shots.length;i++){
+  start+=shots[i-1]-overlaps[i-1];
+  const length=overlaps[i-1];
+  sampled.push(start-1,start,start+Math.floor(length*.25),start+Math.floor(length*.5),start+Math.floor(length*.75),start+length-1,start+length);
+  sampled.push(Math.min(composition.durationInFrames-1,start+Math.floor(shots[i]*.6)));
+ }
+ const frames=[...new Set(sampled)].sort((a,b)=>a-b);
  for(let i=0;i<frames.length;i+=3){await Promise.all(frames.slice(i,i+3).map(frame=>renderStill({serveUrl,composition,frame,scale:1/3,imageFormat:'png',output:'out/audit/'+frame+'.png',logLevel:'error'})));}
  const layers=[];
  for(let i=0;i<frames.length;i++){

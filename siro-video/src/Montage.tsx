@@ -11,12 +11,14 @@ import { Brand, Logo, clamp } from "./components/Siro";
 import { Soundtrack } from "./components/Soundtrack";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { DepthTransition } from "./components/DepthTransition";
+import { SHOTS, TRANSITIONS, INTRO_OVERLAP, STRATEGY_OVERLAP } from "./timing";
+import {RevealText} from './components/RevealText';
 
 const pop = (f: number, d = 0) =>
   spring({
     frame: f - d,
     fps: 30,
-    config: { damping: 22, stiffness: 180, mass: 0.75 },
+    config: { damping: 24, stiffness: 100, mass: 1.1 },
   });
 const ramp = (f: number, a: number, b: number) =>
   interpolate(f, [a, b], [0, 1], clamp);
@@ -24,7 +26,11 @@ const lerp = (a: number, b: number, p: number) => a + (b - a) * p;
 const light = C.cream;
 const Stage: React.FC<
   React.PropsWithChildren<{ dark?: boolean; purple?: boolean }>
-> = ({ children, dark = false, purple = false }) => (
+> = ({ children, dark = false, purple = false }) => {
+  const f=useCurrentFrame();
+  // Keep camera velocity through the hold; object entrances remain independent.
+  const drift=interpolate(f,[0,150],[0,1],clamp);
+  return (
   <AbsoluteFill
     style={{
       background: dark ? C.bg : purple ? C.purple : light,
@@ -33,9 +39,10 @@ const Stage: React.FC<
       overflow: "hidden",
     }}
   >
-    {children}
+    <AbsoluteFill style={{scale:1+drift*.035,translate:`${-drift*10}px ${-drift*6}px`,transformOrigin:'50% 50%'}}>{children}</AbsoluteFill>
   </AbsoluteFill>
 );
+};
 
 const Coin = ({
   size = 400,
@@ -103,9 +110,11 @@ const Coin = ({
 const Allocation = ({
   progress = 1,
   size = 250,
+  logoOpacity = 1,
 }: {
   progress?: number;
   size?: number;
+  logoOpacity?: number;
 }) => (
   <div
     style={{
@@ -127,14 +136,14 @@ const Allocation = ({
         placeItems: "center",
       }}
     >
-      <Logo size={size * 0.3} />
+      <div style={{opacity: logoOpacity}}><Logo size={size * 0.3} /></div>
     </div>
   </div>
 );
 
 const Phone: React.FC<
-  React.PropsWithChildren<{ style?: React.CSSProperties }>
-> = ({ children, style }) => (
+  React.PropsWithChildren<{ style?: React.CSSProperties; landing?: boolean }>
+> = ({ children, style, landing = false }) => (
   <div
     style={{
       width: 480,
@@ -144,7 +153,7 @@ const Phone: React.FC<
       padding: 13,
       background:
         "linear-gradient(140deg,#676570,#0A0B12 35%,#4c4b55 80%,#0A0B12)",
-      boxShadow: "15px 30px 65px rgba(10,11,18,.2)",
+      boxShadow: "inset 2px 2px 3px rgba(255,255,255,.4),12px 12px 0 #24232d,24px 42px 48px rgba(10,11,18,.23),45px 75px 115px rgba(10,11,18,.19)",
       position: "relative",
       transformStyle: "preserve-3d",
       ...style,
@@ -165,7 +174,7 @@ const Phone: React.FC<
         width: "100%",
         height: "100%",
         borderRadius: 55,
-        overflow: "hidden",
+        overflow: landing ? "visible" : "hidden",
         position: "relative",
         background: C.bg,
         color: C.text,
@@ -192,9 +201,13 @@ const Phone: React.FC<
 const Portfolio = ({
   f = 100,
   interactive = false,
+  landing = false,
+  openingFrame,
 }: {
   f?: number;
   interactive?: boolean;
+  landing?: boolean;
+  openingFrame?: number;
 }) => (
   <div style={{ padding: "80px 30px 30px" }}>
     <Brand size={30} />
@@ -212,9 +225,10 @@ const Portfolio = ({
       Paper mode
     </div>
     <div
-      style={{ display: "flex", justifyContent: "center", margin: "35px 0" }}
+      style={{ position: "relative", display: "flex", justifyContent: "center", margin: "35px 0" }}
     >
-      <Allocation size={280} progress={Math.min(pop(f, 8), 1)} />
+      <Allocation size={280} progress={Math.min(pop(f, 8), 1)} logoOpacity={landing ? ramp(f, 24, 44) : 1} />
+      {openingFrame !== undefined && openingFrame < 96 ? <OpeningCoin frame={openingFrame}/> : null}
     </div>
     {["NVDA", "AAPL", "TSLA"].map((t, i) => (
       <div
@@ -312,124 +326,49 @@ const Notification = () => (
   </div>
 );
 
-const Toss = () => {
-  const f = useCurrentFrame(),
-    flight = ramp(f, 22, 48);
-  return (
-    <Stage dark>
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse at center,rgba(165,151,255,.13),transparent 62%)",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          translate: "-50% -50%",
-          scale: lerp(0.85, 5.6, flight ** 2),
-          rotate: `${lerp(-12, 4, flight)}deg`,
-          filter: `blur(${Math.max(0, flight - 0.7) * 6}px)`,
-        }}
-      >
-        <Coin size={380} rotation={lerp(-22, 348, flight)} />
-      </div>
-    </Stage>
-  );
+
+// One physical coin remains mounted through the entire opening.
+const OpeningCoin = ({frame:f}: {frame:number}) => {
+ const grow=interpolate(f,[12,44],[0,1],{...clamp,easing:Easing.bezier(.45,0,.55,1)});
+ const land=interpolate(f,[44,82],[0,1],{...clamp,easing:Easing.bezier(.4,0,.2,1)});
+ return <div style={{position:'absolute',visibility:'visible',zIndex:30,left:'50%',top:'50%',translate:'-50% -50%',scale:lerp(lerp(.85,5.2,grow),.42,land),opacity:1-interpolate(f,[80,96],[0,1],{...clamp,easing:Easing.bezier(.4,0,.2,1)}),transform:'translateZ(1px)'}}><Coin size={400} rotation={lerp(lerp(-26,20,grow),16,land)}/></div>;
 };
-const Catch = () => {
-  const f = useCurrentFrame(),
-    land = pop(f, 2);
-  return (
-    <Stage>
-      <div
-        style={{
-          position: "absolute",
-          left: 720,
-          top: 75,
-          translate: `0 ${lerp(160, 0, pop(f, 4))}px`,
-          rotate: `${lerp(4, 0, pop(f, 4))}deg`,
-          transform: `perspective(1800px) rotateY(${lerp(-22, 6, pop(f, 4)) + Math.sin(f / 24) * 2}deg) rotateX(${lerp(8, -2, pop(f, 4))}deg)`,
-        }}
-      >
-        <Phone>
-          <Portfolio f={f} />
-        </Phone>
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          left: 960,
-          top: lerp(540, 590, Math.min(land, 1)),
-          translate: "-50% -50%",
-          scale: lerp(5.0, 0.7, land),
-          rotate: `${lerp(4, 0, land)}deg`,
-          opacity: 1 - ramp(f, 35, 49),
-        }}
-      >
-        <Coin size={400} rotation={lerp(348, 360, land)} />
-      </div>
-    </Stage>
-  );
+const Opening = () => {
+ const f=useCurrentFrame();
+ const camera=interpolate(f,[44,82],[0,1],{...clamp,easing:Easing.bezier(.4,0,.2,1)});
+ const orbit=interpolate(f,[76,142],[0,1],{...clamp,easing:Easing.bezier(.25,0,.75,1)});
+ const phoneStyle:React.CSSProperties={position:'absolute',left:720,top:75,translate:`0 ${lerp(80,0,camera)}px`,scale:1+orbit*.015,transform:`perspective(1800px) rotateY(${lerp(-8,3,camera)-orbit*4}deg) rotateX(${lerp(5,-1,camera)}deg)`};
+ return <Stage dark>
+  <AbsoluteFill style={{background:C.cream,opacity:interpolate(f,[38,68],[0,1],{...clamp,easing:Easing.bezier(.4,0,.2,1)})}}/>
+  <div style={{...phoneStyle,opacity:interpolate(f,[46,72],[0,1],{...clamp,easing:Easing.bezier(.4,0,.2,1)})}}><Phone><Portfolio f={f-46} landing/></Phone></div>
+  <div aria-hidden style={{...phoneStyle,visibility:'hidden',pointerEvents:'none'}}><Phone landing style={{visibility:'hidden'}}><Portfolio f={f-46} openingFrame={f}/></Phone></div>
+ </Stage>;
 };
 const NotificationMacro = () => {
   const f = useCurrentFrame();
+  const checked = ramp(f, 18, 40);
   return (
     <Stage purple>
-      <div
-        style={{
-          position: "absolute",
-          left: 800,
-          top: 180,
-          width: 320,
-          height: 240,
-          display: "grid",
-          placeItems: "center",
-          opacity: 0.14,
-          scale: 1 + f * 0.001,
-        }}
-      >
-        <div style={{ filter: "brightness(0)" }}>
-          <Logo size={220} />
-        </div>
+      <AbsoluteFill style={{background:'radial-gradient(ellipse at 74% 30%,rgba(243,205,176,.55),transparent 60%),radial-gradient(ellipse at 15% 90%,rgba(27,22,32,.22),transparent 65%)'}}/>
+      <div style={{position:'absolute',left:120,top:285,width:650,fontFamily:F.display,fontSize:106,lineHeight:1.08,letterSpacing:-5,scale:lerp(.9,1,ramp(f,0,65)),transformOrigin:'left center',textShadow:'0 16px 30px rgba(27,22,32,.18)'}}>
+        Every move.<br/><span style={{fontFamily:F.italic,fontStyle:'italic'}}>Within your rules.</span>
       </div>
-      <div
-        style={{
-          position: "absolute",
-          left: 320,
-          top: 465,
-          width: 1280,
-          scale: lerp(0.94, 1, pop(f)),
-          translate: `0 ${lerp(55, 0, pop(f))}px`,
-          transform: `perspective(1800px) rotateX(${lerp(-22, 3, pop(f))}deg) rotateY(${Math.sin(f / 30) * 3}deg) translateZ(35px)`,
-        }}
-      >
-        <div
-          style={{
-            padding: "35px 45px",
-            borderRadius: 28,
-            background: C.gradient,
-            color: C.ink,
-            display: "flex",
-            alignItems: "center",
-            gap: 30,
-            boxShadow: "0 25px 65px rgba(10,11,18,.15)",
-          }}
-        >
-          <span style={{ fontSize: 56 }}>✓</span>
-          <span style={{ fontSize: 43 }}>Policy checked.</span>
-          <span style={{ marginLeft: "auto", fontSize: 25 }}>
-            Within your limits
-          </span>
+      <div style={{position:'absolute',left:155,top:665,transform:`perspective(1400px) rotateY(${lerp(-28,-12,pop(f,3))}deg) rotateX(12deg)`,scale:lerp(.6,1,pop(f,3))}}><Coin size={210} rotation={f*.35}/></div>
+      <div style={{position:'absolute',left:425,top:730,fontSize:25,lineHeight:1.6,opacity:ramp(f,12,28)}}>Your strategy.<br/><span style={{opacity:.6}}>Checked before execution.</span></div>
+      <div style={{position:'absolute',left:875,top:235,width:860,height:620,transform:`perspective(1800px) rotateY(${lerp(-18,-6,pop(f))+Math.sin(f/36)*5}deg) rotateX(${lerp(14,4,pop(f))+Math.sin(f/44)*3}deg)`,translate:`0 ${lerp(80,0,pop(f))-Math.sin(f/38)*8}px`,scale:lerp(.9,1,pop(f))}}>
+        {[2,1].map(i=><div key={i} style={{position:'absolute',inset:0,borderRadius:38,background:i===2?'#7063ac':'#c0a7df',transform:`translate3d(${i*14}px,${i*18}px,${-i*18}px) rotate(${i*1.5}deg)`,boxShadow:'0 22px 48px rgba(27,22,32,.16)'}}/>)}
+        <div style={{position:'absolute',inset:0,borderRadius:38,padding:48,background:'linear-gradient(135deg,#f4eee9,#e6dce9)',boxShadow:'inset 1px 2px 2px rgba(255,255,255,.8),0 40px 90px rgba(27,22,32,.24)',overflow:'hidden'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><Brand size={30}/><span style={{fontSize:18,letterSpacing:2,opacity:.55}}>PRE-TRADE CHECK</span></div>
+          <div style={{fontFamily:F.display,fontSize:58,letterSpacing:-2,marginTop:38}}>Tech Balance</div>
+          <div style={{display:'flex',gap:12,marginTop:20}}>{['NVDA','AAPL','TSLA'].map((ticker,i)=><div key={ticker} style={{padding:'10px 20px',borderRadius:13,background:'rgba(27,22,32,.06)',fontSize:20,opacity:ramp(f,7+i*4,17+i*4),translate:`0 ${lerp(14,0,pop(f,7+i*4))}px`}}>{ticker}</div>)}</div>
+          <div style={{marginTop:32,display:'flex',gap:18}}>{[['Trade cap','$500'],['Max drawdown','8%']].map(([label,value],i)=><div key={label} style={{flex:1,padding:24,borderRadius:22,background:'rgba(255,255,255,.6)',opacity:ramp(f,12+i*5,25+i*5),translate:`0 ${lerp(25,0,pop(f,12+i*5))}px`}}><div style={{fontSize:18,opacity:.6}}>{label}</div><div style={{display:'flex',justifyContent:'space-between',alignItems:'center',fontFamily:F.display,fontSize:46,marginTop:10}}>{value}<span style={{fontFamily:F.sans,fontSize:24,color:'#35714b',opacity:ramp(f,24+i*5,34+i*5)}}>✓</span></div></div>)}</div>
+          <div style={{marginTop:28,padding:'22px 26px',borderRadius:20,background:C.bg,color:C.text,display:'flex',alignItems:'center',gap:18,boxShadow:'0 12px 24px rgba(27,22,32,.16)'}}><span style={{width:38,height:38,borderRadius:99,background:C.mint,color:C.ink,display:'grid',placeItems:'center',scale:lerp(.5,1,pop(f,28)),opacity:checked}}>✓</span><span style={{fontSize:27}}>{f<28?'Checking your policy…':'Policy checked.'}</span><span style={{marginLeft:'auto',fontSize:18,color:C.mint,opacity:checked}}>Within limits</span></div>
         </div>
       </div>
     </Stage>
   );
 };
+
 const TypeCut = () => {
   const f = useCurrentFrame();
   return (
@@ -445,28 +384,18 @@ const TypeCut = () => {
           fontFamily: F.display,
           fontSize: 148,
           letterSpacing: -7,
-          scale: lerp(0.96, 1, pop(f)),
+          scale: lerp(0.82, 1.08, ramp(f, 0, 80)),
+          transform: `perspective(1600px) rotateY(${lerp(-12,5,ramp(f,0,80))}deg) rotateZ(${lerp(-2,1,ramp(f,0,80))}deg)`,
+          textShadow: "2px 3px 0 rgba(27,22,32,.18),5px 8px 0 rgba(27,22,32,.09),12px 28px 30px rgba(27,22,32,.25)",
         }}
       >
-        Your{" "}
+        <RevealText text="Your" start={4}/>{" "}
         <span
           style={{ fontFamily: F.italic, fontStyle: "italic", color: C.ink }}
         >
-          rules.
+          <RevealText text="rules." start={9}/>
         </span>
       </div>
-      <div
-        style={{
-          position: "absolute",
-          left: 650,
-          top: 715,
-          width: 620,
-          height: 5,
-          borderRadius: 9,
-          background: C.gradient,
-          scale: `${pop(f, 4)} 1`,
-        }}
-      />
     </Stage>
   );
 };
@@ -474,6 +403,30 @@ const AssetBurst = () => {
   const f = useCurrentFrame();
   return (
     <Stage dark>
+      <svg viewBox="0 0 1920 1080" style={{position:'absolute',inset:0,width:'100%',height:'100%',overflow:'visible'}}>
+        <defs>
+          <linearGradient id="asset-flow" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor={C.purple}/><stop offset="55%" stopColor={C.pink}/><stop offset="100%" stopColor={C.peach}/>
+          </linearGradient>
+          <filter id="asset-halo" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+        </defs>
+        {[0,1,2].map(i=>{
+          const y=350+i*185;
+          const anchor=440+i*100;
+          const reveal=interpolate(f,[10+i*5,38+i*5],[0,1],{...clamp,easing:Easing.bezier(.22,1,.36,1)});
+          return <g key={i} opacity={ramp(f,8+i*5,20+i*5)}>
+            {[false,true].map(right=>{
+              const d=right?`M 1295 ${anchor} C 1415 ${anchor}, 1370 ${y}, 1488 ${y}`:`M 432 ${y} C 550 ${y}, 505 ${anchor}, 625 ${anchor}`;
+              return <g key={String(right)}>
+                <path d={d} fill="none" stroke="url(#asset-flow)" strokeWidth="9" opacity=".2" filter="url(#asset-halo)" pathLength="1" strokeDasharray="1" strokeDashoffset={1-reveal}/>
+                <path d={d} fill="none" stroke="url(#asset-flow)" strokeWidth="2.5" strokeLinecap="round" opacity=".65" pathLength="1" strokeDasharray="1" strokeDashoffset={1-reveal}/>
+                <path d={d} fill="none" stroke={C.text} strokeWidth="3" strokeLinecap="round" opacity={reveal*.65} pathLength="1" strokeDasharray=".035 .965" strokeDashoffset={-((f-10-i*5)/85%1)}/>
+                <circle cx={right?1488:432} cy={y} r="4" fill={right?C.peach:C.purple} opacity={reveal}/>
+              </g>;
+            })}
+          </g>;
+        })}
+      </svg>
       {[
         "NVDA · 40%",
         "AAPL · 35%",
@@ -501,8 +454,8 @@ const AssetBurst = () => {
               placeItems: "center",
               fontSize: 26,
               opacity: ramp(f, 3 + i * 2, 12 + i * 2),
-              transform: `perspective(1400px) rotateY(${(i < 3 ? 12 : -12) + Math.sin(f / 25 + i) * 2}deg) rotateX(4deg)`,
-              boxShadow: "0 18px 35px rgba(0,0,0,.2)",
+              transform: `perspective(1400px) rotateY(${lerp(i<3?48:-48,i<3?10:-10,d)+Math.sin(f/35+i)*5}deg) rotateX(${lerp(22,3,d)}deg) rotateZ(${lerp(i<3?-8:8,0,d)}deg)`,
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,.13),0 4px 0 #0f1019,0 8px 12px rgba(0,0,0,.35),0 24px 45px rgba(0,0,0,.22)",
             }}
           >
             {s}
@@ -521,9 +474,9 @@ const AssetBurst = () => {
           borderRadius: 34,
           background: C.gradient,
           color: C.ink,
-          boxShadow: "0 35px 70px rgba(0,0,0,.3)",
+          boxShadow: "inset 1px 2px 1px rgba(255,255,255,.6),4px 5px 0 #9b80b4,8px 10px 0 #79618e,0 14px 20px rgba(0,0,0,.3),0 42px 70px rgba(0,0,0,.25),0 65px 110px rgba(165,151,255,.09)",
           scale: lerp(0.92, 1, pop(f)),
-          transform: `perspective(1500px) rotateY(${lerp(-20, -5, pop(f)) + Math.sin(f / 32) * 2}deg) rotateX(${lerp(10, 3, pop(f))}deg)`,
+          transform: `perspective(1500px) rotateY(${lerp(-38,-6,pop(f))+Math.sin(f/36)*7}deg) rotateX(${lerp(24,5,pop(f))+Math.sin(f/45)*3}deg) rotateZ(${lerp(-9,0,pop(f))}deg)`,
         }}
       >
         <Brand size={38} />
@@ -535,15 +488,28 @@ const AssetBurst = () => {
             letterSpacing: -4,
           }}
         >
-          Tech Balance
+          <RevealText text="Tech Balance" start={12}/>
         </div>
         <div style={{ marginTop: 25, fontSize: 23 }}>
-          Your idea, structured.
+          <RevealText text="Your idea, structured." start={24} step={.65}/>
         </div>
       </div>
     </Stage>
   );
 };
+const Laptop = ({f}: {f:number}) => <div style={{width:1000,position:'relative',transformStyle:'preserve-3d'}}>
+  <div style={{height:640,padding:18,borderRadius:30,background:'linear-gradient(130deg,#b7b4bd,#474550 40%,#918e99)',boxShadow:'inset 1px 2px 1px rgba(255,255,255,.8),5px 8px 0 #4c4956,0 18px 25px rgba(27,22,32,.2),0 55px 95px rgba(27,22,32,.2)'}}>
+    <div style={{height:'100%',borderRadius:18,background:C.bg,color:C.text,overflow:'hidden',position:'relative'}}>
+      <div style={{position:'absolute',top:0,left:'43%',width:'14%',height:22,borderRadius:'0 0 9px 9px',background:'#15131b'}}/>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'40px 36px 24px'}}><Brand size={28}/><span style={{fontSize:18,color:C.muted}}>Agent Studio</span><span style={{fontSize:16,color:C.mint}}>● Paper mode</span></div>
+      <div style={{display:'flex',gap:45,padding:'24px 40px'}}>
+        <div style={{width:300}}><div style={{fontFamily:F.display,fontSize:37,letterSpacing:-1,marginBottom:28}}><RevealText text="Tech Balance" start={12}/></div><Allocation size={280} progress={Math.min(1,pop(f,18))}/><div style={{fontSize:16,color:C.muted,textAlign:'center',marginTop:25}}>Target allocation</div></div>
+        <div style={{flex:1,paddingTop:8}}><div style={{fontSize:18,color:C.muted,marginBottom:26}}>Your strategy, within limits.</div>{['NVDA','AAPL','TSLA'].map((ticker,i)=><div key={ticker} style={{padding:'19px 22px',marginBottom:12,borderRadius:14,background:C.surface,opacity:ramp(f,18+i*5,30+i*5),translate:`0 ${lerp(22,0,pop(f,18+i*5))}px`}}><div style={{display:'flex',justifyContent:'space-between',fontSize:23}}><span>{ticker}</span><span style={{color:[C.purple,C.pink,C.peach][i]}}>{[40,35,25][i]}%</span></div><div style={{height:5,borderRadius:5,marginTop:16,background:'rgba(255,255,255,.06)'}}><div style={{height:5,borderRadius:5,width:`${[80,70,50][i]*ramp(f,22+i*5,48+i*5)}%`,background:[C.purple,C.pink,C.peach][i]}}/></div></div>)}<div style={{fontSize:17,color:C.mint,marginTop:24,opacity:ramp(f,34,48)}}>✓ Policy checked · Ready for review</div></div>
+      </div>
+    </div>
+  </div>
+  <div style={{position:'relative',left:-65,width:1130,height:38,borderRadius:'3px 3px 45px 45px',background:'linear-gradient(#e1dee5,#9995a3 35%,#5f5a6b)',boxShadow:'0 8px 5px rgba(27,22,32,.2),0 35px 45px rgba(27,22,32,.18)',transform:'rotateX(28deg)',transformOrigin:'center top'}}><div style={{margin:'0 auto',width:170,height:12,borderRadius:'0 0 16px 16px',background:'#827d8d'}}/></div>
+</div>;
 const Dial = () => {
   const f = useCurrentFrame();
   return (
@@ -551,16 +517,14 @@ const Dial = () => {
       <div
         style={{
           position: "absolute",
-          left: 1080,
-          top: 75,
+          left: 800,
+          top: 235,
           scale: lerp(1.025, 1, pop(f)),
           translate: `0 ${lerp(45, 0, pop(f))}px`,
-          transform: `perspective(1800px) rotateY(${lerp(22, -7, pop(f)) + Math.sin(f / 28) * 2}deg) rotateX(2deg)`,
+          transform: `perspective(1800px) rotateY(${lerp(38,-8,pop(f))+Math.sin(f/38)*7}deg) rotateX(${3+Math.sin(f/45)*4}deg) rotateZ(${Math.sin(f/42)*2}deg)`,
         }}
       >
-        <Phone>
-          <Portfolio f={f} interactive />
-        </Phone>
+        <Laptop f={f}/>
       </div>
       <div
         style={{
@@ -574,9 +538,9 @@ const Dial = () => {
           opacity: ramp(f, 9, 20),
         }}
       >
-        Built
+        <RevealText text="Built" start={10}/>
         <br />
-        around you.
+        <RevealText text="around you." start={16}/>
       </div>
     </Stage>
   );
@@ -621,8 +585,8 @@ const GuardMacro = () => {
               fontSize: 44,
               translate: `0 ${lerp(45, 0, pop(f, i * 5))}px`,
               opacity: ramp(f, i * 5, i * 5 + 8),
-              boxShadow: "0 20px 50px rgba(0,0,0,.2)",
-              transform: `perspective(1800px) rotateX(${lerp(-15, 2, pop(f, i * 5))}deg) rotateY(${(i ? 1 : -1) * 3}deg)`,
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,.2),0 5px 0 #413348,0 10px 16px rgba(0,0,0,.3),0 32px 60px rgba(0,0,0,.22)",
+              transform: `perspective(1800px) rotateX(${lerp(-30,3,pop(f,i*5))}deg) rotateY(${(i?1:-1)*(7+Math.sin(f/32)*4)}deg) rotateZ(${lerp(i?6:-6,0,pop(f,i*5))}deg)`,
             }}
           >
             <span>{a}</span>
@@ -651,16 +615,18 @@ const PhoneNotification = () => {
           letterSpacing: -4,
         }}
       >
-        Ready for
+        <RevealText text="Ready for" start={8}/>
         <br />
-        your review.
+        <RevealText text="your review." start={18}/>
       </div>
       <div
         style={{
           position: "absolute",
-          left: 1120,
-          top: 75,
-          transform: `perspective(1800px) rotateY(${lerp(-22, 7, pop(f)) + Math.sin(f / 26) * 2}deg) rotateX(-2deg)`,
+          left: 1050,
+          top: 245,
+          scale: lerp(1.35,1.5,ramp(f,0,100)),
+          transformOrigin: '50% 0%',
+          transform: `perspective(1800px) rotateY(${lerp(-10,4,ramp(f,0,70))}deg) rotateX(-2deg)`,
           translate: `0 ${lerp(45, 0, pop(f))}px`,
         }}
       >
@@ -711,10 +677,10 @@ const PhoneNotification = () => {
           left: 580,
           top: 705,
           width: 1070,
-          scale: lerp(0.94, 1, pop(f, 6)),
-          translate: `0 ${lerp(45, 0, pop(f, 6))}px`,
+          scale: lerp(0.94, 1, pop(f, 6))+ramp(f,20,110)*.035,
+          translate: `0 ${lerp(45, 0, pop(f, 6))-Math.sin(f/38)*9}px`,
           opacity: ramp(f, 5, 13),
-          transform: `perspective(1800px) translateZ(45px) rotateX(${lerp(18, -2, pop(f, 6))}deg) rotateY(-3deg)`,
+          transform: `perspective(1800px) translateZ(45px) rotateX(${lerp(18,-2,pop(f,6))+Math.sin(f/42)*3}deg) rotateY(${-3+Math.sin(f/38)*4}deg)`,
         }}
       >
         <Notification />
@@ -740,12 +706,12 @@ const Collage = () => {
             overflow: "hidden",
             background: i === 1 ? C.gradient : C.bg,
             color: C.text,
-            scale: lerp(0.9, 1, pop(f, i * 2)),
+            scale: lerp(0.9, 1, pop(f, i * 2))+Math.sin(f/42+i)*.018,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            transform: `perspective(1500px) rotateY(${Math.sin(f / 32 + i) * 7}deg) rotateX(${Math.cos(f / 36 + i) * 4}deg)`,
-            boxShadow: `${Math.sin(f / 32 + i) * 8}px 16px 30px rgba(10,11,18,.12)`,
+            transform: `perspective(1500px) rotateY(${lerp(i%2?35:-35,0,pop(f,i*2))+Math.sin(f/38+i)*13}deg) rotateX(${Math.cos(f/42+i)*9}deg) rotateZ(${Math.sin(f/50+i)*3}deg)`,
+            boxShadow: `inset 2px 3px 3px rgba(255,255,255,.15),4px 6px 0 ${i===1?'#9c81b7':'#24212d'},${Math.sin(f/38+i)*8}px 12px 14px rgba(10,11,18,.14),0 32px 50px rgba(10,11,18,.14)`,
           }}
         >
           {i === 0 ? (
@@ -826,10 +792,12 @@ const MotionCut = () => {
           fontStyle: "italic",
           fontSize: 170,
           letterSpacing: -5,
-          scale: lerp(1.2, 1, pop(f)),
+          scale: lerp(0.78, 1.08, ramp(f, 0, 70)),
+          transform: `perspective(1600px) rotateY(${lerp(-12, 3, ramp(f, 0, 70))}deg)`,
+          textShadow: "2px 3px 0 rgba(27,22,32,.18),5px 8px 0 rgba(27,22,32,.09),12px 28px 30px rgba(27,22,32,.28)",
         }}
       >
-        In motion.
+        <RevealText text="In motion." start={6} step={1.8}/>
       </div>
     </Stage>
   );
@@ -845,7 +813,9 @@ const End = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          scale: lerp(0.9, 1, pop(f)),
+          scale: lerp(0.86, 1.06, ramp(f, 0, 100)),
+          transform: `perspective(1800px) rotateY(${lerp(-8,3,ramp(f,0,100))}deg) rotateX(${lerp(5,-2,ramp(f,0,100))}deg)`,
+          filter: "drop-shadow(0 22px 24px rgba(165,151,255,.22))",
         }}
       >
         <Brand size={160} />
@@ -857,47 +827,37 @@ const End = () => {
 export const Montage = () => (
   <AbsoluteFill style={{ background: C.bg, perspective: 1800 }}>
     <TransitionSeries>
-      <TransitionSeries.Sequence
-        name="01 / Toss into lens"
-        durationInFrames={48}
-      >
-        <Toss />
-      </TransitionSeries.Sequence>
-      <TransitionSeries.Sequence
-        name="02 / Match cut into phone"
-        durationInFrames={69}
-      >
-        <Catch />
-      </TransitionSeries.Sequence>
+      <TransitionSeries.Sequence name="01–02 / Continuous coin into phone" durationInFrames={SHOTS[0]+SHOTS[1]-INTRO_OVERLAP}><Opening/></TransitionSeries.Sequence>
       <TransitionSeries.Transition
         presentation={{
           component: DepthTransition,
           props: { mode: "turn", direction: 1 },
         }}
         timing={linearTiming({
-          durationInFrames: 12,
-          easing: Easing.bezier(0.65, 0, 0.35, 1),
+          durationInFrames: TRANSITIONS[0],
+          easing: Easing.bezier(0.25, 0.1, 0.75, 0.9),
         })}
       />
       <TransitionSeries.Sequence
         name="03 / Policy notification macro"
-        durationInFrames={55}
+        durationInFrames={SHOTS[2]}
       >
         <NotificationMacro />
       </TransitionSeries.Sequence>
       <TransitionSeries.Transition
-        presentation={{ component: DepthTransition, props: { mode: "focus" } }}
+        presentation={{ component: DepthTransition, props: { mode: "mosaic" } }}
         timing={linearTiming({
-          durationInFrames: 10,
-          easing: Easing.bezier(0.65, 0, 0.35, 1),
+          durationInFrames: TRANSITIONS[1],
+          easing: Easing.bezier(0.25, 0.1, 0.75, 0.9),
         })}
       />
-      <TransitionSeries.Sequence name="04 / Your rules" durationInFrames={45}>
+      <TransitionSeries.Sequence name="04 / Your rules" durationInFrames={SHOTS[3]}>
         <TypeCut />
       </TransitionSeries.Sequence>
+      <TransitionSeries.Transition presentation={{component:DepthTransition,props:{mode:'focus'}}} timing={linearTiming({durationInFrames:STRATEGY_OVERLAP,easing:Easing.bezier(.25,.1,.75,.9)})}/>
       <TransitionSeries.Sequence
         name="05 / Strategy burst"
-        durationInFrames={72}
+        durationInFrames={SHOTS[4]}
       >
         <AssetBurst />
       </TransitionSeries.Sequence>
@@ -907,36 +867,36 @@ export const Montage = () => (
           props: { mode: "turn", direction: -1 },
         }}
         timing={linearTiming({
-          durationInFrames: 12,
-          easing: Easing.bezier(0.65, 0, 0.35, 1),
+          durationInFrames: TRANSITIONS[2],
+          easing: Easing.bezier(0.25, 0.1, 0.75, 0.9),
         })}
       />
       <TransitionSeries.Sequence
         name="06 / Portfolio dial"
-        durationInFrames={72}
+        durationInFrames={SHOTS[5]}
       >
         <Dial />
       </TransitionSeries.Sequence>
       <TransitionSeries.Transition
         presentation={{ component: DepthTransition, props: { mode: "lift" } }}
         timing={linearTiming({
-          durationInFrames: 12,
-          easing: Easing.bezier(0.65, 0, 0.35, 1),
+          durationInFrames: TRANSITIONS[3],
+          easing: Easing.bezier(0.25, 0.1, 0.75, 0.9),
         })}
       />
-      <TransitionSeries.Sequence name="07 / Guard macro" durationInFrames={63}>
+      <TransitionSeries.Sequence name="07 / Guard macro" durationInFrames={SHOTS[6]}>
         <GuardMacro />
       </TransitionSeries.Sequence>
       <TransitionSeries.Transition
-        presentation={{ component: DepthTransition, props: { mode: "focus" } }}
+        presentation={{ component: DepthTransition, props: { mode: "mosaic" } }}
         timing={linearTiming({
-          durationInFrames: 12,
-          easing: Easing.bezier(0.65, 0, 0.35, 1),
+          durationInFrames: TRANSITIONS[4],
+          easing: Easing.bezier(0.25, 0.1, 0.75, 0.9),
         })}
       />
       <TransitionSeries.Sequence
         name="08 / Phone notification"
-        durationInFrames={81}
+        durationInFrames={SHOTS[7]}
       >
         <PhoneNotification />
       </TransitionSeries.Sequence>
@@ -946,37 +906,37 @@ export const Montage = () => (
           props: { mode: "turn", direction: 1 },
         }}
         timing={linearTiming({
-          durationInFrames: 12,
-          easing: Easing.bezier(0.65, 0, 0.35, 1),
+          durationInFrames: TRANSITIONS[5],
+          easing: Easing.bezier(0.25, 0.1, 0.75, 0.9),
         })}
       />
       <TransitionSeries.Sequence
         name="09 / Product collage"
-        durationInFrames={85}
+        durationInFrames={SHOTS[8]}
       >
         <Collage />
       </TransitionSeries.Sequence>
       <TransitionSeries.Transition
         presentation={{ component: DepthTransition, props: { mode: "lift" } }}
         timing={linearTiming({
-          durationInFrames: 10,
-          easing: Easing.bezier(0.65, 0, 0.35, 1),
+          durationInFrames: TRANSITIONS[6],
+          easing: Easing.bezier(0.25, 0.1, 0.75, 0.9),
         })}
       />
-      <TransitionSeries.Sequence name="10 / In motion" durationInFrames={40}>
+      <TransitionSeries.Sequence name="10 / In motion" durationInFrames={SHOTS[9]}>
         <MotionCut />
       </TransitionSeries.Sequence>
       <TransitionSeries.Transition
         presentation={{
           component: DepthTransition,
-          props: { mode: "turn", direction: -1 },
+          props: { mode: "brand", direction: -1 },
         }}
         timing={linearTiming({
-          durationInFrames: 10,
-          easing: Easing.bezier(0.65, 0, 0.35, 1),
+          durationInFrames: TRANSITIONS[7],
+          easing: Easing.bezier(0.25, 0.1, 0.75, 0.9),
         })}
       />
-      <TransitionSeries.Sequence name="11 / Siro" durationInFrames={60}>
+      <TransitionSeries.Sequence name="11 / Siro" durationInFrames={SHOTS[10]}>
         <End />
       </TransitionSeries.Sequence>
     </TransitionSeries>
