@@ -1,109 +1,142 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProsePage } from "@/components/ProsePage";
-import { markets } from "@/lib/mock";
+import { formatUnits } from "viem";
+import { getLiveMarkets, type LiveMarket } from "@/lib/robinhood";
+import { getLatestBlock, getTokenSupplies, type TokenSupply } from "@/lib/robinhood-chain";
+import { getChainlinkStockPrices, type FeedPrice } from "@/lib/chainlink-feeds";
 
 export const metadata: Metadata = {
   title: "Markets  Siro",
-  description: "Browse all tokenized stocks available on Siro via Robinhood Chain.",
+  description: "Live Robinhood Stock Token prices on Robinhood Chain.",
 };
 
-function fmtPrice(n: number) {
-  return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
+export const revalidate = 15;
 
-function fmtBig(n: number) {
-  if (n >= 1_000_000_000_000) return `$${(n / 1_000_000_000_000).toFixed(2)}T`;
-  if (n >= 1_000_000_000) return `$${(n / 1_000_000_000).toFixed(1)}B`;
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  return `$${n.toLocaleString()}`;
-}
+const usd = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const compact = (n: number) => n.toLocaleString("en-US", { notation: "compact", maximumFractionDigits: 1 });
+const supplyText = (s: TokenSupply | undefined) => (s ? compact(Number(formatUnits(s.totalSupply, s.decimals))) : "-");
+const cell = { padding: "12px 8px" } as const;
+const right = { ...cell, textAlign: "right" } as const;
 
-export default function MarketsPage() {
+export default async function MarketsPage() {
+  const [marketsResult, block] = await Promise.all([
+    getLiveMarkets().then((m) => ({ ok: true as const, m }), () => ({ ok: false as const, m: [] as LiveMarket[] })),
+    getLatestBlock(),
+  ]);
+  const markets = marketsResult.m;
+  const failed = !marketsResult.ok;
+  const [supplies, oracle] = await Promise.all([
+    getTokenSupplies(markets.map((m) => m.address)),
+    failed ? getChainlinkStockPrices().catch(() => [] as FeedPrice[]) : Promise.resolve([] as FeedPrice[]),
+  ]);
+  const updatedAt = markets[0]?.updatedAt;
+
   return (
     <ProsePage
       eyebrow="Markets"
       title="Tokenized Stocks"
-      lede="Trade tokenized US equities 24/7 on Robinhood Chain. Real-time settlement, full collateralization."
+      lede="Robinhood Stock Tokens live on Robinhood Chain, priced from Robinhood's Stock Token API and Chainlink's onchain feeds."
     >
-      <div
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 8,
-          padding: "6px 14px",
-          background: "var(--soft, var(--surface))",
-          borderRadius: 999,
-          fontSize: 13,
-          marginBottom: 24,
-        }}
-      >
-        <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--secondary)", display: "inline-block" }} />
-        Illustrative market snapshot
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", background: "var(--surface)", borderRadius: 999, fontSize: 13, marginBottom: 24 }}>
+        <span style={{ width: 8, height: 8, borderRadius: "50%", background: failed && !oracle.length ? "var(--brand-pink)" : "var(--accent-mint)", display: "inline-block" }} />
+        {failed
+          ? oracle.length
+            ? `Live onchain · ${oracle.length} Chainlink feeds`
+            : "Live prices unavailable right now"
+          : `Live ·${markets.length} tokens · updated ${updatedAt ? new Date(updatedAt).toUTCString().slice(17, 25) + " UTC" : "now"}`}
+      </div>{" "}
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", background: "var(--surface)", borderRadius: 999, fontSize: 13, marginBottom: 24 }}>
+        <span style={{ width: 8, height: 8, borderRadius: "50%", background: block === null ? "var(--brand-pink)" : "var(--accent-mint)", display: "inline-block" }} />
+        {block === null ? "Robinhood Chain RPC unreachable" : `Robinhood Chain · block ${block.toLocaleString("en-US")}`}
       </div>
 
-      <div style={{ overflowX: "auto" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
-          <thead>
-            <tr style={{ borderBottom: "1px solid var(--line, var(--surface))", textAlign: "left" }}>
-              <th style={{ padding: "10px 8px", fontWeight: 600 }}>Ticker</th>
-              <th style={{ padding: "10px 8px", fontWeight: 600 }}>Name</th>
-              <th style={{ padding: "10px 8px", fontWeight: 600, textAlign: "right" }}>Price</th>
-              <th style={{ padding: "10px 8px", fontWeight: 600, textAlign: "right" }}>24h</th>
-              <th style={{ padding: "10px 8px", fontWeight: 600, textAlign: "right" }}>Volume</th>
-              <th style={{ padding: "10px 8px", fontWeight: 600, textAlign: "right" }}>Liquidity</th>
-              <th style={{ padding: "10px 8px", fontWeight: 600, textAlign: "right" }}>Market Cap</th>
-              <th style={{ padding: "10px 8px", fontWeight: 600 }}>Sector</th>
-            </tr>
-          </thead>
-          <tbody>
-            {markets.map((m) => (
-              <tr key={m.ticker} style={{ borderBottom: "1px solid var(--line, var(--surface))" }}>
-                <td style={{ padding: "12px 8px" }}>
-                  <Link
-                    href={`/markets/${m.ticker}`}
-                    style={{ color: "var(--ink, var(--fg))", fontWeight: 700, textDecoration: "none", fontFamily: "monospace" }}
-                  >
-                    {m.ticker}
-                  </Link>
-                </td>
-                <td style={{ padding: "12px 8px", color: "var(--fg-70, var(--secondary))" }}>{m.name}</td>
-                <td style={{ padding: "12px 8px", textAlign: "right", fontWeight: 600 }}>{fmtPrice(m.price)}</td>
-                <td
-                  style={{
-                    padding: "12px 8px",
-                    textAlign: "right",
-                    fontWeight: 600,
-                    color: m.change24h >= 0 ? "var(--secondary)" : "var(--fg-70)",
-                  }}
-                >
-                  {m.change24h >= 0 ? "+" : ""}{m.change24h.toFixed(2)}%
-                </td>
-                <td style={{ padding: "12px 8px", textAlign: "right" }}>{fmtBig(m.volume)}</td>
-                <td style={{ padding: "12px 8px", textAlign: "right" }}>{fmtBig(m.liquidity)}</td>
-                <td style={{ padding: "12px 8px", textAlign: "right" }}>{fmtBig(m.marketCap)}</td>
-                <td style={{ padding: "12px 8px" }}>
-                  <span
-                    style={{
-                      padding: "2px 10px",
-                      borderRadius: 999,
-                      fontSize: 12,
-                      background: "var(--soft, var(--surface))",
-                      color: "var(--ink, var(--fg))",
-                    }}
-                  >
-                    {m.sector}
-                  </span>
-                </td>
+      {failed && oracle.length ? (
+        <>
+          <div className="markets-table" style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid var(--line)", textAlign: "left" }}>
+                  <th style={cell}>Ticker</th>
+                  <th style={cell}>Name</th>
+                  <th style={right}>Price</th>
+                  <th style={right}>Last update</th>
+                  <th style={cell}>Feed</th>
+                </tr>
+              </thead>
+              <tbody>
+                {oracle.map((p) => (
+                  <tr key={p.feed} style={{ borderBottom: "1px solid var(--line)" }}>
+                    <td style={{ ...cell, fontWeight: 700, fontFamily: "monospace" }}>{p.symbol}</td>
+                    <td style={{ ...cell, color: "var(--fg-70)" }}>{p.name}</td>
+                    <td style={{ ...right, fontWeight: 600 }}>{usd(p.price)}</td>
+                    <td style={{ ...right, whiteSpace: "nowrap", color: p.stale ? "var(--brand-pink)" : "var(--fg-70)" }}>
+                      {new Date(p.updatedAt).toUTCString().slice(17, 22)} UTC{p.stale ? " · closed" : ""}
+                    </td>
+                    <td style={cell}>
+                      <a href={`https://robinhoodchain.blockscout.com/address/${p.feed}`} target="_blank" rel="noreferrer" style={{ color: "var(--fg-70)", fontFamily: "monospace", fontSize: 12, whiteSpace: "nowrap" }}>
+                        {p.feed.slice(0, 6)}…{p.feed.slice(-4)}
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p style={{ marginTop: 16, fontSize: 13, color: "var(--fg-70)" }}>
+            The Robinhood Stock Token API is unreachable from this server, so prices are read directly from the official Chainlink feeds on Robinhood Chain.
+            Each price is the per-token value including corporate-action adjustments.
+          </p>
+        </>
+      ) : failed ? (
+        <p style={{ color: "var(--fg-70)" }}>
+          The Robinhood Stock Token API did not respond. No prices are shown rather than stale or invented ones. Refresh in a moment.
+        </p>
+      ) : (
+        <div className="markets-table" style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--line)", textAlign: "left" }}>
+                <th style={cell}>Ticker</th>
+                <th style={cell}>Name</th>
+                <th style={right}>Price</th>
+                <th style={right}>Day range</th>
+                <th style={right}>Equity volume</th>
+                <th style={right}>Onchain mint/burn</th>
+                <th style={right}>Token supply</th>
+                <th style={cell}>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {markets.map((m) => (
+                <tr key={m.address} style={{ borderBottom: "1px solid var(--line)" }}>
+                  <td style={cell}>
+                    <Link href={`/markets/${m.symbol}`} style={{ color: "var(--fg)", fontWeight: 700, textDecoration: "none", fontFamily: "monospace" }}>
+                      {m.symbol}
+                    </Link>
+                  </td>
+                  <td style={{ ...cell, color: "var(--fg-70)" }}>{m.name}</td>
+                  <td style={{ ...right, fontWeight: 600 }}>{usd(m.price)}</td>
+                  <td style={right}>{m.dailyLow !== null && m.dailyHigh !== null ? `${usd(m.dailyLow)} - ${usd(m.dailyHigh)}` : "-"}</td>
+                  <td style={right}>{m.volume ? compact(m.volume) : "-"}</td>
+                  <td style={right}>{m.onchainVolumeUsd ? `$${compact(m.onchainVolumeUsd)}` : "-"}</td>
+                  <td style={right}>{supplyText(supplies.get(m.address))}</td>
+                  <td style={cell}>
+                    <span style={{ padding: "2px 10px", borderRadius: 999, fontSize: 12, background: "var(--surface)", color: m.halted ? "var(--brand-pink)" : "var(--accent-mint)" }}>
+                      {m.halted ? "Halted" : "Trading"}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-      <p style={{ marginTop: 32, fontSize: 13, color: "var(--fg-70, var(--secondary))" }}>
-        Prices are indicative and sourced from onchain oracles. Tokenized stocks are synthetic assets
-        fully collateralized on Robinhood Chain. Not available in all jurisdictions. Siro is software, not investment advice.
+      <p style={{ marginTop: 32, fontSize: 13, color: "var(--fg-70)" }}>
+        Source: api.robinhood.com/rhj, refreshed every 15 seconds. Price is the token bid/ask midpoint, adjusted for corporate actions.
+        Equity volume is the underlying stock&apos;s daily share volume; onchain mint/burn is today&apos;s token issuance and redemption in USD.
+        Siro is software, not investment advice.
       </p>
     </ProsePage>
   );

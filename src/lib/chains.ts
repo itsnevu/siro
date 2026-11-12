@@ -5,12 +5,13 @@ export type EscrowMode = "native" | "erc20";
 
 export type ChainConfig = {
   id: number;
-  key: "elysium" | "elysium-testnet" | "anvil";
+  key: "robinhood" | "anvil";
   name: string;
   short: string;
   chain: Chain;
   rpcUrl: string;
   serverRpc: string;
+  serverRpcs: string[];
   explorerUrl?: string;
   sourceUrl?: (address: Address) => string;
   mode: EscrowMode;
@@ -47,46 +48,36 @@ const zero = "0x0000000000000000000000000000000000000000";
 const isNonZero = (v: string | undefined): v is Address => isAddr(v) && v !== zero;
 
 const ENV = {
-  99801: { rpc: process.env.NEXT_PUBLIC_RPC_URL_99801, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_99801 },
-  99901: { rpc: process.env.NEXT_PUBLIC_RPC_URL_99901, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_99901 },
+  4663: { rpc: process.env.NEXT_PUBLIC_RPC_URL_4663, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_4663 },
   31337: { rpc: process.env.NEXT_PUBLIC_RPC_URL_31337, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_31337 },
 } as const;
 
-type Base = Omit<ChainConfig, "chain" | "rpcUrl" | "serverRpc" | "copyVault" | "riskGuard" | "leaderboard" | "deployBlock" | "explorerUrl" | "token"> & {
+type Base = Omit<ChainConfig, "chain" | "rpcUrl" | "serverRpc" | "serverRpcs" | "copyVault" | "riskGuard" | "leaderboard" | "deployBlock" | "explorerUrl" | "token"> & {
   publicRpc: string;
+  /** Upstreams for the server-side relay, tried in order. Defaults to [publicRpc]. */
+  serverRpcs?: string[];
   explorerUrl?: string;
   nativeCurrency: Chain["nativeCurrency"];
   token: { symbol: string; decimals: number };
 };
 
+// Network parameters from docs.robinhood.com/chain/connecting. Siro targets mainnet only.
+// Browsers use the same-origin /api/rpc relay because some ISPs filter robinhood.com.
 const BASES: Base[] = [
   {
-    id: 99801,
-    key: "elysium-testnet",
-    name: "Robinhood Chain Testnet",
-    short: "Robinhood Chain",
-    publicRpc: "https://testnet-rpc.elysium.kinetiq.xyz",
-    explorerUrl: "https://robin.etherscan.io",
-    nativeCurrency: { name: "HYPE", symbol: "HYPE", decimals: 18 },
-    mode: "erc20",
-    token: { symbol: "USDC", decimals: 6 },
-    gasSymbol: "HYPE",
-    testnet: true,
-    relayByDefault: false,
-  },
-  {
-    id: 99901,
-    key: "elysium",
+    id: 4663,
+    key: "robinhood",
     name: "Robinhood Chain",
     short: "Robinhood Chain",
-    publicRpc: "https://rpc.elysium.kinetiq.xyz",
-    explorerUrl: "https://elysium.kinetiq.xyz/explorer",
-    nativeCurrency: { name: "HYPE", symbol: "HYPE", decimals: 18 },
+    publicRpc: "https://rpc.mainnet.chain.robinhood.com",
+    serverRpcs: ["https://robinhood-rpc.publicnode.com", "https://rpc-robinhood.globalstake.io", "https://robinhood.rpc.pinax.network", "https://rpc.mainnet.chain.robinhood.com"],
+    explorerUrl: "https://robinhoodchain.blockscout.com",
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
     mode: "erc20",
-    token: { symbol: "USDC", decimals: 6 },
-    gasSymbol: "HYPE",
+    token: { symbol: "USDG", decimals: 6 },
+    gasSymbol: "ETH",
     testnet: false,
-    relayByDefault: false,
+    relayByDefault: true,
   },
   {
     id: 31337,
@@ -106,7 +97,8 @@ const BASES: Base[] = [
 function build(b: Base): ChainConfig {
   const env = ENV[b.id as keyof typeof ENV];
   const dep = DEPLOYMENTS[String(b.id)];
-  const serverRpc = b.publicRpc;
+  const serverRpcs = b.serverRpcs ?? [b.publicRpc];
+  const serverRpc = serverRpcs[0];
   const rpcUrl = env?.rpc || (b.relayByDefault ? relayUrl(b.id) : serverRpc);
   const explorerUrl = (env?.explorer ?? b.explorerUrl)?.replace(/\/$/, "");
   const chain = defineChain({
@@ -123,6 +115,7 @@ function build(b: Base): ChainConfig {
     chain,
     rpcUrl,
     serverRpc,
+    serverRpcs,
     explorerUrl,
     token: { ...b.token, address: tokenAddress },
     mode: dep ? (tokenAddress ? "erc20" : "native") : b.mode,
@@ -141,11 +134,7 @@ function enabledIds(): number[] {
     const ids = raw.split(",").map((s) => Number(s.trim())).filter((id) => ALL_CHAINS[id]);
     if (ids.length) return ids;
   }
-  const deployed = Object.values(ALL_CHAINS).filter((c) => c.copyVault && !c.testnet).map((c) => c.id);
-  if (deployed.length) return deployed;
-  const testnets = Object.values(ALL_CHAINS).filter((c) => c.testnet && c.key !== "anvil").map((c) => c.id);
-  if (testnets.length) return testnets;
-  return [31337];
+  return [4663];
 }
 
 export const CHAINS: ChainConfig[] = enabledIds().map((id) => ALL_CHAINS[id]);

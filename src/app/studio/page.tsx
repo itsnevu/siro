@@ -21,7 +21,7 @@ const BLOCKS = [
 const STEPS = [
   { num: "01", label: "Build", desc: "Drag building blocks into your strategy canvas. No code required." },
   { num: "02", label: "Backtest", desc: "Run against 5 years of historical data. See returns, drawdowns, Sharpe ratio." },
-  { num: "03", label: "Paper Trade", desc: "Deploy on testnet with virtual funds. Validate in real market conditions." },
+  { num: "03", label: "Paper Trade", desc: "Run with virtual funds against live prices before committing capital." },
   { num: "04", label: "Go Live", desc: "One click to deploy on Robinhood Chain. Your vault, your keys, your strategy." },
 ];
 
@@ -35,7 +35,7 @@ export default function StudioPage() {
           Build strategies<br />without writing code.
         </h1>
         <p style={{ fontSize: 18, color: "var(--fg-70)", maxWidth: 600, marginBottom: 48 }}>
-          Seven building blocks. Infinite combinations. Backtest on historical data, paper-trade on testnet, then go live  all from one canvas.
+          Seven building blocks. Infinite combinations. Backtest on historical data, paper-trade with virtual funds, then go live  all from one canvas.
         </p>
       </section>
 

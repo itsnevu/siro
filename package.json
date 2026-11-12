@@ -8,18 +8,21 @@
     "start": "next start",
     "lint": "eslint",
     "chain": "anvil --port ${ANVIL_PORT:-8545} --chain-id 31337",
-    "deploy:local": "cd contracts && forge script script/DeployPact.s.sol:DeployPact --rpc-url ${RPC_URL:-http://127.0.0.1:8545} --broadcast && cd .. && npm run abi:sync",
+    "deploy:local": "cd contracts && forge script script/DeploySiro.s.sol:DeploySiro --rpc-url ${RPC_URL:-http://127.0.0.1:8545} --broadcast && cd .. && npm run abi:sync",
     "abi:sync": "node scripts/sync-abi.mjs",
     "contracts:build": "cd contracts && forge build",
-    "contracts:test": "cd contracts && forge test -vvv",
-    "deploy:robinhood": "node scripts/deploy-robinhood.mjs"
+    "contracts:test": "cd contracts && forge test -vvv"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
     "@tanstack/react-query": "^5.102.8",
+    "@types/three": "^0.187.0",
     "framer-motion": "^14.10.1",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "three": "^0.187.0",
     "viem": "^2.56.3",
     "wagmi": "^3.7.7"
   },

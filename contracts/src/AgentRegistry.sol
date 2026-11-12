@@ -20,15 +20,16 @@ contract AgentRegistry is Ownable2Step {
 
     uint256 public nextAgentId = 1;
     mapping(uint256 => Agent) private _agents;
-    mapping(address => bool) public approvedVaults;
+    /// Only the factory registers, so every listed vault is factory-built and owned by its creator.
+    address public factory;
+    mapping(address => uint256) public agentIdOfVault;
 
     error Unauthorized();
     error InvalidAgent();
     error InvalidAddress();
     error FeeTooHigh();
-    error VaultNotApproved();
 
-    event VaultApprovalSet(address indexed vault, bool approved);
+    event FactorySet(address indexed factory);
     event AgentRegistered(uint256 indexed agentId, address indexed creator, address indexed vault, bytes32 policyHash);
     event AgentUpdated(uint256 indexed agentId, bytes32 policyHash, string metadataURI);
     event AgentStatusSet(uint256 indexed agentId, bool active);
@@ -36,19 +37,21 @@ contract AgentRegistry is Ownable2Step {
 
     constructor(address initialOwner) Ownable(initialOwner) {}
 
-    function setVaultApproval(address vault, bool approved) external onlyOwner {
-        if (vault == address(0)) revert InvalidAddress();
-        approvedVaults[vault] = approved;
-        emit VaultApprovalSet(vault, approved);
+    function setFactory(address factory_) external onlyOwner {
+        if (factory_ == address(0) || factory != address(0)) revert InvalidAddress();
+        factory = factory_;
+        emit FactorySet(factory_);
     }
 
-    function registerAgent(address vault, bytes32 policyHash, string calldata metadataURI, uint16 creatorFeeBps) external returns (uint256 agentId) {
-        if (!approvedVaults[vault]) revert VaultNotApproved();
-        if (policyHash == bytes32(0)) revert InvalidAgent();
+    function registerAgent(address creator, address vault, bytes32 policyHash, string calldata metadataURI, uint16 creatorFeeBps) external returns (uint256 agentId) {
+        if (msg.sender != factory) revert Unauthorized();
+        if (creator == address(0) || vault == address(0)) revert InvalidAddress();
+        if (policyHash == bytes32(0) || agentIdOfVault[vault] != 0) revert InvalidAgent();
         if (creatorFeeBps > MAX_CREATOR_FEE_BPS) revert FeeTooHigh();
         agentId = nextAgentId++;
-        _agents[agentId] = Agent(msg.sender, vault, address(0), policyHash, metadataURI, creatorFeeBps, uint64(block.timestamp), true);
-        emit AgentRegistered(agentId, msg.sender, vault, policyHash);
+        agentIdOfVault[vault] = agentId;
+        _agents[agentId] = Agent(creator, vault, address(0), policyHash, metadataURI, creatorFeeBps, uint64(block.timestamp), true);
+        emit AgentRegistered(agentId, creator, vault, policyHash);
     }
 
     function updateAgent(uint256 agentId, bytes32 policyHash, string calldata metadataURI) external {

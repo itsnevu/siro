@@ -8,6 +8,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
 interface ITwapOracle {
     function quote(address tokenIn, address tokenOut, uint256 amountIn) external view returns (uint256 amountOut, uint256 updatedAt);
@@ -67,12 +68,14 @@ contract GuardedVault is ERC4626, Ownable2Step, ReentrancyGuard {
     error AllocationExceeded();
     error DailyLossExceeded();
     error AssetLimitReached();
+    error InvalidShares();
 
     event PolicyQueued(bytes32 indexed policyHash, uint64 validAfter);
     event PolicyActivated(bytes32 indexed policyHash);
     event PermissionQueued(bytes32 indexed kind, address indexed account, bool allowed, uint64 validAfter);
     event PermissionActivated(bytes32 indexed kind, address indexed account, bool allowed);
     event KillSwitchSet(bool active);
+    event RedeemedInKind(address indexed caller, address indexed receiver, address indexed owner, uint256 shares);
     event TradeExecuted(address indexed executor, address indexed router, address indexed tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut, uint256 lossAssets);
 
     modifier onlyExecutor() { if (!executors[msg.sender]) revert Unauthorized(); _; }
@@ -94,7 +97,9 @@ contract GuardedVault is ERC4626, Ownable2Step, ReentrancyGuard {
         value = IERC20(base).balanceOf(address(this));
         for (uint256 i; i < trackedAssets.length; ++i) {
             address token = trackedAssets[i];
-            if (token == base || !allowedTokens[token]) continue;
+            // Disallowing a token only stops new trades into it; held units still count,
+            // otherwise toggling permission would let the owner mint cheap shares.
+            if (token == base) continue;
             uint256 balance = IERC20(token).balanceOf(address(this));
             if (balance == 0) continue;
             (uint256 quoted,) = oracle.quote(token, base, balance);
@@ -166,7 +171,42 @@ contract GuardedVault is ERC4626, Ownable2Step, ReentrancyGuard {
         emit TradeExecuted(msg.sender, router, tokenIn, tokenOut, amountIn, amountOut, loss);
     }
 
+    /// Exit that never depends on the oracle, the kill switch or market liquidity:
+    /// burns `shares` for the same fraction of every asset the vault holds.
+    function redeemInKind(uint256 shares, address receiver, address shareOwner)
+        external nonReentrant returns (uint256[] memory amounts)
+    {
+        if (shares == 0) revert InvalidShares();
+        if (receiver == address(0)) revert InvalidAddress();
+        if (msg.sender != shareOwner) _spendAllowance(shareOwner, msg.sender, shares);
+        uint256 supply = totalSupply();
+        _burn(shareOwner, shares);
+
+        uint256 count = trackedAssets.length;
+        amounts = new uint256[](count);
+        for (uint256 i; i < count; ++i) {
+            IERC20 token = IERC20(trackedAssets[i]);
+            uint256 amount = Math.mulDiv(token.balanceOf(address(this)), shares, supply);
+            amounts[i] = amount;
+            if (amount != 0) token.safeTransfer(receiver, amount);
+        }
+        emit RedeemedInKind(msg.sender, receiver, shareOwner, shares);
+    }
+
     function trackedAssetCount() external view returns (uint256) { return trackedAssets.length; }
+
+    // Share-price-sensitive entry points share the trade lock, so a router cannot
+    // deposit or redeem while a swap has the vault half-converted.
+    function _deposit(address caller, address receiver, uint256 assets, uint256 shares) internal override nonReentrant {
+        super._deposit(caller, receiver, assets, shares);
+    }
+
+    function _withdraw(address caller, address receiver, address shareOwner, uint256 assets, uint256 shares) internal override nonReentrant {
+        super._withdraw(caller, receiver, shareOwner, assets, shares);
+    }
+
+    // 1e6 virtual shares per asset unit makes a first-deposit donation attack cost far more than it can steal.
+    function _decimalsOffset() internal pure override returns (uint8) { return 6; }
 
     function _recordLoss(uint256 loss, uint256 vaultValue) private {
         uint64 today = uint64(block.timestamp / 1 days);

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import "@/styles/siro.css";
 import "@/styles/prose.css";
 
-import { Banner, Header } from "@/components/Header";
+import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LINKS } from "@/lib/links";
 
@@ -39,7 +39,6 @@ export function ProsePage({
 }) {
   return (
     <>
-      <Banner />
       <div className="rusd-shell p2p-app-shell editorial-site">
         <Header />
         <main className="rusd-frame rusd-main siro-doc" data-tone="light" id="main-content" tabIndex={-1}>

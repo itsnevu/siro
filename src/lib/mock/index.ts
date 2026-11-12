@@ -18,18 +18,6 @@ export type Strategy = {
   sparkline: number[];
 };
 
-export type Market = {
-  ticker: string;
-  name: string;
-  price: number;
-  change24h: number;
-  volume: number;
-  liquidity: number;
-  marketCap: number;
-  sector: string;
-  issuer: string;
-};
-
 export type BuybackRun = {
   id: number;
   date: string;
@@ -197,19 +185,6 @@ export const strategies: Strategy[] = [
     fees: { performance: 15, management: 0 },
     sparkline: [100, 101, 101, 102, 102, 103, 103, 104, 104, 105, 105, 106],
   },
-];
-
-export const markets: Market[] = [
-  { ticker: "tAAPL", name: "Apple Inc.", price: 198.50, change24h: 1.24, volume: 12_400_000, liquidity: 45_000_000, marketCap: 3_080_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
-  { ticker: "tNVDA", name: "NVIDIA Corp.", price: 142.80, change24h: 3.56, volume: 18_900_000, liquidity: 38_000_000, marketCap: 3_500_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
-  { ticker: "tTSLA", name: "Tesla Inc.", price: 245.20, change24h: -2.18, volume: 22_100_000, liquidity: 28_000_000, marketCap: 780_000_000_000, sector: "Consumer", issuer: "Robinhood Stock Token" },
-  { ticker: "tMSFT", name: "Microsoft Corp.", price: 428.90, change24h: 0.87, volume: 8_200_000, liquidity: 52_000_000, marketCap: 3_200_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
-  { ticker: "tGOOG", name: "Alphabet Inc.", price: 176.30, change24h: -0.42, volume: 6_500_000, liquidity: 35_000_000, marketCap: 2_180_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
-  { ticker: "tAMZN", name: "Amazon.com Inc.", price: 192.40, change24h: 1.95, volume: 9_800_000, liquidity: 42_000_000, marketCap: 2_020_000_000_000, sector: "Consumer", issuer: "Robinhood Stock Token" },
-  { ticker: "tMETA", name: "Meta Platforms", price: 535.60, change24h: 0.33, volume: 7_100_000, liquidity: 30_000_000, marketCap: 1_370_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
-  { ticker: "tSPY", name: "S&P 500 ETF", price: 582.10, change24h: 0.56, volume: 32_000_000, liquidity: 120_000_000, marketCap: 540_000_000_000, sector: "Index", issuer: "Robinhood Stock Token" },
-  { ticker: "tQQQ", name: "Nasdaq-100 ETF", price: 498.70, change24h: 1.12, volume: 28_000_000, liquidity: 95_000_000, marketCap: 280_000_000_000, sector: "Index", issuer: "Robinhood Stock Token" },
-  { ticker: "tJPM", name: "JPMorgan Chase", price: 218.40, change24h: -0.91, volume: 4_200_000, liquidity: 18_000_000, marketCap: 620_000_000_000, sector: "Financials", issuer: "Robinhood Stock Token" },
 ];
 
 export const buybackRuns: BuybackRun[] = [

@@ -8,10 +8,9 @@ export const runtime = "nodejs";
  * Same-origin JSON-RPC relay: POST /api/rpc/<chainId>.
  *
  * Robinhood Chain's public RPC (rpc.mainnet.chain.robinhood.com) is content-filtered by
- * Indonesian ISPs, so a browser or wallet on such a network cannot read a pact or fund
- * one. `chains.ts` hands the browser this route for that chain instead; the server, which
- * sits outside the filter, forwards to the real endpoint. Arc talks to its public RPC
- * directly and does not use this.
+ * Indonesian ISPs, so a browser or wallet on such a network cannot read or fund a vault.
+ * `chains.ts` hands the browser this route instead; the server forwards to the first
+ * reachable upstream in the chain's `serverRpcs`.
  *
  * A relay, not an open proxy: only the methods a wallet dapp needs are forwarded, bodies
  * and batches are capped, and each IP gets a small token bucket. Responses pass through
@@ -28,7 +27,7 @@ const ALLOWED_METHODS = new Set([
 
 const MAX_BODY_BYTES = 256 * 1024;
 const MAX_BATCH = 50;
-const UPSTREAM_TIMEOUT_MS = 25_000;
+const UPSTREAM_TIMEOUT_MS = 10_000;
 
 const RATE = Number(process.env.RPC_RELAY_RATE || 20);
 const BURST = Number(process.env.RPC_RELAY_BURST || 60);
@@ -85,14 +84,24 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ chainI
     if (!batch) return respond(answers[0]);
     if (answers.every(Boolean)) return respond(answers);
     const allowed = requests.filter((_, i) => !refused[i]);
-    const fwd = await forward(chain.serverRpc, JSON.stringify(allowed));
+    const fwd = await forwardAny(chain.serverRpcs, JSON.stringify(allowed));
     if (!fwd.ok) return fwd.response;
     const upstream = Array.isArray(fwd.json) ? fwd.json : [];
     let cursor = 0;
     return respond(answers.map((a) => a ?? upstream[cursor++] ?? rpcError(null, -32603, "Missing upstream answer")));
   }
 
-  return (await forward(chain.serverRpc, raw)).response;
+  return (await forwardAny(chain.serverRpcs, raw)).response;
+}
+
+// Network failures move on to the next upstream; a JSON-RPC answer, even an error, is final.
+async function forwardAny(urls: string[], body: string) {
+  let last: Awaited<ReturnType<typeof forward>> | undefined;
+  for (const url of urls) {
+    last = await forward(url, body);
+    if (last.ok) return last;
+  }
+  return last!;
 }
 
 async function forward(

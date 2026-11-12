@@ -34,10 +34,16 @@
 
 /* Product showcase with laptop mockup */
 .ed-product-showcase { padding: 40px 0 80px; }
-.ed-showcase-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; align-items: center; }
+.ed-showcase-layout > * { min-width: 0; }
+.ed-showcase-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 64px; align-items: center; }
 .ed-showcase-copy h2 { font-size: clamp(28px, 3.2vw, 42px); line-height: 1.1; letter-spacing: -.035em; margin: 12px 0 18px; }
 .ed-showcase-copy p:not(.eyebrow) { color: var(--fg-70); font-size: 17px; line-height: 1.6; max-width: 38ch; margin: 0 0 28px; }
-.ed-showcase-laptop { width: 100%; height: auto; border-radius: 8px; filter: drop-shadow(0 24px 64px color-mix(in srgb, var(--fg) 18%, transparent)); user-select: none; }
+.ed-hero-copy { position: relative; isolation: isolate; }
+/* Headline owns the first screen; the brand visual starts below the fold. */
+.ed-home .ed-hero-copy { min-height: calc(100svh - 150px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 48px; }
+.ed-wallet3d { width: 100%; height: clamp(240px, 30vw, 380px); margin: 0 auto 8px; }
+.ed-laptop3d { position: relative; width: 100%; aspect-ratio: 5 / 4; }
+.ed-laptop3d::before { content: ""; position: absolute; inset: 20% 12% 8%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--brand-purple) 24%, transparent), transparent); filter: blur(32px); pointer-events: none; }
 
 @media (max-width: 768px) {
   .ed-home .ag-guard, .ed-home .ag-proof { padding: 48px 0; }
@@ -46,6 +52,5 @@
   .ag-verify { grid-column: 1 / -1; }
   .ag-flow i { width: 24px; }
   .ed-showcase-layout { grid-template-columns: 1fr; gap: 32px; }
-  .ed-showcase-laptop { max-width: 100%; }
   .ed-product-showcase { padding: 32px 0 48px; }
 }

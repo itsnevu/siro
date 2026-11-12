@@ -15,7 +15,7 @@ type Strategy = {
 const MOCK_STRATEGIES: Strategy[] = [
   { id: "1", name: "Blue Chip Momentum", status: "Live", pnl: "+12.4%", created: "Oct 15, 2026", assets: ["ETH", "WBTC", "SOL"] },
   { id: "2", name: "Stablecoin Yield", status: "Paper", pnl: "+3.2%", created: "Nov 1, 2026", assets: ["USDC", "USDT", "DAI"] },
-  { id: "3", name: "AI Agent Alpha", status: "Draft", pnl: "—", created: "Nov 6, 2026", assets: ["ETH", "ARB"] },
+  { id: "3", name: "AI Agent Alpha", status: "Draft", pnl: "-", created: "Nov 6, 2026", assets: ["ETH", "ARB"] },
 ];
 
 const statusColor: Record<string, string> = {

@@ -1,0 +1,25 @@
+.vp-hero .eyebrow { margin: 0 0 20px; color: var(--fg-70); font-size: 13px; font-weight: 500; }
+.vp-hero h1 { margin: 0; }
+.vp-hero > p:last-child { max-width: 640px; margin: 24px 0 0; color: var(--fg-70); font-size: 18px; }
+
+.vp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 18px; }
+.vp-card { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 28px; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); }
+.ed-product-page .vp-card h2 { margin: 8px 0 0; font-size: 28px !important; }
+.vp-card p { margin: 0; color: var(--fg-70); font-size: 15px; }
+.vp-card a { margin-top: auto; padding-top: 10px; color: var(--fg); font-size: 14px; font-weight: 500; text-decoration: none; }
+.vp-card a:hover { color: var(--brand-purple); }
+
+.vp-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-glass); color: var(--fg-70); font-size: 12px; font-weight: 500; }
+.vp-tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.vp-tag-lime { color: var(--accent-mint); border-color: color-mix(in srgb, var(--accent-mint) 32%, transparent); background: color-mix(in srgb, var(--accent-mint) 8%, transparent); }
+.vp-tag-red { color: var(--brand-pink); border-color: color-mix(in srgb, var(--brand-pink) 32%, transparent); background: color-mix(in srgb, var(--brand-pink) 8%, transparent); }
+
+.vp-note { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface-glass); }
+.vp-note p { margin: 0; color: var(--fg-70); }
+
+.vp-form { display: flex; flex-direction: column; max-width: 760px; }
+.vp-form label { margin-bottom: 10px; color: var(--fg-70); font-size: 13px; font-weight: 500; }
+.vp-form input + label { margin-top: 22px; }
+.vp-form input { min-height: 52px; padding: 0 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--fg); font: 14px ui-monospace, "Cascadia Code", monospace; }
+.vp-form input::placeholder { color: var(--placeholder); }
+.vp-form .btn-primary { align-self: flex-start; margin-top: 28px; }

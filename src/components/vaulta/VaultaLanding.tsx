@@ -94,7 +94,7 @@ export function VaultaLanding() {
         <section className="v-section v-modes">
           <div className="v-section-head"><p className="v-kicker">CHOOSE YOUR MODE</p><h2>Start with simulation.<br /><em>Graduate deliberately.</em></h2></div>
           <div className="v-mode-grid">
-            <article><span>01</span><h3>Backtest</h3><p>Replay typed policies against a selected historical window. Results are labeled simulation—not promises.</p><Link href="/studio">Run a backtest ↗</Link></article>
+            <article><span>01</span><h3>Backtest</h3><p>Replay typed policies against a selected historical window. Results are labeled simulation, not promises.</p><Link href="/studio">Run a backtest ↗</Link></article>
             <article><span>02</span><h3>Paper Agent</h3><p>Observe scheduled decisions on live data without moving funds. Compare proofs before going onchain.</p><b>PLANNED</b></article>
             <article><span>03</span><h3>Guarded Vault</h3><p>Deposit USDG into an ERC-4626 vault whose agent can execute only through enforced policy and approved routers.</p><Link href="/vaults">Inspect vaults ↗</Link></article>
           </div>

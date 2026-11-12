@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Section } from "./Section";
@@ -14,11 +15,18 @@ import { Faq } from "@/components/Faq";
 import { strategies } from "@/lib/mock";
 import { HeroVisual } from "./HeroVisual";
 import { ClassicalArtwork } from "./ClassicalArtwork";
-import { CapitalFlow } from "./CapitalFlow";
 import { CinematicBackground } from "./CinematicBackground";
 import { PixelShield } from "./PixelShield";
-import { LaptopMockup } from "./LaptopMockup";
 import "@/styles/agent-sections.css";
+
+const Laptop3D = dynamic(() => import("./Laptop3D").then((m) => m.Laptop3D), {
+  ssr: false,
+  loading: () => <div className="ed-laptop3d" aria-hidden="true" />,
+});
+const Wallet3D = dynamic(() => import("./Wallet3D").then((m) => m.Wallet3D), {
+  ssr: false,
+  loading: () => <div className="ed-wallet3d" aria-hidden="true" />,
+});
 
 const WORDS = ["within limits.", "onchain.", "provable."];
 const LIMITS = [
@@ -74,7 +82,6 @@ export function EditorialHome() {
     <Section className="ed-hero">
       <div className="ed-hero-copy cinematic-section">
         <CinematicBackground variant="dusk" image="/images/siro-hero-architecture.webp" />
-        <CapitalFlow />
 
         <h1>Agents that<br /><em>can’t go rogue.</em><br /><span className="ed-hero-last">Always <TypewriterWord words={WORDS} /></span></h1>
         <p>Describe a strategy in one sentence. Your agent trades tokenized stocks inside a vault<br className="ed-desktop-break" /> with limits it can never break, and proves every move onchain.</p>
@@ -95,10 +102,10 @@ export function EditorialHome() {
         <div className="ed-showcase-copy">
           <p className="eyebrow">Built around you</p>
           <h2>Your strategy.<br /><em>Your rules.</em></h2>
-          <p>Set your allocation, define your limits, and let the agent handle execution — all inside a guarded vault on Robinhood Chain.</p>
+          <p>Set your allocation, define your limits, and let the agent handle execution, all inside a guarded vault on Robinhood Chain.</p>
           <Link href="/studio" className="btn-primary">Open Studio <Arrow /></Link>
         </div>
-        <LaptopMockup />
+        <Laptop3D />
       </div>
     </Section>
     <Section id="how" className="ed-workspace"><div className="ed-section-heading"><div><p className="eyebrow">One platform. Your own approach.</p><h2><em>Three</em> ways in.</h2></div><p>Find your starting point.<br />Make the next move your own.</p></div><ProductPanel /></Section>
@@ -127,6 +134,6 @@ export function EditorialHome() {
     </Section>
     <Section className="ed-manifesto"><div className="ed-manifesto-layout"><div><p className="eyebrow">Designed for a longer view</p><ScrollRevealText text="An agent should be safe enough to trust with real money, and honest enough that nobody can fake its track record. Limits it cannot break. Decisions anyone can verify." /><Link href="/security" className="ed-text-link">Explore our approach to security <Arrow /></Link></div><ClassicalArtwork name="urn" className="classical-manifesto" /></div></Section>
     <Section className="ed-faq-section"><Faq /></Section>
-    <CTABand headline={<>Your strategy.<br /><em>Our guard. Onchain proof.</em></>} subtitle="Build an agent in one sentence. Start on paper. Go live only when you choose." primaryLabel="Build your agent" primaryHref="/studio" secondaryLabel="Read the documentation" secondaryHref="/docs" />
+    <CTABand headline={<>Your strategy.<br /><em>Our guard. Onchain proof.</em></>} subtitle="Build an agent in one sentence. Start on paper. Go live only when you choose." primaryLabel="Build your agent" primaryHref="/studio" secondaryLabel="Read the documentation" secondaryHref="/docs" visual={<Wallet3D />} />
   </main>;
 }

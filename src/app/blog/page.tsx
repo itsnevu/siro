@@ -2,7 +2,7 @@ import Link from "next/link";
 import "@/styles/siro.css";
 import "@/styles/prose.css";
 
-import { Banner, Header } from "@/components/Header";
+import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { allPosts, formatDate } from "@/lib/posts";
 
@@ -16,7 +16,6 @@ export default function Page() {
   const posts = allPosts();
   return (
     <>
-      <Banner />
       <div className="rusd-shell p2p-app-shell editorial-site">
         <Header />
         <main className="rusd-frame rusd-main siro-doc" data-tone="light" id="main-content">

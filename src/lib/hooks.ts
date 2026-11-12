@@ -40,19 +40,11 @@ export function useVault(owner?: Address) {
   });
 
   const vault: Vault | undefined = useMemo(() => {
-    if (!data) return undefined;
-    const d = data as Record<string, unknown>;
-    return {
-      owner: d.owner as Address,
-      balance: d.balance as bigint,
-      highWaterMark: d.highWaterMark as bigint,
-      isPaused: d.isPaused as boolean,
-      leaders: Array.from(d.leaders as Address[]).filter((a) => a !== zeroAddress),
-      leaderCount: Number(d.leaderCount),
-      depositedAt: d.depositedAt as bigint,
-      lastTradeAt: d.lastTradeAt as bigint,
-    };
-  }, [data]);
+    if (!data || !owner) return undefined;
+    const [deposited, balance, highWaterMark, totalWithdrawn, totalFeePaid, leaders, paused, createdAt] = data;
+    const active = leaders.filter((a) => a !== zeroAddress);
+    return { owner, balance, highWaterMark, isPaused: paused, leaders: active, leaderCount: active.length, deposited, totalWithdrawn, totalFeePaid, createdAt };
+  }, [data, owner]);
 
   return { vault, refetch, isLoading, isError };
 }
@@ -63,7 +55,7 @@ export function useVaultBalance(owner?: Address) {
   const { data, refetch } = useReadContract({
     address: vaultAddr,
     abi: SiroCopyVaultAbi,
-    functionName: "getVaultBalance",
+    functionName: "vaultBalance",
     args: [owner ?? zeroAddress],
     chainId: net.id,
     query: { enabled: !!vaultAddr && !!owner },
@@ -79,24 +71,13 @@ export function useLeaderboard(offset = 0, limit = 20) {
   const { data, refetch, isLoading } = useReadContract({
     address: lbAddr,
     abi: SiroLeaderboardAbi,
-    functionName: "getTopLeaders",
+    functionName: "getLeaders",
     args: [BigInt(offset), BigInt(limit)],
     chainId: net.id,
     query: { enabled: !!lbAddr },
   });
 
-  const leaders: Leader[] = useMemo(() => {
-    if (!Array.isArray(data)) return [];
-    return (data as Record<string, unknown>[]).map((d) => ({
-      addr: d.addr as Address,
-      name: d.name as string,
-      totalPnlBps: Number(d.totalPnlBps),
-      sharpeBps: Number(d.sharpeBps),
-      maxDrawdownBps: Number(d.maxDrawdownBps),
-      followerCount: d.followerCount as bigint,
-      registeredAt: d.registeredAt as bigint,
-    }));
-  }, [data]);
+  const leaders: Leader[] = useMemo(() => (data ?? []).map(toLeader), [data]);
 
   return { leaders, refetch, isLoading };
 }
@@ -112,62 +93,62 @@ export function useLeaderStats(leader?: Address) {
     chainId: net.id,
     query: { enabled: !!lbAddr && !!leader },
   });
-  const stats: Leader | undefined = useMemo(() => {
-    if (!data) return undefined;
-    const d = data as Record<string, unknown>;
-    return {
-      addr: d.addr as Address,
-      name: d.name as string,
-      totalPnlBps: Number(d.totalPnlBps),
-      sharpeBps: Number(d.sharpeBps),
-      maxDrawdownBps: Number(d.maxDrawdownBps),
-      followerCount: d.followerCount as bigint,
-      registeredAt: d.registeredAt as bigint,
-    };
-  }, [data]);
+  const stats: Leader | undefined = useMemo(() => (data ? toLeader(data) : undefined), [data]);
   return { stats, refetch };
+}
+
+type LeaderStruct = {
+  wallet: Address;
+  name: string;
+  totalPnl: bigint;
+  sharpeScore: bigint;
+  maxDrawdown: bigint;
+  followerCount: bigint;
+  registeredAt: bigint;
+};
+
+// sharpeScore is stored ×100 (182 = 1.82); expose it in bps like the other ratios.
+function toLeader(d: LeaderStruct): Leader {
+  return {
+    addr: d.wallet,
+    name: d.name,
+    totalPnlBps: Number(d.totalPnl),
+    sharpeBps: Number(d.sharpeScore) * 100,
+    maxDrawdownBps: Number(d.maxDrawdown),
+    followerCount: d.followerCount,
+    registeredAt: d.registeredAt,
+  };
 }
 
 // ------------------------------------------------------------ risk
 
-export function useRiskParams(owner?: Address) {
+function useRiskConfig(owner?: Address) {
   const net = useNetwork();
   const rgAddr = net.riskGuard;
-  const { data, refetch } = useReadContract({
+  return useReadContract({
     address: rgAddr,
     abi: SiroRiskGuardAbi,
-    functionName: "getRiskParams",
+    functionName: "getRiskConfig",
     args: [owner ?? zeroAddress],
     chainId: net.id,
     query: { enabled: !!rgAddr && !!owner },
   });
+}
 
+export function useRiskParams(owner?: Address) {
+  const { data, refetch } = useRiskConfig(owner);
+  // Until the guard is read, mirror the contract's own DEFAULT_* constants.
   const params: RiskParams = useMemo(() => {
-    if (!data) return { maxTradeSizeBps: 1000, dailyLossLimitBps: 500, maxPositionBps: 2000, slippageBps: 100 };
-    const d = data as Record<string, unknown>;
-    return {
-      maxTradeSizeBps: Number(d.maxTradeSizeBps),
-      dailyLossLimitBps: Number(d.dailyLossLimitBps),
-      maxPositionBps: Number(d.maxPositionBps),
-      slippageBps: Number(d.slippageBps),
-    };
+    if (!data) return { maxTradeSizeBps: 1000, dailyLossLimitBps: 500, maxPositionBps: 2500, slippageBps: 100 };
+    const [maxTradeSizeBps, dailyLossLimitBps, maxPositionBps, slippageBps] = data;
+    return { maxTradeSizeBps, dailyLossLimitBps, maxPositionBps, slippageBps };
   }, [data]);
-
   return { params, refetch };
 }
 
 export function useIsKilled(owner?: Address) {
-  const net = useNetwork();
-  const rgAddr = net.riskGuard;
-  const { data, refetch } = useReadContract({
-    address: rgAddr,
-    abi: SiroRiskGuardAbi,
-    functionName: "isKilled",
-    args: [owner ?? zeroAddress],
-    chainId: net.id,
-    query: { enabled: !!rgAddr && !!owner },
-  });
-  return { killed: !!data, refetch };
+  const { data, refetch } = useRiskConfig(owner);
+  return { killed: !!data?.[4], refetch };
 }
 
 // ------------------------------------------------------------ wallet balance
@@ -275,7 +256,7 @@ export function useVaultMutations() {
     return await writeContractAsync({
       address: vaultAddr,
       abi: SiroCopyVaultAbi,
-      functionName: "pause",
+      functionName: "pauseVault",
     });
   };
 
@@ -283,7 +264,7 @@ export function useVaultMutations() {
     return await writeContractAsync({
       address: vaultAddr,
       abi: SiroCopyVaultAbi,
-      functionName: "unpause",
+      functionName: "resumeVault",
     });
   };
 
@@ -320,7 +301,7 @@ export function useRiskMutations() {
     return await writeContractAsync({
       address: rgAddr,
       abi: SiroRiskGuardAbi,
-      functionName: "setRiskParams",
+      functionName: "setRiskConfig",
       args: [maxTradeSizeBps, dailyLossLimitBps, maxPositionBps, slippageBps],
     });
   };
@@ -329,16 +310,17 @@ export function useRiskMutations() {
     return await writeContractAsync({
       address: rgAddr,
       abi: SiroRiskGuardAbi,
-      functionName: "setTokenWhitelist",
+      functionName: "setTokenWhitelistBatch",
       args: [tokens, allowed],
     });
   };
 
-  const killSwitch = async () => {
+  const killSwitch = async (frozen = true) => {
     return await writeContractAsync({
       address: rgAddr,
       abi: SiroRiskGuardAbi,
-      functionName: "killSwitch",
+      functionName: "setKillSwitch",
+      args: [frozen],
     });
   };
 

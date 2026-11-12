@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const tiers = [
-  { name: "Bronze", threshold: "100 SIRO", discount: "5%", credits: "50/mo", staking: "—", color: "var(--secondary)" },
+  { name: "Bronze", threshold: "100 SIRO", discount: "5%", credits: "50/mo", staking: "-", color: "var(--secondary)" },
   { name: "Silver", threshold: "1,000 SIRO", discount: "10%", credits: "200/mo", staking: "1.5x boost", color: "var(--secondary)" },
   { name: "Gold", threshold: "10,000 SIRO", discount: "20%", credits: "1,000/mo", staking: "2x boost", color: "var(--secondary)" },
   { name: "Platinum", threshold: "50,000 SIRO", discount: "30%", credits: "Unlimited", staking: "3x boost", color: "var(--surface-2)" },

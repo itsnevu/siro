@@ -9,16 +9,6 @@ export function SiroMark({ size = 30 }: { size?: number }) {
   return <span aria-hidden="true" className="siro-brand-mask" style={{display:"block",height:size,width:size}} />;
 }
 
-export function Banner() {
-  return (
-    <aside className="turret-beta-notice" aria-label="Open beta notice">
-      <p>
-        <strong>Siro is in open beta.</strong> AI-powered copy trading vaults.
-      </p>
-    </aside>
-  );
-}
-
 export function Header() {
   return (
     <header className="rusd-topbar" style={{ backdropFilter: "none", WebkitBackdropFilter: "none" }}>

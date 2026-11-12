@@ -16,8 +16,10 @@ export type Vault = {
   isPaused: boolean;
   leaders: Address[];
   leaderCount: number;
-  depositedAt: bigint;
-  lastTradeAt: bigint;
+  deposited: bigint;
+  totalWithdrawn: bigint;
+  totalFeePaid: bigint;
+  createdAt: bigint;
 };
 
 export type Leader = {
@@ -61,7 +63,7 @@ export const USDC_DECIMALS = DEFAULT_CHAIN.token.decimals;
 // ------------------------------------------------------------- formatting
 
 export function fmtUnits(v: bigint | undefined, decimals: number, digits = 2): string {
-  if (v === undefined) return "—";
+  if (v === undefined) return "-";
   const neg = v < 0n;
   const abs = neg ? -v : v;
   const base = 10n ** BigInt(decimals);
@@ -80,9 +82,9 @@ export function truncateAddress(a?: string): string {
 }
 
 export function fmtDate(timestamp?: bigint | number): string {
-  if (!timestamp) return "—";
+  if (!timestamp) return "-";
   const ms = typeof timestamp === "bigint" ? Number(timestamp) * 1000 : timestamp * 1000;
-  if (!Number.isFinite(ms) || ms <= 0) return "—";
+  if (!Number.isFinite(ms) || ms <= 0) return "-";
   return new Date(ms).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",

@@ -219,7 +219,7 @@ const Portfolio = ({
         marginTop: 35,
       }}
     >
-      Tech Balance
+      DCA into NVDA
     </div>
     <div style={{ fontSize: 15, color: C.muted, marginTop: 10 }}>
       Paper mode
@@ -359,7 +359,7 @@ const NotificationMacro = () => {
         {[2,1].map(i=><div key={i} style={{position:'absolute',inset:0,borderRadius:38,background:i===2?'#7063ac':'#c0a7df',transform:`translate3d(${i*14}px,${i*18}px,${-i*18}px) rotate(${i*1.5}deg)`,boxShadow:'0 22px 48px rgba(27,22,32,.16)'}}/>)}
         <div style={{position:'absolute',inset:0,borderRadius:38,padding:48,background:'linear-gradient(135deg,#f4eee9,#e6dce9)',boxShadow:'inset 1px 2px 2px rgba(255,255,255,.8),0 40px 90px rgba(27,22,32,.24)',overflow:'hidden'}}>
           <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><Brand size={30}/><span style={{fontSize:18,letterSpacing:2,opacity:.55}}>PRE-TRADE CHECK</span></div>
-          <div style={{fontFamily:F.display,fontSize:58,letterSpacing:-2,marginTop:38}}>Tech Balance</div>
+          <div style={{fontFamily:F.display,fontSize:58,letterSpacing:-2,marginTop:38}}>Momentum Swing</div>
           <div style={{display:'flex',gap:12,marginTop:20}}>{['NVDA','AAPL','TSLA'].map((ticker,i)=><div key={ticker} style={{padding:'10px 20px',borderRadius:13,background:'rgba(27,22,32,.06)',fontSize:20,opacity:ramp(f,7+i*4,17+i*4),translate:`0 ${lerp(14,0,pop(f,7+i*4))}px`}}>{ticker}</div>)}</div>
           <div style={{marginTop:32,display:'flex',gap:18}}>{[['Trade cap','$500'],['Max drawdown','8%']].map(([label,value],i)=><div key={label} style={{flex:1,padding:24,borderRadius:22,background:'rgba(255,255,255,.6)',opacity:ramp(f,12+i*5,25+i*5),translate:`0 ${lerp(25,0,pop(f,12+i*5))}px`}}><div style={{fontSize:18,opacity:.6}}>{label}</div><div style={{display:'flex',justifyContent:'space-between',alignItems:'center',fontFamily:F.display,fontSize:46,marginTop:10}}>{value}<span style={{fontFamily:F.sans,fontSize:24,color:'#35714b',opacity:ramp(f,24+i*5,34+i*5)}}>✓</span></div></div>)}</div>
           <div style={{marginTop:28,padding:'22px 26px',borderRadius:20,background:C.bg,color:C.text,display:'flex',alignItems:'center',gap:18,boxShadow:'0 12px 24px rgba(27,22,32,.16)'}}><span style={{width:38,height:38,borderRadius:99,background:C.mint,color:C.ink,display:'grid',placeItems:'center',scale:lerp(.5,1,pop(f,28)),opacity:checked}}>✓</span><span style={{fontSize:27}}>{f<28?'Checking your policy…':'Policy checked.'}</span><span style={{marginLeft:'auto',fontSize:18,color:C.mint,opacity:checked}}>Within limits</span></div>
@@ -488,10 +488,10 @@ const AssetBurst = () => {
             letterSpacing: -4,
           }}
         >
-          <RevealText text="Blue Chip Hold" start={12}/>
+          <RevealText text="Top 5 Tech" start={12}/>
         </div>
         <div style={{ marginTop: 25, fontSize: 23 }}>
-          <RevealText text="Your idea, structured." start={24} step={.65}/>
+          <RevealText text="One sentence. One vault. Onchain." start={24} step={.65}/>
         </div>
       </div>
     </Stage>
@@ -503,7 +503,7 @@ const Laptop = ({f}: {f:number}) => <div style={{width:1000,position:'relative',
       <div style={{position:'absolute',top:0,left:'43%',width:'14%',height:22,borderRadius:'0 0 9px 9px',background:'#15131b'}}/>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'40px 36px 24px'}}><Brand size={28}/><span style={{fontSize:18,color:C.muted}}>Agent Studio</span><span style={{fontSize:16,color:C.mint}}>● Paper mode</span></div>
       <div style={{display:'flex',gap:45,padding:'24px 40px'}}>
-        <div style={{width:300}}><div style={{fontFamily:F.display,fontSize:37,letterSpacing:-1,marginBottom:28}}><RevealText text="Blue Chip Hold" start={12}/></div><Allocation size={280} progress={Math.min(1,pop(f,18))}/><div style={{fontSize:16,color:C.muted,textAlign:'center',marginTop:25}}>Target allocation</div></div>
+        <div style={{width:300}}><div style={{fontFamily:F.display,fontSize:37,letterSpacing:-1,marginBottom:28}}><RevealText text="Top 5 Tech" start={12}/></div><Allocation size={280} progress={Math.min(1,pop(f,18))}/><div style={{fontSize:16,color:C.muted,textAlign:'center',marginTop:25}}>Target allocation</div></div>
         <div style={{flex:1,paddingTop:8}}><div style={{fontSize:18,color:C.muted,marginBottom:26}}>Equal-weight · 5 assets</div>{['AAPL','MSFT','GOOGL','AMZN','NVDA'].map((ticker,i)=><div key={ticker} style={{padding:'14px 22px',marginBottom:8,borderRadius:14,background:C.surface,opacity:ramp(f,18+i*4,28+i*4),translate:`0 ${lerp(22,0,pop(f,18+i*4))}px`}}><div style={{display:'flex',justifyContent:'space-between',fontSize:20}}><span>{ticker}</span><span style={{color:[C.purple,C.pink,C.peach,C.mint,'#F4F2EE'][i]}}>20%</span></div><div style={{height:4,borderRadius:5,marginTop:12,background:'rgba(255,255,255,.06)'}}><div style={{height:4,borderRadius:5,width:`${100*ramp(f,22+i*4,48+i*4)}%`,background:[C.purple,C.pink,C.peach,C.mint,'#F4F2EE'][i]}}/></div></div>)}<div style={{fontSize:17,color:C.mint,marginTop:18,opacity:ramp(f,38,50)}}>✓ All limits passed · Ready to deploy</div></div>
       </div>
     </div>

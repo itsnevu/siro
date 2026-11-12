@@ -65,7 +65,7 @@ export default function StatsPage() {
           Verify on-chain →
         </a>
         <p style={{ fontSize: 13, color: "var(--fg-70)", marginTop: 12 }}>
-          All data is sourced from Robinhood Chain. Numbers shown are for testnet and may not reflect mainnet activity.
+          All data is sourced from Robinhood Chain.
         </p>
       </section>
     </MarketingShell>

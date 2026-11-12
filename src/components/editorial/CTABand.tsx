@@ -8,13 +8,15 @@ type Props = {
   primaryHref: string;
   secondaryLabel?: string;
   secondaryHref?: string;
+  visual?: ReactNode;
 };
 
-export function CTABand({ headline, subtitle, primaryLabel, primaryHref, secondaryLabel, secondaryHref }: Props) {
+export function CTABand({ headline, subtitle, primaryLabel, primaryHref, secondaryLabel, secondaryHref, visual }: Props) {
   return (
-    <section data-tone="dark" className="bg-bg text-fg py-24 md:py-40 cinematic-section">
+    <section data-tone="dark" className={`bg-bg text-fg ${visual ? "pt-12 pb-24 md:pt-16 md:pb-36" : "py-24 md:py-40"} cinematic-section`}>
       <CinematicBackground variant="night" />
       <div className="site-container text-center">
+        {visual}
         <h2 className="serif-headline text-[44px] md:text-[72px] mb-6">{headline}</h2>
         {subtitle && <p className="text-[var(--fg-70)] text-lg mb-10 max-w-xl mx-auto">{subtitle}</p>}
         <div className="flex items-center justify-center gap-4 flex-wrap">

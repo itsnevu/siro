@@ -20,7 +20,7 @@ export const VOICE_ASSETS = [
   },
   {
     "id": "strategy",
-    "text": "Tech Balance. Your idea, structured.",
+    "text": "Top 5 Tech. Your idea, structured.",
     "file": "audio/voice-titles/strategy.wav",
     "seconds": 2.617167,
     "voice": "en-US-AvaMultilingualNeural",

@@ -40,7 +40,10 @@ function SignInModal({onClose}:{onClose:()=>void}) {
     document.addEventListener("keydown",keydown);
     return()=>{document.body.style.overflow=overflow;document.removeEventListener("keydown",keydown);previous?.focus({preventScroll:true});};
   },[onClose]);
-  const wallets=connectors.filter(connector=>available.includes(connector.uid)&&connector.name.toLowerCase().includes(query.toLowerCase()));
+  const detected=connectors.filter(connector=>available.includes(connector.uid));
+  // The generic injected connector duplicates whichever named wallet already announced itself.
+  const named=detected.some(connector=>connector.type!=="injected"||connector.id!=="injected");
+  const wallets=detected.filter(connector=>!(named&&connector.id==="injected")&&connector.name.toLowerCase().includes(query.toLowerCase()));
   return <div className="launch-overlay" onClick={event=>{if(event.target===event.currentTarget)onClose();}}>
     <div className="launch-modal" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="wallet-title" aria-describedby="wallet-description">
       <div className="launch-modal-header"><span className="launch-modal-eyebrow">YOUR WALLET. YOUR CONTROL.</span><button type="button" className="launch-modal-close" aria-label="Close wallet selection" onClick={onClose}>×</button></div>
@@ -49,7 +52,7 @@ function SignInModal({onClose}:{onClose:()=>void}) {
       <p className="launch-modal-subtitle" id="wallet-description">Connect a wallet available in your browser to continue.</p>
       <label className="launch-wallet-search"><span className="sr-only">Search detected wallets</span><input className="launch-wallet-search-input" type="search" placeholder="Search your wallets" value={query} onChange={event=>setQuery(event.target.value)}/></label>
       <div className="launch-wallet-list" aria-live="polite">
-        {checking?<p className="launch-wallet-empty">Checking available wallets…</p>:wallets.length?wallets.map(connector=><button type="button" className="launch-wallet-item" disabled={isPending} key={connector.uid} onClick={()=>connect({connector})}><span className="launch-wallet-icon-placeholder"><WalletIcon/></span><span className="launch-wallet-name">{connector.name}</span><span className="launch-wallet-detected">{isPending?"Connecting…":"Detected ↗"}</span></button>):<div className="launch-wallet-empty"><strong>{query?"No matching wallet":"No browser wallet detected"}</strong><p>{query?"Try another wallet name.":"Open Siro in your wallet’s browser, or install a browser wallet and refresh this page."}</p></div>}
+        {checking?<p className="launch-wallet-empty">Checking available wallets…</p>:wallets.length?wallets.map(connector=><button type="button" className="launch-wallet-item" disabled={isPending} key={connector.uid} onClick={()=>connect({connector})}><span className="launch-wallet-icon-placeholder">{connector.icon?<img src={connector.icon} alt="" width={24} height={24} style={{borderRadius:6}}/>:<WalletIcon/>}</span><span className="launch-wallet-name">{connector.name}</span><span className="launch-wallet-detected">{isPending?"Connecting…":"Detected ↗"}</span></button>):<div className="launch-wallet-empty"><strong>{query?"No matching wallet":"No browser wallet detected"}</strong><p>{query?"Try another wallet name.":"Open Siro in your wallet’s browser, or install a browser wallet and refresh this page."}</p></div>}
       </div>
       {error&&<p className="launch-wallet-error" role="alert">{error.message.split("\n")[0]}</p>}
       <p className="launch-protected">Connecting requests access to your wallet address. Never share your recovery phrase.</p>
