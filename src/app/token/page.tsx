@@ -101,7 +101,7 @@ export default function TokenPage() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 16,
+            gap: 20,
             marginTop: 16,
           }}
         >
@@ -118,6 +118,9 @@ export default function TokenPage() {
                 background: "var(--soft, var(--surface))",
                 borderRadius: 12,
                 textAlign: "center",
+                display: "flex",
+                flexDirection: "column" as const,
+                justifyContent: "center",
               }}
             >
               <div style={{ fontSize: 28, fontWeight: 700, color: "var(--accent, var(--secondary))", marginBottom: 8 }}>

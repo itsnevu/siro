@@ -17,6 +17,7 @@ import { ClassicalArtwork } from "./ClassicalArtwork";
 import { CapitalFlow } from "./CapitalFlow";
 import { CinematicBackground } from "./CinematicBackground";
 import { PixelShield } from "./PixelShield";
+import { LaptopMockup } from "./LaptopMockup";
 import "@/styles/agent-sections.css";
 
 const WORDS = ["within limits.", "onchain.", "provable."];
@@ -89,6 +90,17 @@ export function EditorialHome() {
       { title: "Launch in a guarded vault.", description: "Funds sit in a per-agent contract. The agent’s key can only make whitelisted swaps inside your limits.", icon: <Glyph kind={2} /> },
       { title: "Prove and tokenize.", description: "Every hour of decisions is committed onchain as a Merkle root. After 14 verified days an agent can launch its token.", icon: <Glyph kind={3} /> },
     ]} /></div></Section>
+    <Section className="ed-product-showcase">
+      <div className="ed-showcase-layout">
+        <div className="ed-showcase-copy">
+          <p className="eyebrow">Built around you</p>
+          <h2>Your strategy.<br /><em>Your rules.</em></h2>
+          <p>Set your allocation, define your limits, and let the agent handle execution — all inside a guarded vault on Robinhood Chain.</p>
+          <Link href="/studio" className="btn-primary">Open Studio <Arrow /></Link>
+        </div>
+        <LaptopMockup />
+      </div>
+    </Section>
     <Section id="how" className="ed-workspace"><div className="ed-section-heading"><div><p className="eyebrow">One platform. Your own approach.</p><h2><em>Three</em> ways in.</h2></div><p>Find your starting point.<br />Make the next move your own.</p></div><ProductPanel /></Section>
     <Section id="leaderboard" className="ed-strategies"><div className="ed-section-heading"><div><p className="eyebrow">Strategy templates</p><h2>A little inspiration<br />to <em>start</em> from.</h2></div><Link href="/strategies" className="ed-text-link">View all strategies <Arrow /></Link></div>
       <div className="ed-template-grid">{strategies.slice(0, 3).map((strategy, index) => <Link href={`/strategies/${strategy.id}`} key={strategy.id} className="ed-template-card card-lift"><div className="ed-card-top"><Glyph kind={index} /><span className="pill-badge">Template</span></div><h3>{strategy.name}</h3><p>{strategy.description}</p><AllocationBar segments={strategy.allocation.map(asset => ({ label: asset.token, value: asset.pct }))} /><div className="ed-card-meta"><span>{strategy.allocation.length} assets · {strategy.type.replaceAll("-", " ")}</span><Arrow /></div></Link>)}</div>

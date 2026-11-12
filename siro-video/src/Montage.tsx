@@ -488,7 +488,7 @@ const AssetBurst = () => {
             letterSpacing: -4,
           }}
         >
-          <RevealText text="Tech Balance" start={12}/>
+          <RevealText text="Blue Chip Hold" start={12}/>
         </div>
         <div style={{ marginTop: 25, fontSize: 23 }}>
           <RevealText text="Your idea, structured." start={24} step={.65}/>
@@ -503,8 +503,8 @@ const Laptop = ({f}: {f:number}) => <div style={{width:1000,position:'relative',
       <div style={{position:'absolute',top:0,left:'43%',width:'14%',height:22,borderRadius:'0 0 9px 9px',background:'#15131b'}}/>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'40px 36px 24px'}}><Brand size={28}/><span style={{fontSize:18,color:C.muted}}>Agent Studio</span><span style={{fontSize:16,color:C.mint}}>● Paper mode</span></div>
       <div style={{display:'flex',gap:45,padding:'24px 40px'}}>
-        <div style={{width:300}}><div style={{fontFamily:F.display,fontSize:37,letterSpacing:-1,marginBottom:28}}><RevealText text="Tech Balance" start={12}/></div><Allocation size={280} progress={Math.min(1,pop(f,18))}/><div style={{fontSize:16,color:C.muted,textAlign:'center',marginTop:25}}>Target allocation</div></div>
-        <div style={{flex:1,paddingTop:8}}><div style={{fontSize:18,color:C.muted,marginBottom:26}}>Your strategy, within limits.</div>{['NVDA','AAPL','TSLA'].map((ticker,i)=><div key={ticker} style={{padding:'19px 22px',marginBottom:12,borderRadius:14,background:C.surface,opacity:ramp(f,18+i*5,30+i*5),translate:`0 ${lerp(22,0,pop(f,18+i*5))}px`}}><div style={{display:'flex',justifyContent:'space-between',fontSize:23}}><span>{ticker}</span><span style={{color:[C.purple,C.pink,C.peach][i]}}>{[40,35,25][i]}%</span></div><div style={{height:5,borderRadius:5,marginTop:16,background:'rgba(255,255,255,.06)'}}><div style={{height:5,borderRadius:5,width:`${[80,70,50][i]*ramp(f,22+i*5,48+i*5)}%`,background:[C.purple,C.pink,C.peach][i]}}/></div></div>)}<div style={{fontSize:17,color:C.mint,marginTop:24,opacity:ramp(f,34,48)}}>✓ Policy checked · Ready for review</div></div>
+        <div style={{width:300}}><div style={{fontFamily:F.display,fontSize:37,letterSpacing:-1,marginBottom:28}}><RevealText text="Blue Chip Hold" start={12}/></div><Allocation size={280} progress={Math.min(1,pop(f,18))}/><div style={{fontSize:16,color:C.muted,textAlign:'center',marginTop:25}}>Target allocation</div></div>
+        <div style={{flex:1,paddingTop:8}}><div style={{fontSize:18,color:C.muted,marginBottom:26}}>Equal-weight · 5 assets</div>{['AAPL','MSFT','GOOGL','AMZN','NVDA'].map((ticker,i)=><div key={ticker} style={{padding:'14px 22px',marginBottom:8,borderRadius:14,background:C.surface,opacity:ramp(f,18+i*4,28+i*4),translate:`0 ${lerp(22,0,pop(f,18+i*4))}px`}}><div style={{display:'flex',justifyContent:'space-between',fontSize:20}}><span>{ticker}</span><span style={{color:[C.purple,C.pink,C.peach,C.mint,'#F4F2EE'][i]}}>20%</span></div><div style={{height:4,borderRadius:5,marginTop:12,background:'rgba(255,255,255,.06)'}}><div style={{height:4,borderRadius:5,width:`${100*ramp(f,22+i*4,48+i*4)}%`,background:[C.purple,C.pink,C.peach,C.mint,'#F4F2EE'][i]}}/></div></div>)}<div style={{fontSize:17,color:C.mint,marginTop:18,opacity:ramp(f,38,50)}}>✓ All limits passed · Ready to deploy</div></div>
       </div>
     </div>
   </div>

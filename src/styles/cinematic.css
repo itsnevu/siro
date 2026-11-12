@@ -14,7 +14,7 @@
 .cinematic-grain { position:absolute; inset:0; opacity:.08; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath d='M0 0h160v160H0z' filter='url(%23grain)'/%3E%3C/svg%3E"); }
 .cinematic-background[data-image="true"] .cinematic-sky { inset:0; background-image:var(--cinematic-image); background-position:center 46%; }
 .cinematic-background[data-image="true"] :is(.cinematic-clouds,.cinematic-horizon) { display:none; }
-.cinematic-background[data-image="true"] .cinematic-shade { background:linear-gradient(90deg,rgba(7,8,14,.84) 0%,rgba(7,8,14,.54) 42%,rgba(7,8,14,.2) 100%),linear-gradient(0deg,rgba(7,8,14,.7),transparent 54%); }
+.cinematic-background[data-image="true"] .cinematic-shade { background:linear-gradient(90deg,color-mix(in srgb,var(--bg) 84%,transparent) 0%,color-mix(in srgb,var(--bg) 54%,transparent) 42%,color-mix(in srgb,var(--bg) 20%,transparent) 100%),linear-gradient(0deg,color-mix(in srgb,var(--bg) 70%,transparent),transparent 54%); }
 .cinematic-background[data-variant="night"] { --sun-light:var(--night-sun); --sun-halo:var(--glow-purple); --cloud:var(--night-cloud); --reflection:var(--glow-purple); }
 .cinematic-background[data-variant="night"] .cinematic-sky { background-image:radial-gradient(ellipse 50% 60% at 75% 60%,var(--sky-lavender),transparent 75%),radial-gradient(ellipse 35% 35% at 20% 80%,var(--night-sun),transparent 80%),var(--cinematic-image,linear-gradient(180deg,var(--bg),var(--sky-1) 65%,var(--sea))); }
 .cinematic-section :is(h1,h2) { letter-spacing:-.045em; }
