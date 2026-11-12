@@ -43,6 +43,7 @@
     "src/types/ambient.d.ts",
     "ambient.d.ts",
     "contracts",
+    "siro-video",
     "node_modules"
   ]
 }

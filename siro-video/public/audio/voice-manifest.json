@@ -1,0 +1,74 @@
+[
+  {
+    "file": "01-strategy.wav",
+    "text": "Your strategy.",
+    "from": 0.3,
+    "duration": 1.068792,
+    "voice": "en-US-AvaMultilingualNeural",
+    "rate": "-8%",
+    "pitch": "-2Hz"
+  },
+  {
+    "file": "02-autonomous.wav",
+    "text": "Now autonomous.",
+    "from": 1.55,
+    "duration": 1.479917,
+    "voice": "en-US-AvaMultilingualNeural",
+    "rate": "-4%",
+    "pitch": "+0Hz"
+  },
+  {
+    "file": "03-idea.wav",
+    "text": "Start with an idea.",
+    "from": 3.55,
+    "duration": 1.185813,
+    "voice": "en-US-AvaMultilingualNeural",
+    "rate": "-3%",
+    "pitch": "+1Hz"
+  },
+  {
+    "file": "04-agent.wav",
+    "text": "Siro builds your agent.",
+    "from": 5.75,
+    "duration": 1.553625,
+    "voice": "en-US-AvaMultilingualNeural",
+    "rate": "-2%",
+    "pitch": "+0Hz"
+  },
+  {
+    "file": "05-limits.wav",
+    "text": "Your limits.",
+    "from": 8.55,
+    "duration": 0.862063,
+    "voice": "en-US-AvaMultilingualNeural",
+    "rate": "-8%",
+    "pitch": "-2Hz"
+  },
+  {
+    "file": "06-moves.wav",
+    "text": "Every move, within them.",
+    "from": 10.05,
+    "duration": 1.922063,
+    "voice": "en-US-AvaMultilingualNeural",
+    "rate": "-5%",
+    "pitch": "-1Hz"
+  },
+  {
+    "file": "07-ready.wav",
+    "text": "Ready when you are.",
+    "from": 13.65,
+    "duration": 1.111146,
+    "voice": "en-US-AvaMultilingualNeural",
+    "rate": "-5%",
+    "pitch": "+0Hz"
+  },
+  {
+    "file": "08-siro.wav",
+    "text": "Siro. Your strategy, in motion.",
+    "from": 16.7,
+    "duration": 2.495271,
+    "voice": "en-US-AvaMultilingualNeural",
+    "rate": "+1%",
+    "pitch": "-2Hz"
+  }
+]

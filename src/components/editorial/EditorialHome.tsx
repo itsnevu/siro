@@ -72,9 +72,9 @@ export function EditorialHome() {
   return <main className="ed-home" id="main-content" tabIndex={-1}>
     <Section className="ed-hero">
       <div className="ed-hero-copy cinematic-section">
-        <CinematicBackground variant="dusk" image="/images/vaulta-hero-architecture.png" />
+        <CinematicBackground variant="dusk" image="/images/siro-hero-architecture.webp" />
         <CapitalFlow />
-        <Link className="ed-announcement" href="/about"><span className="ed-status-dot" /> Guarded trading agents for tokenized stocks <Arrow /></Link>
+
         <h1>Agents that<br /><em>can’t go rogue.</em><br /><span className="ed-hero-last">Always <TypewriterWord words={WORDS} /></span></h1>
         <p>Describe a strategy in one sentence. Your agent trades tokenized stocks inside a vault<br className="ed-desktop-break" /> with limits it can never break, and proves every move onchain.</p>
         <div className="ed-actions"><Link href="/studio" className="btn-primary">Build your agent <Arrow /></Link><Link href="/leaderboard" className="btn-secondary">See live agents <span aria-hidden="true">↗</span></Link></div>
