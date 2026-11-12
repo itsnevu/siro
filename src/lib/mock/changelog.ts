@@ -17,7 +17,7 @@ export const changelog: ChangelogEntry[] = [
     date: "2026-09-15",
     title: "Copy Vault Launch",
     changes: [
-      "Non-custodial vault smart contracts deployed on Elysium testnet",
+      "Non-custodial vault smart contracts deployed on Robinhood Chain testnet",
       "Follow up to 5 leaders per vault",
       "RiskGuard with max trade size, daily loss limit, and kill switch",
       "Leaderboard with PnL, Sharpe ratio, and drawdown tracking",
@@ -31,7 +31,7 @@ export const changelog: ChangelogEntry[] = [
     changes: [
       "Landing page and launch flow",
       "Wallet connection via Privy (email + injected wallets)",
-      "Elysium testnet integration",
+      "Robinhood Chain testnet integration",
       "Basic vault dashboard with deposit/withdraw",
     ],
   },

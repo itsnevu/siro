@@ -11,13 +11,28 @@ import { ScrollRevealText } from "./ScrollRevealText";
 import { AllocationBar } from "./AllocationBar";
 import { CTABand } from "./CTABand";
 import { Faq } from "@/components/Faq";
-import { LINKS } from "@/lib/links";
 import { strategies } from "@/lib/mock";
 import { HeroVisual } from "./HeroVisual";
 import { ClassicalArtwork } from "./ClassicalArtwork";
 import { CapitalFlow } from "./CapitalFlow";
+import { CinematicBackground } from "./CinematicBackground";
+import { PixelShield } from "./PixelShield";
+import "@/styles/agent-sections.css";
 
-const WORDS = ["your rules.", "your pace.", "your choice."];
+const WORDS = ["within limits.", "onchain.", "provable."];
+const LIMITS = [
+  ["Max per trade", "Set by you, checked onchain"],
+  ["Rolling 24h notional cap", "Cannot be exceeded"],
+  ["Token and router whitelist", "Nothing else is tradable"],
+  ["Max drawdown", "Vault pauses itself"],
+  ["Kill switch", "Instant. Unpause waits 24h"],
+];
+// Illustrative rows: no agent has committed a decision onchain yet.
+const FEED = [
+  { act: "BUY", ticker: "NVDA", reason: "Price fell 5% below its 48h average." },
+  { act: "HOLD", ticker: "TSLA", reason: "No rule fired this hour." },
+  { act: "SELL", ticker: "AAPL", reason: "Stop loss of 8% reached." },
+];
 const MODES = [
   { eyebrow: "01 · Discover", title: "Find a strategy that feels like you.", description: "Explore portfolios, compare allocations, and understand the approach before you take the next step.", href: "/strategies", action: "Explore strategies", rows: ["Alpha Momentum", "Steady Yield", "Tech Macro"], meta: "Explore · compare · decide" },
   { eyebrow: "02 · Studio", title: "A little structure. A lot of possibility.", description: "Choose your assets, shape your allocations, and turn an investment idea into a strategy with clear boundaries.", href: "/studio", action: "Open Studio", rows: ["Choose your assets", "Set target weights", "Review your strategy"], meta: "Build · review · refine" },
@@ -56,30 +71,50 @@ function ProductPanel() {
 export function EditorialHome() {
   return <main className="ed-home" id="main-content" tabIndex={-1}>
     <Section className="ed-hero">
-      <div className="ed-hero-copy">
+      <div className="ed-hero-copy cinematic-section">
+        <CinematicBackground variant="dusk" image="/images/vaulta-hero-architecture.png" />
         <CapitalFlow />
-        <Link className="ed-announcement" href="/about"><span className="ed-status-dot" /> A more considered way to follow smart money <Arrow /></Link>
-        <h1>Good instincts.<br /><em>Onchain intelligence.</em><br /><span className="ed-hero-last">Always <TypewriterWord words={WORDS} /></span></h1>
-        <p>Follow real traders. Let an AI agent handle the details.<br className="ed-desktop-break" /> Keep your capital within limits you control.</p>
-        <div className="ed-actions"><Link href={LINKS.app} className="btn-primary">Explore Siro <Arrow /></Link><Link href="#how" className="btn-secondary">See how it works <span aria-hidden="true">↗</span></Link></div>
-        <span className="ed-hero-note">Your vault. Your decisions. Your way forward.</span>
+        <Link className="ed-announcement" href="/about"><span className="ed-status-dot" /> Guarded trading agents for tokenized stocks <Arrow /></Link>
+        <h1>Agents that<br /><em>can’t go rogue.</em><br /><span className="ed-hero-last">Always <TypewriterWord words={WORDS} /></span></h1>
+        <p>Describe a strategy in one sentence. Your agent trades tokenized stocks inside a vault<br className="ed-desktop-break" /> with limits it can never break, and proves every move onchain.</p>
+        <div className="ed-actions"><Link href="/studio" className="btn-primary">Build your agent <Arrow /></Link><Link href="/leaderboard" className="btn-secondary">See live agents <span aria-hidden="true">↗</span></Link></div>
+        <span className="ed-hero-note">Built for Robinhood Chain. Not audited yet. Not investment advice.</span>
       </div>
       <HeroVisual />
-      <div className="ed-principles"><span>Thoughtful by design. Onchain by nature.</span><div><span>Non-custodial</span><i /><span>Transparent</span><i /><span>You’re in control</span></div></div>
+      <div className="ed-principles"><span>The agent can trade. It can never withdraw.</span><div><span>Guarded vaults</span><i /><span>Proof of Decision</span><i /><span>Instant kill switch</span></div></div>
     </Section>
-    <Section className="ed-why" id="why"><div className="ed-split-heading"><div><p className="eyebrow">A different kind of autopilot</p><h2>Let intelligence<br />do the work.<br /><em>Keep the say.</em></h2><p className="ed-supporting">Automation should give you more clarity.<br />And a little more room to breathe.</p><ClassicalArtwork name="column" className="classical-why" /></div><NumberedFeatureList items={[
-      { title: "Track records, in the open.", description: "Start with a trader’s onchain history. Understand the decisions behind a portfolio before following along.", icon: <Glyph /> },
-      { title: "Your capital stays yours.", description: "A non-custodial vault keeps you in control. Define the boundaries, pause your strategy, or choose to exit.", icon: <Glyph kind={1} /> },
-      { title: "Every move has a reason.", description: "The agent evaluates liquidity, slippage, and risk limits. Follow the thinking, as well as the trades.", icon: <Glyph kind={2} /> },
-      { title: "A shared sense of direction.", description: "Explore strategies and evaluate an approach on its own merits. Take your time before committing capital.", icon: <Glyph kind={3} /> },
+    <Section className="ed-why" id="why"><div className="ed-split-heading"><div><p className="eyebrow">The problem</p><h2>Giving a bot your wallet<br />is a bet.<br /><em>Trusting a screenshot is a bigger one.</em></h2><p className="ed-supporting">Agents with wallet access are a liability.<br />Track records kept offchain can be edited.</p><ClassicalArtwork name="column" className="classical-why" /></div><NumberedFeatureList items={[
+      { title: "Describe.", description: "Type a strategy in one sentence. It becomes editable rule blocks, checked against a strict schema.", icon: <Glyph /> },
+      { title: "Replay 30 days.", description: "Backtest hourly with a 0.5% cost per trade. Results sit next to buy-and-hold and cash, even when the agent loses.", icon: <Glyph kind={1} /> },
+      { title: "Launch in a guarded vault.", description: "Funds sit in a per-agent contract. The agent’s key can only make whitelisted swaps inside your limits.", icon: <Glyph kind={2} /> },
+      { title: "Prove and tokenize.", description: "Every hour of decisions is committed onchain as a Merkle root. After 14 verified days an agent can launch its token.", icon: <Glyph kind={3} /> },
     ]} /></div></Section>
     <Section id="how" className="ed-workspace"><div className="ed-section-heading"><div><p className="eyebrow">One platform. Your own approach.</p><h2><em>Three</em> ways in.</h2></div><p>Find your starting point.<br />Make the next move your own.</p></div><ProductPanel /></Section>
     <Section id="leaderboard" className="ed-strategies"><div className="ed-section-heading"><div><p className="eyebrow">Strategy templates</p><h2>A little inspiration<br />to <em>start</em> from.</h2></div><Link href="/strategies" className="ed-text-link">View all strategies <Arrow /></Link></div>
       <div className="ed-template-grid">{strategies.slice(0, 3).map((strategy, index) => <Link href={`/strategies/${strategy.id}`} key={strategy.id} className="ed-template-card card-lift"><div className="ed-card-top"><Glyph kind={index} /><span className="pill-badge">Template</span></div><h3>{strategy.name}</h3><p>{strategy.description}</p><AllocationBar segments={strategy.allocation.map(asset => ({ label: asset.token, value: asset.pct }))} /><div className="ed-card-meta"><span>{strategy.allocation.length} assets · {strategy.type.replaceAll("-", " ")}</span><Arrow /></div></Link>)}</div>
       <p className="ed-disclaimer">Illustrative templates using mock data. Investing involves risk. Returns are not guaranteed.</p>
     </Section>
-    <Section className="ed-manifesto"><div className="ed-manifesto-layout"><div><p className="eyebrow">Designed for a longer view</p><ScrollRevealText text="The future of finance should feel less like keeping up, and more like moving forward. With intelligence you can understand, and boundaries you can trust." /><Link href="/security" className="ed-text-link">Explore our approach to security <Arrow /></Link></div><ClassicalArtwork name="urn" className="classical-manifesto" /></div></Section>
+    <Section id="guard" className="ag-guard"><div className="ag-guard-layout">
+      <div className="ag-shield-stage">
+        <span className="ag-flow ag-flow-checks">inputs → checks → proposal <i /> ⊗</span>
+        <span className="ag-flow ag-flow-deposit">deposit <i /></span>
+        <PixelShield className="ag-shield" />
+        <span className="ag-flow ag-flow-proof"><i /> proof</span>
+        <span className="ag-flow ag-flow-withdraw"><i /> withdraw</span>
+      </div>
+      <div><p className="eyebrow">The Guard</p><h2>Limits the agent<br /><em>cannot break.</em></h2>
+        <ul className="ag-limits">{LIMITS.map(([name, value]) => <li key={name}><span>{name}</span><strong>{value}</strong></li>)}</ul>
+        <p className="ag-note">Even if our server is compromised, the agent key can only trade whitelisted tokens inside these limits. Withdrawals stay open while a vault is paused.</p>
+      </div>
+    </div></Section>
+    <Section id="proof" className="ag-proof"><div className="ed-section-heading"><div><p className="eyebrow">Proof of Decision</p><h2>A record nobody<br />can <em>edit.</em></h2></div><p>Each hour, every decision becomes a Merkle leaf.<br />The root is committed onchain.</p></div>
+      <div className="ag-feed"><div className="ag-feed-head"><span>Action</span><span>Ticker</span><span>Reason</span><span>Proof</span></div>
+        {FEED.map((row) => <div className="ag-feed-row" key={row.ticker}><span className={`ag-act ag-act-${row.act.toLowerCase()}`}>{row.act}</span><span>{row.ticker}</span><p>{row.reason}</p><span className="ag-verify">Illustrative</span></div>)}
+      </div>
+      <p className="ed-disclaimer">Example rows. No agent has committed decisions onchain yet; live rows will link to their transaction.</p>
+    </Section>
+    <Section className="ed-manifesto"><div className="ed-manifesto-layout"><div><p className="eyebrow">Designed for a longer view</p><ScrollRevealText text="An agent should be safe enough to trust with real money, and honest enough that nobody can fake its track record. Limits it cannot break. Decisions anyone can verify." /><Link href="/security" className="ed-text-link">Explore our approach to security <Arrow /></Link></div><ClassicalArtwork name="urn" className="classical-manifesto" /></div></Section>
     <Section className="ed-faq-section"><Faq /></Section>
-    <CTABand headline={<>A little more clarity.<br /><em>A lot more possibility.</em></>} subtitle="Find your next starting point. Keep control of what comes next." primaryLabel="Explore Siro" primaryHref={LINKS.app} secondaryLabel="Read the documentation" secondaryHref="/docs" />
+    <CTABand headline={<>Your strategy.<br /><em>Our guard. Onchain proof.</em></>} subtitle="Build an agent in one sentence. Start on paper. Go live only when you choose." primaryLabel="Build your agent" primaryHref="/studio" secondaryLabel="Read the documentation" secondaryHref="/docs" />
   </main>;
 }

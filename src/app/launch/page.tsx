@@ -6,6 +6,7 @@ import {useRouter} from "next/navigation";
 import {useAccount,useConnect} from "wagmi";
 import {Header} from "@/components/Header";
 import {ClassicalArtwork} from "@/components/editorial/ClassicalArtwork";
+import {CinematicBackground} from "@/components/editorial/CinematicBackground";
 import {CHAIN_LIST_TEXT} from "@/lib/chains";
 import "@/styles/siro.css";
 import "@/styles/launch-refresh.css";
@@ -64,7 +65,8 @@ export default function LaunchPage(){
   useEffect(()=>{if(isConnected)router.replace("/app");},[isConnected,router]);
   return <div className="rusd-shell editorial-site launch-site"><Header/>
     <main className="launch-page" id="main-content" tabIndex={-1}>
-      <section className="launch-left" data-tone="dark" data-tone-local="true" aria-labelledby="launch-heading">
+      <section className="launch-left cinematic-section" data-tone="dark" data-tone-local="true" aria-labelledby="launch-heading">
+        <CinematicBackground variant="dusk" />
         <div className="launch-left-top"><span className="pill-badge">Your next starting point</span><span className="launch-panel-index">01 / SIRO</span></div>
         <div className="launch-left-bottom"><span className="siro-brand-mask launch-feature-mark" aria-hidden="true"/><h1 id="launch-heading" className="launch-tagline">Capital follows<br/><em className="launch-tagline-italic">intelligence.</em></h1><p className="launch-panel-copy">A clearer view of the possibilities.<br/>A considered approach to what comes next.</p></div>
         <ClassicalArtwork name="column" className="launch-classical-art"/>

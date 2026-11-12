@@ -22,7 +22,7 @@ function RiskBadge({ risk }: { risk: string }) {
         borderRadius: 999,
         fontSize: 12,
         fontWeight: 600,
-        background: `${colors[risk] ?? "var(--fg-70)"}18`,
+        background: `color-mix(in srgb, ${colors[risk] ?? "var(--fg-70)"} 10%, transparent)`,
         color: colors[risk] ?? "var(--fg-70)",
         textTransform: "capitalize",
       }}

@@ -61,11 +61,11 @@ export default function StatsPage() {
       </section>
 
       <section style={{ maxWidth: 900, margin: "0 auto", padding: "0 16px 80px", textAlign: "center" }}>
-        <a href="https://elysium.kinetiq.xyz/testnet-explorer" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "underline" }}>
+        <a href="https://robin.etherscan.io" target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "underline" }}>
           Verify on-chain →
         </a>
         <p style={{ fontSize: 13, color: "var(--fg-70)", marginTop: 12 }}>
-          All data is sourced from Elysium (Kinetiq L2). Numbers shown are for testnet and may not reflect mainnet activity.
+          All data is sourced from Robinhood Chain. Numbers shown are for testnet and may not reflect mainnet activity.
         </p>
       </section>
     </MarketingShell>

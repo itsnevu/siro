@@ -17,7 +17,7 @@ export function MockAppCard({ rows }: { rows: Row[] }) {
           <span
             key={chip}
             className={`px-3 py-1 rounded-full text-xs font-medium ${
-              i === 0 ? "bg-fg text-cream" : "bg-surface text-fg-70"
+              i === 0 ? "bg-primary text-primary-fg" : "bg-surface text-fg-70"
             }`}
           >
             {chip}

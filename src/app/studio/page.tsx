@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { MarketingShell } from "@/components/editorial/MarketingShell";
 import { ProductGlyph } from "@/components/editorial/ProductGlyph";
+import { CinematicBackground } from "@/components/editorial/CinematicBackground";
 
 export const metadata: Metadata = {
   title: "Studio  Siro",
@@ -21,13 +22,14 @@ const STEPS = [
   { num: "01", label: "Build", desc: "Drag building blocks into your strategy canvas. No code required." },
   { num: "02", label: "Backtest", desc: "Run against 5 years of historical data. See returns, drawdowns, Sharpe ratio." },
   { num: "03", label: "Paper Trade", desc: "Deploy on testnet with virtual funds. Validate in real market conditions." },
-  { num: "04", label: "Go Live", desc: "One click to deploy on Elysium. Your vault, your keys, your strategy." },
+  { num: "04", label: "Go Live", desc: "One click to deploy on Robinhood Chain. Your vault, your keys, your strategy." },
 ];
 
 export default function StudioPage() {
   return (
     <MarketingShell artwork="column">
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 40px" }}>
+      <section className="cinematic-section ed-product-hero" style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 40px" }}>
+        <CinematicBackground variant="dusk" />
         <p style={{ color: "var(--accent)", fontWeight: 600, fontSize: 14, letterSpacing: 1, textTransform: "uppercase", marginBottom: 12 }}>Siro Studio</p>
         <h1 style={{ fontSize: "clamp(32px, 5vw, 56px)", lineHeight: 1.1, marginBottom: 16 }}>
           Build strategies<br />without writing code.
@@ -66,7 +68,8 @@ export default function StudioPage() {
       </section>
 
       <section style={{ maxWidth: 900, margin: "0 auto", padding: "0 16px 80px" }}>
-        <div style={{ background: "var(--surface)", border: "1px solid var(--line)", borderRadius: 16, padding: "48px 32px", textAlign: "center" }}>
+        <div className="cinematic-section cinematic-cta" style={{ background: "var(--surface)", border: "1px solid var(--line)", borderRadius: 16, padding: "48px 32px", textAlign: "center" }}>
+          <CinematicBackground variant="night" />
           <h2 style={{ fontSize: 24, marginBottom: 12 }}>Try the Demo</h2>
           <p style={{ color: "var(--fg-70)", marginBottom: 24 }}>
             Build a sample strategy in the sandbox  no wallet needed.

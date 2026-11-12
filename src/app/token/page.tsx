@@ -106,7 +106,7 @@ export default function TokenPage() {
           }}
         >
           {[
-            { step: "1", title: "Trade", desc: "Users copy strategies and generate trading volume on Elysium." },
+            { step: "1", title: "Trade", desc: "Users copy strategies and generate trading volume on Robinhood Chain." },
             { step: "2", title: "Fee", desc: "Protocol earns 5% of profits. Revenue accumulates in the treasury." },
             { step: "3", title: "Buyback", desc: "Treasury buys $SIRO from the open market at regular intervals." },
             { step: "4", title: "Burn", desc: "Purchased $SIRO is permanently burned, reducing circulating supply." },

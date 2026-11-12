@@ -4,6 +4,7 @@ import "@/styles/effects.css";
 import "@/styles/editorial.css";
 import "@/styles/palette.css";
 import "@/styles/wide-layout.css";
+import "@/styles/cinematic.css";
 import { Providers } from "@/components/Providers";
 import Effects from "@/components/Effects";
 import { SITE_URL } from "@/lib/links";
@@ -16,7 +17,7 @@ export const viewport:Viewport={themeColor:brandPalette().bg};
 
 const TITLE = "Siro | Agentic Investing on Tokenized Stocks";
 const DESCRIPTION =
-  "Copy top traders into non-custodial vaults with AI agents on Elysium. Tokenized stocks, onchain risk guards, and $SIRO utility token.";
+  "Copy top traders into non-custodial vaults with AI agents on Robinhood Chain. Tokenized stocks, onchain risk guards, and $SIRO utility token.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     "AI trading agent",
     "non-custodial vault",
     "onchain risk guard",
-    "Elysium L2",
+    "Robinhood Chain",
     "$SIRO token",
     "autonomous portfolio",
   ],

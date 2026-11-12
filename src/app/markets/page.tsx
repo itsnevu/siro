@@ -5,7 +5,7 @@ import { markets } from "@/lib/mock";
 
 export const metadata: Metadata = {
   title: "Markets  Siro",
-  description: "Browse all tokenized stocks available on Siro via Elysium.",
+  description: "Browse all tokenized stocks available on Siro via Robinhood Chain.",
 };
 
 function fmtPrice(n: number) {
@@ -24,7 +24,7 @@ export default function MarketsPage() {
     <ProsePage
       eyebrow="Markets"
       title="Tokenized Stocks"
-      lede="Trade tokenized US equities 24/7 on Elysium. Real-time settlement, full collateralization."
+      lede="Trade tokenized US equities 24/7 on Robinhood Chain. Real-time settlement, full collateralization."
     >
       <div
         style={{
@@ -103,7 +103,7 @@ export default function MarketsPage() {
 
       <p style={{ marginTop: 32, fontSize: 13, color: "var(--fg-70, var(--secondary))" }}>
         Prices are indicative and sourced from onchain oracles. Tokenized stocks are synthetic assets
-        fully collateralized on Elysium. Not available in all jurisdictions. Siro is software, not investment advice.
+        fully collateralized on Robinhood Chain. Not available in all jurisdictions. Siro is software, not investment advice.
       </p>
     </ProsePage>
   );

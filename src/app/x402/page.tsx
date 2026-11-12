@@ -21,7 +21,7 @@ const STEPS = [
 export default function X402Page() {
   return (
     <MarketingShell>
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 48px" }}>
+      <section className="glow-intro" style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 48px" }}>
         <p style={{ color: "var(--accent)", fontWeight: 600, fontSize: 14, letterSpacing: 1, textTransform: "uppercase", marginBottom: 12 }}>x402 Agent API</p>
         <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, marginBottom: 16 }}>
           Pay per call.<br />No subscriptions.
@@ -93,7 +93,7 @@ strategies = client.strategies.list()`}
         <div style={{ background: "var(--surface)", border: "1px solid var(--line)", borderRadius: 28, padding: 28 }}>
           <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>On-Chain Payment (x402)</h3>
           <p style={{ color: "var(--fg-70)", lineHeight: 1.6, margin: 0, fontSize: 14 }}>
-            Every API call is settled via the x402 HTTP payment protocol on Elysium. Your client signs a micro-payment with $SIRO or USDC, the server verifies the signature, and the call executes. No invoices, no credit cards, no monthly bills  just on-chain settlement per request.
+            Every API call is settled via the x402 HTTP payment protocol on Robinhood Chain. Your client signs a micro-payment with $SIRO or USDC, the server verifies the signature, and the call executes. No invoices, no credit cards, no monthly bills  just on-chain settlement per request.
           </p>
         </div>
       </section>

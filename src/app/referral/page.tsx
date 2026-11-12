@@ -19,7 +19,7 @@ const STEPS = [
 
 export default function ReferralPage() {
   return (
-    <main className="site-container py-24 md:py-40">
+    <main className="glow-header site-container py-24 md:py-40">
       <span className="eyebrow block mb-4">Referral Program</span>
       <h1 className="serif-headline text-[44px] md:text-[84px] mb-6">
         Share Siro, <em>earn $SIRO.</em>

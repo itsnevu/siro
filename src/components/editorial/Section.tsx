@@ -36,7 +36,7 @@ export function Section({ tone = "light", className = "", children, id }: Props)
       ref={ref}
       id={id}
       data-tone={tone}
-      className={`py-24 md:py-40 ${tone === "dark" ? "bg-[var(--fg)] text-[var(--bg)]" : ""} ${className}`}
+      className={`py-24 md:py-40 ${tone === "dark" ? "bg-bg text-fg" : ""} ${className}`}
     >
       <div className="site-container section-enter">{children}</div>
     </section>

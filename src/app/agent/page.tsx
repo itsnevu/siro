@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MarketingShell } from "@/components/editorial/MarketingShell";
+import { CinematicBackground } from "@/components/editorial/CinematicBackground";
 
 export const metadata: Metadata = {
   title: "Agent  Siro",
@@ -31,7 +32,8 @@ const GUARANTEES = [
 export default function AgentPage() {
   return (
     <MarketingShell artwork="arch">
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 48px" }}>
+      <section className="cinematic-section ed-product-hero" style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 48px" }}>
+        <CinematicBackground variant="dusk" />
         <p style={{ color: "var(--accent)", fontWeight: 600, fontSize: 14, letterSpacing: 1, textTransform: "uppercase", marginBottom: 12 }}>Siro Agent</p>
         <h1 style={{ fontSize: "clamp(32px, 5vw, 56px)", lineHeight: 1.1, marginBottom: 16 }}>
           Describe it.<br />The agent builds it.

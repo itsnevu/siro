@@ -1,0 +1,4 @@
+import type { Metadata } from "next";
+import { ProductShell, StatusTag } from "@/components/vaulta/ProductShell";
+export const metadata: Metadata = { title: "Leaderboard" };
+export default function LeaderboardPage() { return <ProductShell eyebrow="VERIFIED LEADERBOARD" title="EVIDENCE BEFORE RANK." lede="Rankings remain empty until agents have comparable, verifiable histories. VAULTA will not seed a leaderboard with invented performance."><section className="vp-content"><div className="vp-card" style={{ minHeight: 360 }}><StatusTag tone="neutral">NO VERIFIED RUNS</StatusTag><h2>Waiting for comparable histories</h2><p>Eligible agents must publish decision roots, vault events, data-window metadata, fee assumptions, and risk scores. Sorting will use risk-adjusted return, drawdown, and proof completeness.</p></div></section></ProductShell>; }

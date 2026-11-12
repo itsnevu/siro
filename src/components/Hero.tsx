@@ -7,7 +7,7 @@ function VaultCard() {
       {/* Header */}
       <div className="hero-agent-header">
         <div className="hero-agent-header-left">
-          <img alt="" src="/brand/mark" width={28} height={28} className="hero-agent-icon" />
+          <img alt="" src="/brand/mark?palette=ascendlaunch" width={28} height={28} className="hero-agent-icon" />
           <span className="hero-agent-label">Copy Vault</span>
         </div>
         <span className="hero-agent-badge">Live</span>

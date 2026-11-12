@@ -102,7 +102,7 @@ export default function PortfolioPage() {
                       <td className="px-4 py-3">
                         <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium ${
                           tx.type === "Deposit" ? "bg-surface-2 text-fg-70" :
-                          tx.type === "Withdrawal" ? "bg-danger text-danger" :
+                          tx.type === "Withdrawal" ? "bg-danger/10 text-danger" :
                           "bg-surface-2 text-fg-70"
                         }`}>{tx.type}</span>
                       </td>

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 const STEPS = [
   {
     title: "Welcome to Siro",
-    desc: "An agentic investment platform for tokenized stocks on Elysium. Non-custodial, transparent, AI-powered.",
+    desc: "An agentic investment platform for tokenized stocks on Robinhood Chain. Non-custodial, transparent, AI-powered.",
     icon: "👋",
   },
   {

@@ -16,7 +16,7 @@ const TEAM = [
 export default function AboutPage() {
   return (
     <MarketingShell artwork="urn">
-      <section style={{ maxWidth: 800, margin: "0 auto", padding: "80px 16px 48px" }}>
+      <section className="glow-intro" style={{ maxWidth: 800, margin: "0 auto", padding: "80px 16px 48px" }}>
         <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, marginBottom: 16 }}>About Siro</h1>
         <p style={{ fontSize: 18, color: "var(--fg-70)", lineHeight: 1.6, maxWidth: 600 }}>
           We believe investing should be intelligent, transparent, and accessible to everyone  not just hedge funds and quant desks.

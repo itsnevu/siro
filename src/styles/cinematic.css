@@ -1,0 +1,59 @@
+/* Each host keeps its existing dimensions. Every scenic layer is out of flow. */
+.cinematic-section { position:relative; isolation:isolate; }
+.cinematic-background { position:absolute; inset:0; z-index:-2; overflow:hidden; pointer-events:none; user-select:none; background:var(--bg); border-radius:inherit; }
+.cinematic-sky { position:absolute; inset:-8%; background-image:radial-gradient(ellipse 7% 11% at 78% 39%,var(--sun-light),var(--sun-halo) 48%,transparent 100%),radial-gradient(ellipse 48% 65% at 90% 45%,var(--sun-halo),transparent 75%),radial-gradient(ellipse 65% 70% at 18% 20%,var(--sky-lavender),transparent 80%),var(--cinematic-image,linear-gradient(180deg,var(--sky-1) 0%,var(--sky-2) 25%,var(--sky-3) 48%,var(--sky-4) 66%,var(--sky-5) 100%)); background-size:cover; background-position:center; animation:cinematic-sky-drift 30s ease-in-out infinite alternate; }
+.cinematic-clouds { position:absolute; inset:0; }
+.cinematic-clouds i { position:absolute; width:48%; height:16%; left:-5%; top:20%; border-radius:50%; background:linear-gradient(180deg,var(--cloud),var(--cloud-shadow)); filter:blur(28px); animation:cinematic-cloud-drift 44s ease-in-out infinite alternate; }
+.cinematic-clouds i:nth-child(2) { width:42%; left:54%; top:30%; animation-duration:56s; animation-delay:-16s; }
+.cinematic-clouds i:nth-child(3) { width:62%; left:24%; top:50%; height:11%; animation-duration:63s; animation-delay:-32s; }
+.cinematic-clouds i:nth-child(4) { width:35%; left:4%; top:62%; height:9%; animation-duration:51s; animation-delay:-22s; }
+.cinematic-clouds i:nth-child(5) { width:30%; left:73%; top:13%; height:12%; animation-duration:68s; animation-delay:-41s; }
+.cinematic-horizon { position:absolute; inset:70% 0 0; background:linear-gradient(180deg,transparent,var(--sea) 25%,var(--bg)); }
+.cinematic-horizon::after { content:""; position:absolute; width:32%; height:90%; left:62%; top:0; background:radial-gradient(ellipse at 50% 0,var(--reflection),transparent 65%); transform:skewX(-12deg); }
+.cinematic-shade { position:absolute; inset:0; background:linear-gradient(90deg,var(--shade-left),var(--scrim) 52%,var(--shade-right)),linear-gradient(0deg,var(--bg),transparent 60%); }
+.cinematic-grain { position:absolute; inset:0; opacity:.08; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath d='M0 0h160v160H0z' filter='url(%23grain)'/%3E%3C/svg%3E"); }
+.cinematic-background[data-image="true"] .cinematic-sky { inset:0; background-image:var(--cinematic-image); background-position:center 46%; }
+.cinematic-background[data-image="true"] :is(.cinematic-clouds,.cinematic-horizon) { display:none; }
+.cinematic-background[data-image="true"] .cinematic-shade { background:linear-gradient(90deg,rgba(7,8,14,.84) 0%,rgba(7,8,14,.54) 42%,rgba(7,8,14,.2) 100%),linear-gradient(0deg,rgba(7,8,14,.7),transparent 54%); }
+.cinematic-background[data-variant="night"] { --sun-light:var(--night-sun); --sun-halo:var(--glow-purple); --cloud:var(--night-cloud); --reflection:var(--glow-purple); }
+.cinematic-background[data-variant="night"] .cinematic-sky { background-image:radial-gradient(ellipse 50% 60% at 75% 60%,var(--sky-lavender),transparent 75%),radial-gradient(ellipse 35% 35% at 20% 80%,var(--night-sun),transparent 80%),var(--cinematic-image,linear-gradient(180deg,var(--bg),var(--sky-1) 65%,var(--sea))); }
+.cinematic-section :is(h1,h2) { letter-spacing:-.045em; }
+.cinematic-section :is(h1,h2) em { background:var(--grad); background-clip:text; -webkit-background-clip:text; color:transparent!important; text-decoration-color:transparent; }
+.cinematic-section :is(.eyebrow,.launch-panel-index,.launch-chain-label) { font-family:ui-monospace,"SF Mono",monospace; text-transform:uppercase; letter-spacing:.12em; color:var(--text-muted); }
+.cinematic-section :is(.btn-primary,.launch-continue-btn),.cinematic-cta a { background:var(--gradient-brand)!important; color:var(--on-light)!important; border-radius:999px; }
+.cinematic-section .btn-primary:hover,.cinematic-cta a:hover { box-shadow:0 0 28px var(--glow-purple); filter:brightness(1.08); }
+.ed-hero-copy.cinematic-section>.cinematic-background { left:calc(50% - 50vw); right:calc(50% - 50vw); top:-160px; bottom:-38px; }
+@media(max-width:768px) { .ed-hero-copy.cinematic-section>.cinematic-background { top:-118px; } }
+.ed-hero-copy.cinematic-section :is(.ed-hero-note,.ed-announcement,.ed-hero-copy>p) { color:var(--text-muted); }
+.editorial-site .cinematic-section.ed-product-hero { background:transparent; }
+.ed-product-hero>.cinematic-background { left:calc(50% - 50vw); right:calc(50% - 50vw); }
+.editorial-site .cinematic-cta { background:transparent!important; }
+.cinematic-cta a { box-shadow:none; }
+.editorial-site .launch-left.cinematic-section { background:transparent; }
+.ed-home :is(.ed-why,.ed-manifesto),.editorial-site .ed-product-page>.glow-intro { background:radial-gradient(ellipse at 10% 20%,var(--glow-subtle),transparent 65%); }
+@keyframes cinematic-sky-drift { from { transform:scale(1) translate3d(0,0,0); } to { transform:scale(1.08) translate3d(-1%,1%,0); } }
+@keyframes cinematic-cloud-drift { from { transform:translate3d(-5%,0,0); } to { transform:translate3d(14%,0,0); } }
+@media(max-width:640px) {
+  .cinematic-clouds i:nth-child(n+3) { display:none; }
+  .cinematic-clouds i { width:70%; height:13%; }
+  .cinematic-shade { background:linear-gradient(90deg,var(--shade-left),var(--scrim)),linear-gradient(0deg,var(--bg),transparent 65%); }
+  .cinematic-section .launch-classical-art { visibility:hidden; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .cinematic-background *,.cinematic-background::before,.cinematic-background::after { animation:none!important; transition:none!important; }
+}
+.editorial-site .ed-product-page .cinematic-cta a[style*="background"] { background:var(--gradient-brand)!important; color:var(--on-light)!important; }
+.cinematic-section :is(.ed-announcement,.pill-badge) { background:var(--surface); }
+.cinematic-section :is(.eyebrow,.mono-meta,.ed-hero-note,.launch-chain-label,.launch-panel-index) { color:var(--text-muted); }
+.editorial-site .ed-product-page>.cinematic-section>p:first-child:not(:only-child) { color:var(--text-muted); font-family:ui-monospace,"SF Mono",monospace; text-transform:uppercase; letter-spacing:.12em; }
+.ed-home>[data-tone="dark"].cinematic-section h2 em { color:transparent; }
+/* These existing reading-oriented intros receive only a static transition glow. */
+.blog-index-heading,
+body:has(.siro-doc-toc a[href="#useful"]) .siro-doc-head,
+main.glow-header { background-image:radial-gradient(ellipse at 0 0,var(--glow-subtle),transparent 38%); background-size:100% 320px; background-repeat:no-repeat; }
+/* Hero sky dissolves into the page at both ends, so no edge shows under the navbar or above the next block. */
+.ed-hero-copy.cinematic-section>.cinematic-background { background:transparent; -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 70%,transparent 100%); mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 70%,transparent 100%); }
+.ed-hero-copy.cinematic-section>.cinematic-background[data-image="true"] { -webkit-mask-image:none; mask-image:none; }
+/* The hero only needs clipping sideways; clipping vertically cut the sky off right under the navbar. */
+.editorial-site .ed-home .ed-hero { overflow-x:clip!important; overflow-y:visible!important; }
+.editorial-site .rusd-topbar { background:transparent!important; }

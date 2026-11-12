@@ -1,36 +1,39 @@
 :root {
-  --bg:#F8F9F9; --surface:#F0F1F1; --surface-2:#E8EAEA; --card:#FFFFFF;
-  --fg:#03211C; --fg-70:rgba(3,33,28,.70); --muted:rgba(3,33,28,.40); --line:rgba(3,33,28,.10);
-  --primary:#97FCE3; --primary-fg:#03211C; --primary-soft:rgba(151,252,227,.25);
-  --secondary:#447259; --secondary-soft:rgba(68,114,89,.10);
-  --success:#2BB58A; --danger:#E5484D; --warning:#D9A21B;
-  --light-bg:#F8F9F9; --dark-bg:#03211C; --dark-surface:#072B25; --dark-surface-2:#0C3730; --dark-card:#0A302A;
-  --light-fg:#F8F9F9; --mint:#97FCE3; --ink-rgb:3 33 28; --mint-rgb:151 252 227;
-  --focus:#447259; --chart-1:#03211C; --chart-2:#447259;
-  --allocation-1:#03211C; --allocation-2:#447259; --allocation-3:#97FCE3; --allocation-4:var(--surface-2);
-  --shadow-sm:0 1px 2px rgba(3,33,28,.06); --shadow-md:0 12px 32px rgba(3,33,28,.08);
+  --bg:#0A0B12; --surface:#191B27; --surface-glass:rgba(255,255,255,0.04); --border:rgba(236,228,216,0.12);
+  --text:#F4F2EE; --text-muted:rgba(244,242,238,0.72); --text-subtle:rgba(244,242,238,0.56); --text-dim:rgba(244,243,241,0.46);
+  --accent-mint:#8FE3B0; --accent-mint-soft:#A9E9C4;
+  --brand-purple:#A597FF; --brand-pink:#EEB2CB; --brand-peach:#F3CDB0;
+  --gradient-brand:linear-gradient(90deg, var(--brand-purple) 0%, var(--brand-pink) 70%, var(--brand-peach) 100%);
+  --grad:var(--gradient-brand);
+  --light-top:#FDFBF8; --light-bottom:#EFEBE6; --light-cream:#E9E1D6; --text-on-light:#1B1620; --on-light:var(--text-on-light);
+  --light:linear-gradient(180deg, var(--light-top) 0%, var(--light-bottom) 100%); --light-surface:var(--light);
+  --shadow-color:rgba(0,0,0,0.4); --glow-purple:rgba(165,151,255,0.15); --glow-subtle:rgba(165,151,255,0.08);
+  --scrim:rgba(10,11,18,0.76); --shade-left:rgba(10,11,18,0.88); --shade-right:rgba(10,11,18,0.62);
+  --sun-light:rgba(243,205,176,0.9); --sun-halo:rgba(243,205,176,0.42); --sky-lavender:rgba(165,151,255,0.45);
+  --sky-1:color-mix(in srgb,var(--brand-purple) 32%,var(--surface)); --sky-2:color-mix(in srgb,var(--brand-purple) 48%,var(--surface)); --sky-3:color-mix(in srgb,var(--brand-pink) 70%,var(--surface)); --sky-4:color-mix(in srgb,var(--brand-peach) 80%,var(--surface)); --sky-5:var(--surface);
+  --cloud:rgba(244,242,238,0.19); --cloud-shadow:color-mix(in srgb,var(--surface) 44%,transparent); --sea:color-mix(in srgb,var(--bg) 75%,var(--surface)); --reflection:rgba(243,205,176,0.25);
+  --night-sun:rgba(165,151,255,0.24); --night-cloud:rgba(165,151,255,0.09);
+  /* Color aliases preserve existing component geometry and business behavior. */
+  --surface-2:var(--surface-glass); --card:var(--surface); --fg:var(--text); --fg-70:var(--text-muted); --muted:var(--text-subtle); --line:var(--border);
+  --primary:var(--brand-purple); --primary-fg:var(--text-on-light); --primary-soft:color-mix(in srgb,var(--brand-purple) 12%,transparent);
+  --secondary:var(--brand-pink); --secondary-soft:color-mix(in srgb,var(--brand-pink) 10%,transparent);
+  --success:var(--accent-mint); --danger:var(--brand-pink); --warning:var(--brand-peach);
+  --light-bg:var(--light-cream); --dark-bg:var(--bg); --dark-surface:var(--surface); --dark-surface-2:var(--surface); --dark-card:var(--surface);
+  --light-fg:var(--text); --mint:var(--brand-purple); --ink-rgb:244 242 238; --mint-rgb:165 151 255;
+  --focus:var(--brand-purple); --chart-1:var(--brand-purple); --chart-2:var(--brand-pink);
+  --allocation-1:var(--brand-purple); --allocation-2:var(--brand-pink); --allocation-3:var(--brand-peach); --allocation-4:var(--light-cream);
+  --shadow-sm:0 1px 2px var(--shadow-color); --shadow-md:0 12px 32px var(--shadow-color);
+  /* The requested dim token is lifted slightly for AA-readable placeholders. */
+  --placeholder:color-mix(in srgb,var(--text-dim) 90%,var(--text));
   --font-instrument:"Instrument Sans",ui-sans-serif,system-ui,sans-serif;
   --font-display:"Hedvig Letters Serif",ui-serif,Georgia,serif;
   --font-italic:"Instrument Serif",ui-serif,Georgia,serif;
-  /* Compatibility aliases keep the established layouts and components intact. */
-  --page-bg:var(--bg); --ink:var(--fg); --soft:var(--surface); --control:var(--muted); --faint:var(--muted);
-  --cream:var(--light-fg); --paper:var(--light-fg); --accent:var(--secondary); --accent-soft:var(--primary-soft);
-  --accent-dark:var(--fg); --forest:var(--fg); --forest-soft:var(--secondary); --sage:var(--secondary);
-  --sage-deep:var(--secondary); --moss:var(--fg-70); --lime:var(--primary);
-  --brand-gradient:linear-gradient(120deg,var(--fg),var(--secondary));
+  --page-bg:var(--bg); --ink:var(--fg); --soft:var(--surface); --control:var(--line); --faint:var(--text-subtle);
+  --cream:var(--light-cream); --paper:var(--light-cream); --accent:var(--secondary); --accent-soft:var(--primary-soft);
+  --accent-dark:var(--fg); --accent-ink:var(--fg); --forest:var(--fg); --forest-soft:var(--brand-pink); --sage:var(--brand-pink);
+  --sage-deep:var(--brand-purple); --moss:var(--fg-70); --lime:var(--brand-purple); --brand-gradient:var(--grad);
   --rusd-bg:var(--bg); --rusd-surface:var(--card); --rusd-ink:var(--fg); --rusd-muted:var(--fg-70);
-  --rusd-line:var(--line); --rusd-primary:var(--fg); --rusd-primary-hover:var(--secondary);
-  --rusd-bright:var(--secondary); --rusd-soft:var(--surface-2); --rusd-frost:var(--surface);
+  --rusd-line:var(--line); --rusd-primary:var(--brand-purple); --rusd-primary-hover:var(--brand-pink);
+  --rusd-bright:var(--brand-pink); --rusd-soft:var(--surface-2); --rusd-frost:var(--surface);
   --rusd-warning:var(--warning); --rusd-display:var(--font-instrument); --rusd-max-width:1200px;
-}
-.dark,[data-tone="dark"] {
-  --bg:#03211C; --surface:#072B25; --surface-2:#0C3730; --card:#0A302A;
-  --fg:#F8F9F9; --fg-70:rgba(248,249,249,.70); --muted:rgba(248,249,249,.45); --line:rgba(255,255,255,.12);
-  --primary:#97FCE3; --primary-fg:#03211C; --secondary:#6FA88A;
-  --secondary-soft:rgba(111,168,138,.10); --success:#97FCE3; --danger:#FF6B6F; --warning:#FFC94D;
-  --focus:#97FCE3; --chart-1:#97FCE3; --chart-2:#6FA88A;
-  --allocation-1:#F8F9F9; --allocation-2:#6FA88A; --allocation-3:#97FCE3;
-  --page-bg:var(--bg); --ink:var(--fg); --soft:var(--surface); --accent:var(--secondary);
-  --rusd-bg:var(--bg); --rusd-surface:var(--card); --rusd-ink:var(--fg); --rusd-muted:var(--fg-70);
-  --rusd-line:var(--line); --rusd-primary:var(--fg); --rusd-soft:var(--surface-2); --rusd-frost:var(--surface);
 }

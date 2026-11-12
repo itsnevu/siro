@@ -1,5 +1,5 @@
 /* A quiet money-flow backdrop; the existing hero remains the foreground. */
-.editorial-site .ed-home .ed-hero { overflow:clip; }
+.editorial-site .ed-home .ed-hero { overflow-x:clip; overflow-y:visible; }
 .ed-hero-copy { position:relative; isolation:isolate; }
 .capital-flow { --flow-ink:var(--secondary); position:absolute; top:-28px; bottom:-20px; left:50%; width:min(100vw,1600px); transform:translateX(-50%); z-index:-1; pointer-events:none; user-select:none; mask-image:radial-gradient(ellipse 35% 65% at 50% 40%,transparent 55%,var(--fg) 100%); -webkit-mask-image:radial-gradient(ellipse 35% 65% at 50% 40%,transparent 55%,var(--fg) 100%); }
 .dark .capital-flow { --flow-ink:var(--primary); }

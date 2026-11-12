@@ -42,7 +42,7 @@ const PLANS = [
 
 const FAQ = [
   { q: "When is the performance fee charged?", a: "Only when your vault realizes profit above its high-water mark. If your vault is flat or down, you pay nothing." },
-  { q: "Are there withdrawal fees?", a: "No. You only pay Elysium gas fees (fractions of a cent)." },
+  { q: "Are there withdrawal fees?", a: "No. You only pay Robinhood Chain gas fees (fractions of a cent)." },
   { q: "Can I switch plans?", a: "Yes. Upgrade or downgrade at any time. Pro is billed monthly in $SIRO or USDC." },
   { q: "Is there a free trial for Pro?", a: "Yes  14 days, no credit card required." },
 ];
@@ -50,7 +50,7 @@ const FAQ = [
 export default function PricingPage() {
   return (
     <MarketingShell>
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 48px", textAlign: "center" }}>
+      <section className="glow-intro" style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 48px", textAlign: "center" }}>
         <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, marginBottom: 16 }}>Simple, transparent pricing</h1>
         <p style={{ fontSize: 18, color: "var(--fg-70)" }}>No hidden fees. Performance fees only on profit.</p>
       </section>

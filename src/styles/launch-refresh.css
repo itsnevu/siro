@@ -21,8 +21,8 @@
 .launch-site .launch-features { gap:20px; margin-bottom:36px; }
 .launch-site .launch-feature { font-size:13px; color:var(--fg); gap:12px; }
 .launch-site .launch-check { background:var(--primary-soft); color:var(--fg); width:24px; height:24px; }
-.launch-site .launch-continue-btn { display:flex; justify-content:space-between; align-items:center; background:var(--primary); color:var(--primary-fg); border:0; border-radius:10px; width:100%; padding:0 18px; height:50px; font:500 14px var(--font-instrument); cursor:pointer; transition:filter .18s; }
-.launch-site .launch-continue-btn:hover { background:var(--primary); filter:brightness(.97); }
+.launch-site .launch-continue-btn { display:flex; justify-content:space-between; align-items:center; background:var(--grad); color:var(--primary-fg); border:0; border-radius:10px; width:100%; padding:0 18px; height:50px; font:500 14px var(--font-instrument); cursor:pointer; transition:filter .18s; }
+.launch-site .launch-continue-btn:hover { background:var(--grad); filter:brightness(1.08); }
 .launch-site .launch-continue-btn:disabled { opacity:.6; cursor:wait; }
 .launch-site .launch-disclaimer { color:var(--fg-70); font-size:11px; text-align:left; line-height:1.7; margin:18px 0 0; }
 .launch-disclaimer a { color:var(--fg); text-underline-offset:3px; }

@@ -1,0 +1,41 @@
+/* Sections added for the guarded-agent product. They reuse the site's palette tokens only. */
+.ed-home .ag-guard, .ed-home .ag-proof { padding: 80px 0; }
+
+.ag-guard-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.ag-shield-stage { position: relative; aspect-ratio: 1 / 1; max-width: 460px; width: 100%; margin: 0 auto; display: grid; place-items: center; }
+.ag-shield-stage::before { content: ""; position: absolute; inset: 4%; border: 1px dashed color-mix(in srgb, var(--mint) 40%, transparent); border-radius: 50%; }
+.ag-shield-stage::after { content: ""; position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--mint) 18%, transparent), transparent 70%); pointer-events: none; }
+.ag-shield { position: relative; z-index: 1; width: 58%; height: 66%; image-rendering: pixelated; }
+.ag-flow { position: absolute; z-index: 2; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-70); display: flex; align-items: center; gap: 8px; }
+.ag-flow i { display: block; width: 46px; border-top: 1px dotted var(--fg-70); }
+.ag-flow-deposit { left: -2%; top: 48%; }
+.ag-flow-proof { right: -2%; top: 40%; color: var(--mint); }
+.ag-flow-proof i { border-top: 1px solid var(--mint); }
+.ag-flow-withdraw { right: 4%; bottom: 12%; }
+.ag-flow-checks { top: 0; left: 50%; transform: translateX(-50%); color: var(--danger, #F87171); white-space: nowrap; }
+.ag-flow-checks i { border-top: 1px dashed var(--danger, #F87171); width: 28px; }
+
+.ag-limits { list-style: none; margin: 32px 0 0; padding: 0; border-top: 1px solid var(--line); }
+.ag-limits li { display: flex; justify-content: space-between; gap: 24px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.ag-limits span { color: var(--fg-70); }
+.ag-limits strong { font-weight: 500; text-align: right; }
+.ag-note { color: var(--fg-70); font-size: 12px; margin-top: 18px; line-height: 1.7; }
+
+.ag-feed { border: 1px solid var(--line); border-radius: 24px; overflow: hidden; background: var(--bg); }
+.ag-feed-head, .ag-feed-row { display: grid; grid-template-columns: 76px 72px 1fr auto; gap: 16px; align-items: center; padding: 14px 22px; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 12px; }
+.ag-feed-head { color: var(--fg-70); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; border-bottom: 1px solid var(--line); }
+.ag-feed-row + .ag-feed-row { border-top: 1px solid var(--line); }
+.ag-feed-row p { margin: 0; color: var(--fg-70); font-family: var(--font-instrument); font-size: 13px; }
+.ag-act { font-weight: 600; }
+.ag-act-buy { color: var(--mint); }
+.ag-act-sell { color: var(--danger, #F87171); }
+.ag-act-hold { color: var(--fg-70); }
+.ag-verify { color: var(--fg-70); white-space: nowrap; }
+
+@media (max-width: 768px) {
+  .ed-home .ag-guard, .ed-home .ag-proof { padding: 48px 0; }
+  .ag-guard-layout { grid-template-columns: 1fr; gap: 36px; }
+  .ag-feed-head, .ag-feed-row { grid-template-columns: 52px 56px 1fr; padding: 12px 16px; }
+  .ag-verify { grid-column: 1 / -1; }
+  .ag-flow i { width: 24px; }
+}

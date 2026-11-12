@@ -10,14 +10,14 @@ const STEPS = [
   { icon: "🔗", title: "Connect Wallet", desc: "Sign in with your existing wallet or create a new one via Privy. Non-custodial  your keys, your funds." },
   { icon: "🔍", title: "Browse Strategies", desc: "Explore the marketplace: filter by return, risk, Sharpe ratio, or asset class. Every strategy has a transparent track record." },
   { icon: "📈", title: "Backtest", desc: "Run any strategy against 5 years of historical data. See simulated returns, max drawdown, win rate, and more  before risking a dollar." },
-  { icon: "📝", title: "Paper Trade", desc: "Deploy on Elysium testnet with virtual USDC. Watch it trade in real market conditions with zero risk." },
+  { icon: "📝", title: "Paper Trade", desc: "Deploy on paper mode with virtual USDG. Watch it trade in real market conditions with zero risk." },
   { icon: "🚀", title: "Go Live", desc: "Deposit USDC into your vault. The strategy executes on-chain via Siro's keeper network. Withdraw anytime." },
 ];
 
 export default function HowItWorksPage() {
   return (
     <MarketingShell artwork="column">
-      <section style={{ maxWidth: 800, margin: "0 auto", padding: "80px 16px 48px", textAlign: "center" }}>
+      <section className="glow-intro" style={{ maxWidth: 800, margin: "0 auto", padding: "80px 16px 48px", textAlign: "center" }}>
         <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, marginBottom: 16 }}>How Siro Works</h1>
         <p style={{ fontSize: 18, color: "var(--fg-70)" }}>Five steps from zero to live strategy.</p>
       </section>

@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { brandPalette } from "@/lib/brand-palette";
 
 export const metadata: Metadata = {
   title: "Brand | Siro",
   description: "Siro brand assets, colors, and usage guidelines.",
 };
 
+const palette = brandPalette();
 const COLORS = [
-  { name: "Page Background", hex: "#dce5d8", var: "--page-bg" },
-  { name: "Surface", hex: "#e8eee5", var: "--surface" },
-  { name: "Card", hex: "#f3f6f1", var: "--card" },
-  { name: "Foreground", hex: "#102a24", var: "--fg" },
-  { name: "Muted", hex: "#5d6f68", var: "--muted" },
-  { name: "Faint", hex: "#a9b8b0", var: "--faint" },
-  { name: "Accent Soft", hex: "#b9cfa8", var: "--accent-soft" },
-  { name: "Cream", hex: "#eef2ea", var: "--cream" },
+  { name: "Page Background", hex: palette.bg, var: "--page-bg" },
+  { name: "Surface", hex: palette.surface, var: "--surface" },
+  { name: "Card", hex: palette.surface, var: "--card" },
+  { name: "Foreground", hex: palette.fg, var: "--fg" },
+  { name: "Muted", hex: palette.fg70, var: "--muted" },
+  { name: "Faint", hex: palette.subtle, var: "--faint" },
+  { name: "Accent Soft", hex: palette.secondary, var: "--accent-soft" },
+  { name: "Cream", hex: palette.cream, var: "--cream" },
 ];
 
 export default function BrandPage() {
@@ -33,14 +35,14 @@ export default function BrandPage() {
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-card rounded-[28px] p-12 flex items-center justify-center">
             <div className="flex items-center gap-4">
-              <Image src="/brand/S-transparent.png" alt="Siro mark" width={64} height={64} />
+              <Image src="/brand/mark?palette=ascendlaunch" unoptimized alt="Siro mark" width={64} height={64} />
               <span className="font-serif text-[48px] tracking-tight">siro.</span>
             </div>
           </div>
-          <div className="bg-[#102a24] rounded-[28px] p-12 flex items-center justify-center">
+          <div className="bg-bg rounded-[28px] p-12 flex items-center justify-center">
             <div className="flex items-center gap-4">
-              <Image src="/brand/S-transparent.png" alt="Siro mark" width={64} height={64} className="brightness-200 invert" />
-              <span className="font-serif text-[48px] tracking-tight text-[#eef2ea]">siro.</span>
+              <Image src="/brand/mark?palette=ascendlaunch" unoptimized alt="Siro mark" width={64} height={64} />
+              <span className="font-serif text-[48px] tracking-tight text-fg">siro.</span>
             </div>
           </div>
         </div>

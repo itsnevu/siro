@@ -3,8 +3,8 @@ import type { BlogPost } from "./types";
 export const blogPosts: BlogPost[] = [
   {
     slug: "introducing-siro",
-    title: "Introducing Siro: Agentic Investment on Elysium",
-    excerpt: "Siro brings tokenized stock strategies to Elysium L2. Non-custodial vaults, onchain risk guards, and AI-powered agents  all controlled by you.",
+    title: "Introducing Siro: Agentic Investment on Robinhood Chain",
+    excerpt: "Siro brings tokenized stock strategies to Robinhood Chain. Non-custodial vaults, onchain risk guards, and AI-powered agents  all controlled by you.",
     category: "Announcements",
     author: "Siro Team",
     date: "2026-09-15",

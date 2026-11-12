@@ -53,7 +53,7 @@ export function Footer() {
               <span className="font-serif text-xl tracking-tight">siro.</span>
             </Link>
             <p className="text-[var(--fg-70)] text-sm leading-relaxed">
-              Agentic investing on tokenized stocks. Non-custodial. On Elysium.
+              Agentic investing on tokenized stocks. Non-custodial. On Robinhood Chain.
             </p>
           </div>
           {COLUMNS.map((col) => (

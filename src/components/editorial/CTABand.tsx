@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CinematicBackground } from "./CinematicBackground";
 
 type Props = {
   headline: ReactNode;
@@ -11,7 +12,8 @@ type Props = {
 
 export function CTABand({ headline, subtitle, primaryLabel, primaryHref, secondaryLabel, secondaryHref }: Props) {
   return (
-    <section data-tone="dark" className="bg-bg text-fg py-24 md:py-40">
+    <section data-tone="dark" className="bg-bg text-fg py-24 md:py-40 cinematic-section">
+      <CinematicBackground variant="night" />
       <div className="site-container text-center">
         <h2 className="serif-headline text-[44px] md:text-[72px] mb-6">{headline}</h2>
         {subtitle && <p className="text-[var(--fg-70)] text-lg mb-10 max-w-xl mx-auto">{subtitle}</p>}

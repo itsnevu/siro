@@ -9,7 +9,7 @@ export function brandPalette() {
     if(!value)throw new Error(`Missing brand token: ${name}`);
     return value.trim();
   }
-  return {bg:token("bg"),fg:token("fg"),primary:token("primary"),secondary:token("secondary"),fg70:token("fg-70"),dark:token("dark-bg")};
+  return {bg:token("bg"),surface:token("surface"),fg:token("text"),primary:token("accent-mint"),secondary:token("accent-mint-soft"),fg70:token("text-muted"),subtle:token("text-subtle"),dim:token("text-dim"),cream:token("light-cream"),dark:token("bg")};
 }
 
 /** Recolor only the original logo's alpha silhouette; its geometry is untouched. */

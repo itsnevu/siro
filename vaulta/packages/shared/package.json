@@ -1,0 +1,32 @@
+{
+  "name": "@vaulta/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Types, zod schemas, constants and chain config shared by the app and the engine.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./constants": "./src/constants.ts",
+    "./config/chains": "./src/config/chains.ts",
+    "./strategy": "./src/strategy.ts",
+    "./decision": "./src/decision.ts",
+    "./abis": "./src/abis/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "sync:markets": "node scripts/sync-markets.mjs",
+    "sync:contracts": "node scripts/sync-contracts.mjs"
+  },
+  "dependencies": {
+    "viem": "^2.57.18",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}

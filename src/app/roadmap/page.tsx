@@ -18,7 +18,7 @@ const ITEMS: Item[] = [
   { title: "$SIRO Token Launch", desc: "Utility token for fees, governance, and buyback.", status: "planned", quarter: "Q1 2027" },
   { title: "x402 Agent API", desc: "Pay-per-call API with on-chain settlement.", status: "planned", quarter: "Q1 2027" },
   { title: "Buyback Ladder", desc: "Protocol revenue used to buy and burn $SIRO.", status: "planned", quarter: "Q1 2027" },
-  { title: "Elysium Mainnet Deployment", desc: "Production deployment on Elysium mainnet (chain 99901).", status: "planned", quarter: "Q2 2027" },
+  { title: "Robinhood Chain Mainnet Deployment", desc: "Production deployment on Robinhood Chain mainnet (chain 4663).", status: "planned", quarter: "Q2 2027" },
   { title: "Mobile App", desc: "iOS and Android apps for vault management.", status: "planned", quarter: "Q2 2027" },
 ];
 
@@ -31,7 +31,7 @@ const STATUS_STYLE: Record<string, { bg: string; color: string; label: string }>
 export default function RoadmapPage() {
   return (
     <MarketingShell artwork="column">
-      <section style={{ maxWidth: 800, margin: "0 auto", padding: "80px 16px 48px" }}>
+      <section className="glow-intro" style={{ maxWidth: 800, margin: "0 auto", padding: "80px 16px 48px" }}>
         <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, marginBottom: 16 }}>Roadmap</h1>
         <p style={{ fontSize: 18, color: "var(--fg-70)" }}>What we&apos;ve shipped, what we&apos;re building, and what&apos;s next.</p>
       </section>

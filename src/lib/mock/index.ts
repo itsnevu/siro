@@ -200,16 +200,16 @@ export const strategies: Strategy[] = [
 ];
 
 export const markets: Market[] = [
-  { ticker: "tAAPL", name: "Apple Inc.", price: 198.50, change24h: 1.24, volume: 12_400_000, liquidity: 45_000_000, marketCap: 3_080_000_000_000, sector: "Technology", issuer: "Elysium Markets" },
-  { ticker: "tNVDA", name: "NVIDIA Corp.", price: 142.80, change24h: 3.56, volume: 18_900_000, liquidity: 38_000_000, marketCap: 3_500_000_000_000, sector: "Technology", issuer: "Elysium Markets" },
-  { ticker: "tTSLA", name: "Tesla Inc.", price: 245.20, change24h: -2.18, volume: 22_100_000, liquidity: 28_000_000, marketCap: 780_000_000_000, sector: "Consumer", issuer: "Elysium Markets" },
-  { ticker: "tMSFT", name: "Microsoft Corp.", price: 428.90, change24h: 0.87, volume: 8_200_000, liquidity: 52_000_000, marketCap: 3_200_000_000_000, sector: "Technology", issuer: "Elysium Markets" },
-  { ticker: "tGOOG", name: "Alphabet Inc.", price: 176.30, change24h: -0.42, volume: 6_500_000, liquidity: 35_000_000, marketCap: 2_180_000_000_000, sector: "Technology", issuer: "Elysium Markets" },
-  { ticker: "tAMZN", name: "Amazon.com Inc.", price: 192.40, change24h: 1.95, volume: 9_800_000, liquidity: 42_000_000, marketCap: 2_020_000_000_000, sector: "Consumer", issuer: "Elysium Markets" },
-  { ticker: "tMETA", name: "Meta Platforms", price: 535.60, change24h: 0.33, volume: 7_100_000, liquidity: 30_000_000, marketCap: 1_370_000_000_000, sector: "Technology", issuer: "Elysium Markets" },
-  { ticker: "tSPY", name: "S&P 500 ETF", price: 582.10, change24h: 0.56, volume: 32_000_000, liquidity: 120_000_000, marketCap: 540_000_000_000, sector: "Index", issuer: "Elysium Markets" },
-  { ticker: "tQQQ", name: "Nasdaq-100 ETF", price: 498.70, change24h: 1.12, volume: 28_000_000, liquidity: 95_000_000, marketCap: 280_000_000_000, sector: "Index", issuer: "Elysium Markets" },
-  { ticker: "tJPM", name: "JPMorgan Chase", price: 218.40, change24h: -0.91, volume: 4_200_000, liquidity: 18_000_000, marketCap: 620_000_000_000, sector: "Financials", issuer: "Elysium Markets" },
+  { ticker: "tAAPL", name: "Apple Inc.", price: 198.50, change24h: 1.24, volume: 12_400_000, liquidity: 45_000_000, marketCap: 3_080_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
+  { ticker: "tNVDA", name: "NVIDIA Corp.", price: 142.80, change24h: 3.56, volume: 18_900_000, liquidity: 38_000_000, marketCap: 3_500_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
+  { ticker: "tTSLA", name: "Tesla Inc.", price: 245.20, change24h: -2.18, volume: 22_100_000, liquidity: 28_000_000, marketCap: 780_000_000_000, sector: "Consumer", issuer: "Robinhood Stock Token" },
+  { ticker: "tMSFT", name: "Microsoft Corp.", price: 428.90, change24h: 0.87, volume: 8_200_000, liquidity: 52_000_000, marketCap: 3_200_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
+  { ticker: "tGOOG", name: "Alphabet Inc.", price: 176.30, change24h: -0.42, volume: 6_500_000, liquidity: 35_000_000, marketCap: 2_180_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
+  { ticker: "tAMZN", name: "Amazon.com Inc.", price: 192.40, change24h: 1.95, volume: 9_800_000, liquidity: 42_000_000, marketCap: 2_020_000_000_000, sector: "Consumer", issuer: "Robinhood Stock Token" },
+  { ticker: "tMETA", name: "Meta Platforms", price: 535.60, change24h: 0.33, volume: 7_100_000, liquidity: 30_000_000, marketCap: 1_370_000_000_000, sector: "Technology", issuer: "Robinhood Stock Token" },
+  { ticker: "tSPY", name: "S&P 500 ETF", price: 582.10, change24h: 0.56, volume: 32_000_000, liquidity: 120_000_000, marketCap: 540_000_000_000, sector: "Index", issuer: "Robinhood Stock Token" },
+  { ticker: "tQQQ", name: "Nasdaq-100 ETF", price: 498.70, change24h: 1.12, volume: 28_000_000, liquidity: 95_000_000, marketCap: 280_000_000_000, sector: "Index", issuer: "Robinhood Stock Token" },
+  { ticker: "tJPM", name: "JPMorgan Chase", price: 218.40, change24h: -0.91, volume: 4_200_000, liquidity: 18_000_000, marketCap: 620_000_000_000, sector: "Financials", issuer: "Robinhood Stock Token" },
 ];
 
 export const buybackRuns: BuybackRun[] = [
@@ -221,28 +221,28 @@ export const buybackRuns: BuybackRun[] = [
 ];
 
 export const blogPosts: BlogPost[] = [
-  { slug: "introducing-siro", title: "Introducing Siro: Capital Follows Intelligence", date: "2026-10-15", excerpt: "Today we launch Siro  an agentic investment platform for tokenized stocks on Elysium." },
+  { slug: "introducing-siro", title: "Introducing Siro: Capital Follows Intelligence", date: "2026-10-15", excerpt: "Today we launch Siro  an agentic investment platform for tokenized stocks on Robinhood Chain." },
   { slug: "copy-trading-explained", title: "How Copy Trading Works on Siro", date: "2026-10-22", excerpt: "A deep dive into non-custodial copy vaults, AI-filtered execution, and risk management." },
   { slug: "siro-token-utility", title: "$SIRO Token: Useful, Not Required", date: "2026-11-01", excerpt: "Understanding the utility of $SIRO  fee discounts, agent credits, and buyback mechanics." },
 ];
 
 export const roadmapItems: RoadmapItem[] = [
-  { quarter: "Q4 2026", title: "Testnet Launch", description: "Copy vaults, leaderboard, and basic agent execution on Elysium testnet.", status: "done" },
+  { quarter: "Q4 2026", title: "Testnet Launch", description: "Copy vaults, leaderboard, and basic agent execution on Robinhood Chain testnet.", status: "done" },
   { quarter: "Q1 2027", title: "Mainnet Beta", description: "Production deployment with audited contracts, RainbowKit integration, and $SIRO staking.", status: "in-progress" },
   { quarter: "Q2 2027", title: "Strategy Studio", description: "Visual strategy builder, backtesting engine, and custom rule creation.", status: "planned" },
   { quarter: "Q3 2027", title: "x402 Micropayments", description: "HTTP 402 agent payments for premium data feeds and cross-platform strategy licensing.", status: "planned" },
 ];
 
 export const teamMembers: TeamMember[] = [
-  { name: "Core Team", role: "Engineering", bio: "Building the future of agentic finance on Elysium." },
+  { name: "Core Team", role: "Engineering", bio: "Building the future of agentic finance on Robinhood Chain." },
 ];
 
 export const faqItems: FaqItem[] = [
-  { q: "What is Siro?", a: "Siro is an agentic investment platform for tokenized stocks on Elysium. Copy top traders, run AI agents, or build your own strategies." },
+  { q: "What is Siro?", a: "Siro is an agentic investment platform for tokenized stocks on Robinhood Chain. Copy top traders, run AI agents, or build your own strategies." },
   { q: "Is $SIRO required to use the platform?", a: "No. $SIRO is useful but not required. You can copy trade and use basic features without holding any $SIRO." },
   { q: "How are fees structured?", a: "15% performance fee on profit only (10% to leaders, 5% to protocol). No management fees. No fees when you lose money." },
   { q: "Is it non-custodial?", a: "Yes. Your funds stay in your own vault. The keeper (AI agent) can only swap tokens through whitelisted DEX routers  it can never withdraw." },
-  { q: "What chain does Siro run on?", a: "Siro runs on Elysium, Kinetiq's L2 on Arbitrum Orbit. Gas is paid in HYPE." },
+  { q: "What chain does Siro run on?", a: "Siro runs on Robinhood Chain, an Arbitrum Orbit L2. Gas is paid in ETH." },
 ];
 
 export const platformStats = {

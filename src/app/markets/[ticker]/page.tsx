@@ -43,7 +43,7 @@ export default async function AssetDetailPage({ params }: Props) {
     <ProsePage
       eyebrow={m.ticker}
       title={m.name}
-      lede={`Tokenized ${m.name} on Elysium  trade 24/7, settle instantly.`}
+      lede={`Tokenized ${m.name} on Robinhood Chain  trade 24/7, settle instantly.`}
       meta={[m.sector, `Issued by ${m.issuer}`]}
     >
       <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginBottom: 32 }}>

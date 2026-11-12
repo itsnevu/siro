@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const PRINCIPLES = [
   { title: "Non-Custodial", desc: "Siro never holds your private keys. Funds stay in your smart-contract vault, controlled only by your wallet." },
-  { title: "On-Chain Execution", desc: "Every trade is an on-chain transaction on Elysium. Fully transparent, fully verifiable." },
+  { title: "On-Chain Execution", desc: "Every trade is an on-chain transaction on Robinhood Chain. Fully transparent, fully verifiable." },
   { title: "RiskGuard Policies", desc: "Per-vault risk parameters (max trade size, daily loss limit, position caps, slippage tolerance) enforced at the contract level." },
   { title: "Keeper-Only Swaps", desc: "The keeper can only route through whitelisted DEX routers. No arbitrary calls, no fund extraction." },
 ];
@@ -22,7 +22,7 @@ const CONTRACTS = [
 export default function SecurityPage() {
   return (
     <MarketingShell artwork="arch">
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 48px" }}>
+      <section className="glow-intro" style={{ maxWidth: 900, margin: "0 auto", padding: "80px 16px 48px" }}>
         <p style={{ color: "var(--accent)", fontWeight: 600, fontSize: 14, letterSpacing: 1, textTransform: "uppercase", marginBottom: 12 }}>Security</p>
         <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, marginBottom: 16 }}>Your keys. Your funds. Always.</h1>
         <p style={{ fontSize: 18, color: "var(--fg-70)", maxWidth: 600 }}>

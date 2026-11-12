@@ -61,7 +61,7 @@ export function HeroVisual() {
     <div className="ed-depth-shadow" aria-hidden="true" />
     <div className="ed-sculpture-anchor"><div className="ed-sculpture-float">
       <motion.div className="ed-brand-sculpture" style={{ rotate: -12, rotateX: tiltX, rotateY: tiltY }}>
-        <img src="/brand/mark?mint=1" alt="Siro" width="230" height="230" draggable={false} />
+        <img src="/brand/mark?palette=ascendlaunch" alt="Siro" width="230" height="230" draggable={false} />
         <span className="ed-sculpture-sheen" aria-hidden="true" />
       </motion.div>
     </div></div>

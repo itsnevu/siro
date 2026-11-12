@@ -131,7 +131,7 @@ function VaultDashboard() {
       )}
 
       {feedback && (
-        <div role="status" className={`mt-6 p-4 rounded-[8px] border text-[13.5px] flex justify-between items-center ${isError ? "bg-danger border-danger text-danger" : "bg-surface-2 border-line text-fg-70"}`}>
+        <div role="status" className={`mt-6 p-4 rounded-[8px] border text-[13.5px] flex justify-between items-center ${isError ? "bg-danger/10 border-danger text-danger" : "bg-surface-2 border-line text-fg-70"}`}>
           <span>{feedback}</span>
           <button onClick={() => setFeedback(null)} className="font-bold hover:underline">✕</button>
         </div>
@@ -259,7 +259,7 @@ function VaultDashboard() {
 
       {/* Deposit Modal */}
       {showDeposit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-fg/40 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim)] backdrop-blur-sm p-4">
           <div className="w-full max-w-[440px] rounded-[16px] bg-surface p-6 sm:p-8 shadow-2xl border border-line">
             <div className="flex justify-between items-center pb-4 border-b border-line">
               <h2 className="font-serif text-[22px] text-ink">Deposit {sym}</h2>
@@ -293,7 +293,7 @@ function VaultDashboard() {
 
       {/* Withdraw Modal */}
       {showWithdraw && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-fg/40 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim)] backdrop-blur-sm p-4">
           <div className="w-full max-w-[440px] rounded-[16px] bg-surface p-6 sm:p-8 shadow-2xl border border-line">
             <div className="flex justify-between items-center pb-4 border-b border-line">
               <h2 className="font-serif text-[22px] text-ink">Withdraw {sym}</h2>

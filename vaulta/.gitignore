@@ -1,0 +1,20 @@
+node_modules
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.tsbuildinfo
+
+# Foundry
+contracts/out
+contracts/cache
+contracts/broadcast
+contracts/coverage
+contracts/lcov.info
+
+# Next.js
+app/.next
+app/out
+
+# Engine
+engine/dist

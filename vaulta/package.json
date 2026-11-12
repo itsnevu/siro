@@ -1,0 +1,19 @@
+{
+  "name": "vaulta",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Guarded trading agents for tokenized stocks on Robinhood Chain.",
+  "packageManager": "pnpm@9.15.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "sync:markets": "pnpm --filter @vaulta/shared sync:markets",
+    "sync:contracts": "pnpm --filter @vaulta/shared sync:contracts",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "contracts:build": "cd contracts && forge build",
+    "contracts:test": "cd contracts && forge test",
+    "contracts:coverage": "cd contracts && forge coverage --no-match-coverage \"(script|test|mocks)\""
+  }
+}

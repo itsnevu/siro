@@ -118,7 +118,7 @@ export default function TokenomicsPage() {
 
       <Section id="contract" heading="Contract">
         <p>
-          The $SIRO token contract is deployed on Elysium (Chain ID: 99801).
+          The $SIRO token contract is deployed on Robinhood Chain (Chain ID: 4663).
         </p>
         <div
           style={{

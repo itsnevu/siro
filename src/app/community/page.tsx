@@ -21,7 +21,7 @@ const AMBASSADOR_PERKS = [
 
 export default function CommunityPage() {
   return (
-    <main className="site-container py-24 md:py-40">
+    <main className="glow-header site-container py-24 md:py-40">
       <span className="eyebrow block mb-4">Community</span>
       <h1 className="serif-headline text-[44px] md:text-[84px] mb-6">
         Better together.
