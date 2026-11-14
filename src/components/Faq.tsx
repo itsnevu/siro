@@ -20,7 +20,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
       <p>
         No. The agent acts through a session key you grant on the SessionExecutor contract: it can only swap
         within a per-trade cap, a daily cap, an asset and router allowlist and an expiry. You can revoke one
-        key or all keys at once. The vault contracts are not deployed on mainnet yet, so deposits are not open.
+        key or all keys at once. The vault contracts are on mainnet, but no router adapter is configured yet, so agents cannot trade.
       </p>
     ),
   },

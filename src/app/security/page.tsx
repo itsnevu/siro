@@ -14,6 +14,9 @@ const link = (address: string) => (MAINNET.explorerUrl ? `${MAINNET.explorerUrl}
 const DEPLOYED = [
   { name: "Anchor", address: MAINNET.anchor, desc: "Daily Merkle roots and permissionless publication witness for committed decisions." },
   { name: "SessionExecutor", address: MAINNET.sessionExecutor, desc: "Scoped session keys: per-trade and daily caps, expiry, asset and router allowlists, revoke and revoke-all." },
+  { name: "GuardedVaultFactory", address: MAINNET.guardedVaultFactory, desc: "Creates one ERC-4626 GuardedVault per agent, owned by the creator, with a one-day policy timelock." },
+  { name: "AgentRegistry", address: MAINNET.agentRegistry, desc: "Records which vaults the factory created. Only the factory can register." },
+  { name: "ChainlinkOracle", address: MAINNET.oracle, desc: "Reads Chainlink feeds (USDG/USD 0x61B7…9aD2) and rejects stale or paused prices." },
 ].filter(c => c.address);
 const NOT_DEPLOYED = ["GuardedVaultFactory", "GuardedVault", "AgentRegistry", "ChainlinkOracle"].filter(() => !MAINNET.guardedVaultFactory);
 
@@ -42,7 +45,7 @@ export default function SecurityPage() {
           </tbody>
         </table>
       )}
-      <p>Both contracts are owned by a single address, not a multisig.</p>
+      <p>Every contract is owned by a single address, not a multisig. Robinhood Chain has no sequencer uptime feed yet, so the oracle cannot detect a sequencer outage. Trading also needs a router adapter and executor permissions, which are not configured yet: vaults can be created and funded, but agents cannot trade.</p>
 
       {NOT_DEPLOYED.length > 0 && <>
         <h2>Not deployed yet</h2>
