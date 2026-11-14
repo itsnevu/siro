@@ -1,62 +1,8 @@
-import type { Address } from "viem";
-import { SiroCopyVaultAbi, SiroRiskGuardAbi, SiroLeaderboardAbi, IERC20MetadataAbi } from "./generated/abis";
-import { ALL_CHAINS, DEFAULT_CHAIN, DEFAULT_CHAIN_ID, type ChainConfig } from "./chains";
-
-export { SiroCopyVaultAbi, SiroRiskGuardAbi, SiroLeaderboardAbi, IERC20MetadataAbi as Erc20Abi };
-
-export enum VaultStatus {
-  Active = 0,
-  Paused = 1,
-}
-
-export type Vault = {
-  owner: Address;
-  balance: bigint;
-  highWaterMark: bigint;
-  isPaused: boolean;
-  leaders: Address[];
-  leaderCount: number;
-  deposited: bigint;
-  totalWithdrawn: bigint;
-  totalFeePaid: bigint;
-  createdAt: bigint;
-};
-
-export type Leader = {
-  addr: Address;
-  name: string;
-  totalPnlBps: number;
-  sharpeBps: number;
-  maxDrawdownBps: number;
-  followerCount: bigint;
-  registeredAt: bigint;
-};
-
-export type RiskParams = {
-  maxTradeSizeBps: number;
-  dailyLossLimitBps: number;
-  maxPositionBps: number;
-  slippageBps: number;
-};
-
-export function addressesFor(chainId: number): {
-  copyVault: Address;
-  riskGuard: Address;
-  leaderboard: Address;
-  usdc: Address;
-} {
-  const c: ChainConfig | undefined = ALL_CHAINS[chainId];
-  const zero = "0x0000000000000000000000000000000000000000" as Address;
-  return {
-    copyVault: c?.copyVault ?? zero,
-    riskGuard: c?.riskGuard ?? zero,
-    leaderboard: c?.leaderboard ?? zero,
-    usdc: c?.token.address ?? zero,
-  };
-}
-
-export const addresses = addressesFor(DEFAULT_CHAIN_ID);
-export const hasDeployment = DEFAULT_CHAIN.copyVault !== undefined;
+import { IERC20MetadataAbi } from "./generated/abis";
+import { DEFAULT_CHAIN } from "./chains";
+export { GuardedVaultAbi, GuardedVaultFactoryAbi, AgentRegistryAbi } from "./generated/abis";
+export { IERC20MetadataAbi as Erc20Abi };
+export const hasDeployment = DEFAULT_CHAIN.guardedVaultFactory !== undefined;
 export const DEPLOY_BLOCK = DEFAULT_CHAIN.deployBlock;
 export const USDC_DECIMALS = DEFAULT_CHAIN.token.decimals;
 

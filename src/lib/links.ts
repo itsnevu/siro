@@ -8,8 +8,8 @@ const env = (v: string | undefined) => (v && v.trim().length > 0 ? v.trim() : un
 
 export const LINKS = {
   /** The only official social account. Override with NEXT_PUBLIC_X_URL if it ever moves. */
-  x: env(process.env.NEXT_PUBLIC_X_URL) ?? "https://x.com/sirotrading",
-  support: "mailto:support@siro.trade",
+  x: env(process.env.NEXT_PUBLIC_X_URL) ?? "https://x.com/usesiroxyz",
+  support: "mailto:support@usesiro.xyz",
   // Live pages in this app:
   app: "/launch",
   docs: "/docs",
@@ -20,8 +20,11 @@ export const LINKS = {
   privacy: "/privacy",
 } as const;
 
+/** The X account as displayed text, without the scheme. */
+export const X_HANDLE = LINKS.x.slice(LINKS.x.indexOf("//") + 2);
+
 /** Canonical origin, used for absolute URLs in metadata, sitemap and robots. */
-export const SITE_URL = env(process.env.NEXT_PUBLIC_SITE_URL) ?? "https://siro.trade";
+export const SITE_URL = env(process.env.NEXT_PUBLIC_SITE_URL) ?? "https://usesiro.xyz";
 
 /** Block explorer link for an address, when the active chain publishes one. */
 export function explorerAddress(explorerUrl: string | undefined, address: string): string | undefined {

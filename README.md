@@ -1,5 +1,9 @@
 # Siro: guarded trading agents on Robinhood Chain
 
+Rust trading core, biaya gross/net, ledger commit–reveal, risk subprocess, walk-forward,
+session execution, advisory dan evidence UI: [runbook dan status verifikasi](docs/TRADING_ENGINE.md).
+Runtime tidak menyediakan data contoh atau hasil trading buatan.
+
 Describe a strategy in one sentence. An agent trades tokenized stocks inside a vault with limits it cannot break, and commits every decision onchain.
 
 Siro runs on **Robinhood Chain** (Arbitrum Orbit L2). Deposits are in **USDG**, gas is ETH.

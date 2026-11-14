@@ -9,14 +9,14 @@ import { PillTabs } from "./PillTabs";
 import { TypewriterWord } from "./TypewriterWord";
 import { NumberedFeatureList } from "./NumberedFeatureList";
 import { ScrollRevealText } from "./ScrollRevealText";
-import { AllocationBar } from "./AllocationBar";
 import { CTABand } from "./CTABand";
 import { Faq } from "@/components/Faq";
-import { strategies } from "@/lib/mock";
+import { RegistrySurface } from "@/components/RegistrySurface";
 import { HeroVisual } from "./HeroVisual";
 import { ClassicalArtwork } from "./ClassicalArtwork";
 import { CinematicBackground } from "./CinematicBackground";
 import { PixelShield } from "./PixelShield";
+import { GuardCheck } from "./GuardCheck";
 import "@/styles/agent-sections.css";
 
 const Laptop3D = dynamic(() => import("./Laptop3D").then((m) => m.Laptop3D), {
@@ -85,9 +85,7 @@ export function EditorialHome() {
 
         <h1>Agents that<br /><em>can’t go rogue.</em><br /><span className="ed-hero-last">Always <TypewriterWord words={WORDS} /></span></h1>
         <p>Describe a strategy in one sentence. Your agent trades tokenized stocks inside a vault<br className="ed-desktop-break" /> with limits it can never break, and proves every move onchain.</p>
-        <div className="ed-actions"><Link href="/studio" className="btn-primary">Build your agent <Arrow /></Link><Link href="/leaderboard" className="btn-secondary">See live agents <span aria-hidden="true">↗</span></Link></div>
-        <span className="ed-hero-note">Built for Robinhood Chain. Not audited yet. Not investment advice.</span>
-      </div>
+        <div className="ed-actions"><Link href="/studio" className="btn-primary">Build your agent <Arrow /></Link><Link href="/leaderboard" className="btn-secondary">See live agents <span aria-hidden="true">↗</span></Link></div>      </div>
       <HeroVisual />
       <div className="ed-principles"><span>The agent can trade. It can never withdraw.</span><div><span>Guarded vaults</span><i /><span>Proof of Decision</span><i /><span>Instant kill switch</span></div></div>
     </Section>
@@ -97,6 +95,34 @@ export function EditorialHome() {
       { title: "Launch in a guarded vault.", description: "Funds sit in a per-agent contract. The agent’s key can only make whitelisted swaps inside your limits.", icon: <Glyph kind={2} /> },
       { title: "Prove and tokenize.", description: "Every hour of decisions is committed onchain as a Merkle root. After 14 verified days an agent can launch its token.", icon: <Glyph kind={3} /> },
     ]} /></div></Section>
+    <Section id="guard" className="ag-guard"><div className="ag-guard-layout">
+      <div className="ag-shield-stage">
+        <span className="ag-flow ag-flow-checks">inputs → checks → proposal <i /> ⊗</span>
+        <span className="ag-flow ag-flow-deposit">deposit <i /></span>
+        <PixelShield className="ag-shield" />
+        <span className="ag-pulse" aria-hidden="true" /><span className="ag-pulse ag-pulse-2" aria-hidden="true" />
+        <span className="ag-flow ag-flow-proof"><i /> proof</span>
+        <span className="ag-flow ag-flow-withdraw"><i /> withdraw</span>
+      </div>
+      <div><p className="eyebrow">The Guard</p><h2>Limits the agent<br /><em>cannot break.</em></h2>
+        <ul className="ag-limits">{LIMITS.map(([name, value]) => <li key={name}><span><i className="ag-tick" aria-hidden="true" />{name}</span><strong>{value}</strong></li>)}</ul>
+        <GuardCheck />
+        <p className="ag-note">Even if our server is compromised, the agent key can only trade whitelisted tokens inside these limits. Withdrawals stay open while a vault is paused.</p>
+      </div>
+    </div></Section>
+    <Section id="proof" className="ag-proof"><div className="ed-section-heading"><div><p className="eyebrow">Proof of Decision</p><h2>A record nobody<br />can <em>edit.</em></h2></div><p>Each hour, every decision becomes a Merkle leaf.<br />The root is committed onchain.</p></div>
+      <div className="ag-merkle" aria-label="Hourly decisions are hashed into one root, committed onchain">
+        <div className="ag-merkle-leaves">{FEED.map((r) => <span key={r.ticker}>{r.act} {r.ticker}</span>)}<span>…</span></div>
+        <div className="ag-merkle-join" aria-hidden="true" />
+        <div className="ag-merkle-root"><small>Hourly root</small><code>0x9f3c…a71e</code></div>
+        <div className="ag-merkle-join ag-merkle-join-short" aria-hidden="true" />
+        <div className="ag-merkle-tx">Committed onchain · verifiable</div>
+      </div>
+      <div className="ag-feed"><div className="ag-feed-head"><span>Action</span><span>Ticker</span><span>Reason</span><span>Proof</span></div>
+        {FEED.map((row) => <div className="ag-feed-row" key={row.ticker}><span className={`ag-act ag-act-${row.act.toLowerCase()}`}>{row.act}</span><span>{row.ticker}</span><p>{row.reason}</p><span className="ag-verify">Illustrative</span></div>)}
+      </div>
+      <p className="ed-disclaimer">Example rows. No agent has committed decisions onchain yet; live rows will link to their transaction.</p>
+    </Section>
     <Section className="ed-product-showcase">
       <div className="ed-showcase-layout">
         <div className="ed-showcase-copy">
@@ -109,28 +135,8 @@ export function EditorialHome() {
       </div>
     </Section>
     <Section id="how" className="ed-workspace"><div className="ed-section-heading"><div><p className="eyebrow">One platform. Your own approach.</p><h2><em>Three</em> ways in.</h2></div><p>Find your starting point.<br />Make the next move your own.</p></div><ProductPanel /></Section>
-    <Section id="leaderboard" className="ed-strategies"><div className="ed-section-heading"><div><p className="eyebrow">Strategy templates</p><h2>A little inspiration<br />to <em>start</em> from.</h2></div><Link href="/strategies" className="ed-text-link">View all strategies <Arrow /></Link></div>
-      <div className="ed-template-grid">{strategies.slice(0, 3).map((strategy, index) => <Link href={`/strategies/${strategy.id}`} key={strategy.id} className="ed-template-card card-lift"><div className="ed-card-top"><Glyph kind={index} /><span className="pill-badge">Template</span></div><h3>{strategy.name}</h3><p>{strategy.description}</p><AllocationBar segments={strategy.allocation.map(asset => ({ label: asset.token, value: asset.pct }))} /><div className="ed-card-meta"><span>{strategy.allocation.length} assets · {strategy.type.replaceAll("-", " ")}</span><Arrow /></div></Link>)}</div>
-      <p className="ed-disclaimer">Illustrative templates using mock data. Investing involves risk. Returns are not guaranteed.</p>
-    </Section>
-    <Section id="guard" className="ag-guard"><div className="ag-guard-layout">
-      <div className="ag-shield-stage">
-        <span className="ag-flow ag-flow-checks">inputs → checks → proposal <i /> ⊗</span>
-        <span className="ag-flow ag-flow-deposit">deposit <i /></span>
-        <PixelShield className="ag-shield" />
-        <span className="ag-flow ag-flow-proof"><i /> proof</span>
-        <span className="ag-flow ag-flow-withdraw"><i /> withdraw</span>
-      </div>
-      <div><p className="eyebrow">The Guard</p><h2>Limits the agent<br /><em>cannot break.</em></h2>
-        <ul className="ag-limits">{LIMITS.map(([name, value]) => <li key={name}><span>{name}</span><strong>{value}</strong></li>)}</ul>
-        <p className="ag-note">Even if our server is compromised, the agent key can only trade whitelisted tokens inside these limits. Withdrawals stay open while a vault is paused.</p>
-      </div>
-    </div></Section>
-    <Section id="proof" className="ag-proof"><div className="ed-section-heading"><div><p className="eyebrow">Proof of Decision</p><h2>A record nobody<br />can <em>edit.</em></h2></div><p>Each hour, every decision becomes a Merkle leaf.<br />The root is committed onchain.</p></div>
-      <div className="ag-feed"><div className="ag-feed-head"><span>Action</span><span>Ticker</span><span>Reason</span><span>Proof</span></div>
-        {FEED.map((row) => <div className="ag-feed-row" key={row.ticker}><span className={`ag-act ag-act-${row.act.toLowerCase()}`}>{row.act}</span><span>{row.ticker}</span><p>{row.reason}</p><span className="ag-verify">Illustrative</span></div>)}
-      </div>
-      <p className="ed-disclaimer">Example rows. No agent has committed decisions onchain yet; live rows will link to their transaction.</p>
+    <Section id="leaderboard" className="ed-strategies"><div className="ed-section-heading"><div><p className="eyebrow">Registered agent vaults</p><h2>Strategies registered<br />on <em>Robinhood Chain.</em></h2></div><Link href="/strategies" className="ed-text-link">View all strategies <Arrow /></Link></div>
+      <RegistrySurface />
     </Section>
     <Section className="ed-manifesto"><div className="ed-manifesto-layout"><div><p className="eyebrow">Designed for a longer view</p><ScrollRevealText text="An agent should be safe enough to trust with real money, and honest enough that nobody can fake its track record. Limits it cannot break. Decisions anyone can verify." /><Link href="/security" className="ed-text-link">Explore our approach to security <Arrow /></Link></div><ClassicalArtwork name="urn" className="classical-manifesto" /></div></Section>
     <Section className="ed-faq-section"><Faq /></Section>

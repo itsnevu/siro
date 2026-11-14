@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     ".preview/**",
     "contracts/**",
+    "siro-video/**",
+    "vaulta/**",
     "node_modules/**",
     "scripts/**",
   ]),

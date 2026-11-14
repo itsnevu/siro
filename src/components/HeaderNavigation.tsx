@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
 import { LINKS } from "@/lib/links";
+import { nav } from "@/lib/i18n";
+import { useLocale } from "@/lib/use-locale";
 import "@/styles/navigation-motion.css";
 
 type NavItem = {
@@ -16,7 +18,7 @@ const NAV: NavItem[] = [
   {
     label: "Product",
     children: [
-      { label: "Leaderboard", href: LINKS.app, desc: "Browse top-performing wallets" },
+      { label: "Leaderboard", href: LINKS.app, desc: "Reconciled agents only" },
       { label: "Strategies", href: "/strategies", desc: "Find your starting point" },
       { label: "Studio", href: "/studio", desc: "Shape your own approach" },
       { label: "Agent", href: "/agent", desc: "Intelligence within your boundaries" },
@@ -26,9 +28,9 @@ const NAV: NavItem[] = [
   {
     label: "Token",
     children: [
-      { label: "SIRO", href: "/token", desc: "Explore the Siro token" },
-      { label: "Tokenomics", href: "/tokenomics", desc: "Supply and distribution" },
-      { label: "Buyback", href: "/buyback", desc: "Protocol buyback activity" },
+      { label: "SIRO", href: "/token", desc: "Status: planned, not deployed" },
+      { label: "Tokenomics", href: "/tokenomics", desc: "No allocation decided" },
+      { label: "Buyback", href: "/buyback", desc: "Status: not deployed" },
     ],
   },
   {
@@ -46,6 +48,7 @@ const NAV: NavItem[] = [
 ];
 
 function Dropdown({ item }: { item: NavItem }) {
+  const [locale] = useLocale();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -68,7 +71,7 @@ function Dropdown({ item }: { item: NavItem }) {
         aria-expanded={open}
         type="button"
       >
-        {item.label}
+        {nav(locale, item.label)}
         <svg className="nav-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
           <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -77,8 +80,8 @@ function Dropdown({ item }: { item: NavItem }) {
         <div className="nav-dropdown-menu">
           {item.children.map((child) => (
             <Link key={child.label} href={child.href} className="nav-dropdown-item" onClick={() => setOpen(false)}>
-              <span className="nav-dropdown-item-label">{child.label}</span>
-              {child.desc && <span className="nav-dropdown-item-desc">{child.desc}</span>}
+              <span className="nav-dropdown-item-label">{nav(locale, child.label)}</span>
+              {child.desc && <span className="nav-dropdown-item-desc">{nav(locale, child.desc)}</span>}
             </Link>
           ))}
         </div>
@@ -88,6 +91,7 @@ function Dropdown({ item }: { item: NavItem }) {
 }
 
 export function HeaderNavigation() {
+  const [locale] = useLocale();
   const [open, setOpen] = useState(false);
   const navigation = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -126,7 +130,7 @@ export function HeaderNavigation() {
             <Dropdown key={item.label} item={item} />
           ) : (
             <Link key={item.href} className="rusd-nav-link" href={item.href!}>
-              {item.label}
+              {nav(locale, item.label)}
             </Link>
           )
         )}

@@ -1,158 +1,29 @@
 "use client";
-
+import { useAccount } from "wagmi";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/app/AppShell";
-
-type Message = {
-  role: "user" | "agent";
-  text: string;
-  proposal?: {
-    trades: { action: string; asset: string; amount: string }[];
-    estimatedCost: string;
-    riskLevel: string;
-    policyChecks: { name: string; passed: boolean }[];
-  };
-};
-
-const SUGGESTIONS = [
-  "Rebalance my portfolio to 60% ETH, 30% BTC, 10% SOL",
-  "What's the best entry point for ETH right now?",
-  "Reduce my SOL exposure by 50%",
-  "Show me top performing strategies this week",
-];
-
-export default function AgentPage() {
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  const sendMessage = (text: string) => {
-    const userMsg: Message = { role: "user", text };
-    const agentMsg: Message = {
-      role: "agent",
-      text: "I've analyzed your request and prepared the following trades for your approval:",
-      proposal: {
-        trades: [
-          { action: "Sell", asset: "USDC", amount: "2,000.00" },
-          { action: "Buy", asset: "ETH", amount: "0.8214" },
-          { action: "Buy", asset: "SOL", amount: "12.50" },
-        ],
-        estimatedCost: "$3.42 (gas + slippage)",
-        riskLevel: "Low",
-        policyChecks: [
-          { name: "Spending limit", passed: true },
-          { name: "Asset whitelist", passed: true },
-          { name: "Slippage tolerance", passed: true },
-          { name: "Daily loss limit", passed: true },
-        ],
-      },
-    };
-    setMessages((prev) => [...prev, userMsg, agentMsg]);
-    setInput("");
-  };
-
-  return (
-    <AppShell>
-      <div className="flex flex-col" style={{ minHeight: "calc(100vh - 220px)" }}>
-        <div className="flex items-center gap-3 mb-4">
-          <h1 className="font-serif text-[28px] text-ink">Agent</h1>
-          <span className="w-2 h-2 rounded-full bg-secondary" />
-          <span className="text-[12px] text-fg-70">Online</span>
-        </div>
-
-        {/* Messages */}
-        <div className="flex-1 space-y-4 mb-6">
-          {messages.length === 0 && (
-            <div className="text-center py-12 space-y-4">
-              <p className="text-fg-70 text-[14px]">Ask your agent to manage your portfolio.</p>
-              <div className="flex flex-wrap justify-center gap-2">
-                {SUGGESTIONS.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => sendMessage(s)}
-                    className="px-3 py-2 rounded-[10px] border border-line bg-surface text-[12px] text-fg-70 hover:text-ink hover:border-ink transition text-left max-w-[280px]"
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[80%] rounded-[12px] p-4 ${
-                msg.role === "user"
-                  ? "bg-ink text-bg text-[13px]"
-                  : "border border-line bg-surface text-[13px] text-ink"
-              }`}>
-                <p>{msg.text}</p>
-                {msg.proposal && (
-                  <div className="mt-4 space-y-3">
-                    <div className="rounded-[8px] border border-line bg-bg p-3 space-y-2">
-                      <div className="text-[11px] text-fg-70 uppercase tracking-wide">Proposed Trades</div>
-                      {msg.proposal.trades.map((t, j) => (
-                        <div key={j} className="flex justify-between text-[12px]">
-                          <span className={t.action === "Buy" ? "text-fg-70" : "text-danger"}>{t.action}</span>
-                          <span>{t.amount} {t.asset}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex justify-between text-[12px]">
-                      <span className="text-fg-70">Est. Cost</span>
-                      <span>{msg.proposal.estimatedCost}</span>
-                    </div>
-                    <div className="flex justify-between text-[12px]">
-                      <span className="text-fg-70">Risk Level</span>
-                      <span className="text-fg-70">{msg.proposal.riskLevel}</span>
-                    </div>
-                    <div className="rounded-[8px] border border-line bg-bg p-3">
-                      <div className="text-[11px] text-fg-70 uppercase tracking-wide mb-2">Policy Checks</div>
-                      {msg.proposal.policyChecks.map((c, j) => (
-                        <div key={j} className="flex items-center gap-2 text-[12px]">
-                          <span className={c.passed ? "text-fg-70" : "text-danger"}>{c.passed ? "✓" : "✗"}</span>
-                          <span>{c.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex gap-2 pt-1">
-                      <button className="flex-1 px-3 py-2 rounded-[8px] bg-secondary text-card text-[12px] font-medium hover:bg-secondary transition">
-                        Approve
-                      </button>
-                      <button className="flex-1 px-3 py-2 rounded-[8px] bg-danger text-card text-[12px] font-medium hover:bg-danger transition">
-                        Reject
-                      </button>
-                      <button className="flex-1 px-3 py-2 rounded-[8px] border border-line text-[12px] font-medium text-fg-70 hover:text-ink transition">
-                        Edit
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Input */}
-        <div className="sticky bottom-0 bg-bg pt-2 pb-4">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && input.trim() && sendMessage(input.trim())}
-              placeholder="Tell your agent what to do..."
-              className="flex-1 rounded-[10px] border border-line bg-surface px-4 py-3 text-[13px] text-ink outline-none focus:border-ink"
-            />
-            <button
-              onClick={() => input.trim() && sendMessage(input.trim())}
-              disabled={!input.trim()}
-              className="px-5 py-3 rounded-[10px] bg-ink text-bg text-[13px] font-medium hover:opacity-90 transition disabled:opacity-40"
-            >
-              Send
-            </button>
-          </div>
-        </div>
-      </div>
-    </AppShell>
-  );
+import { WorkspaceAccess } from "@/components/app/WorkspaceAccess";
+import { buttonClass, inputClass } from "@/components/app/StrategyStudio";
+import { useWorkspace } from "@/lib/workspace";
+import { useAgents } from "@/lib/guarded";
+import { useNetwork } from "@/lib/network";
+type Message = { role: "user" | "assistant"; content: string };
+export default function AgentPage() { const net = useNetwork(); const { address } = useAccount(); return <AgentContent key={`${net.id}:${address}`} />; }
+function AgentContent() {
+  const net = useNetwork(), ws = useWorkspace(), agents = useAgents();
+  const [messages, setMessages] = useState<Message[]>([]), [input, setInput] = useState(""), [busy, setBusy] = useState(false), [error, setError] = useState(""), [vault, setVault] = useState("");
+  const config = useQuery<{ configured: boolean; model: string; price: string }>({ queryKey: ["agent-config"], queryFn: async () => { const r = await fetch("/api/agent"); if (!r.ok) throw new Error("Agent configuration is unavailable."); return r.json(); }, retry: false });
+  async function send() {
+    if (busy || !input.trim()) return;
+    const conversation: Message[] = [...messages, { role: "user" as const, content: input.trim() }].slice(-11);
+    setBusy(true); setError("");
+    try { const r = await fetch("/api/agent", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ messages: conversation, chainId: net.id, ...(vault ? { vault } : {}) }) }); const body = await r.json(); if (!r.ok) throw new Error(body.error || "Agent request failed."); setMessages([...conversation, { role: "assistant", content: body.text }]); setInput(""); }
+    catch (e) { setError(e instanceof Error ? e.message : "Agent unavailable."); }
+    finally { setBusy(false); }
+  }
+  return <AppShell><div className="py-10 space-y-5"><h1 className="font-serif text-3xl">Siro Agent</h1><WorkspaceAccess /><p className="text-sm text-fg-70">OpenRouter model is fixed by the server: {config.data?.model || "Loading..."}. No model switching or paid fallback. Responses can explain your saved strategies and a selected vault; transactions always require separate wallet actions.</p>{config.error && <p role="alert">{config.error.message}</p>}{config.data && !config.data.configured && <p role="status">Set OPENROUTER_API_KEY in the server environment to enable the Agent.</p>}
+    <label className="block text-sm">Vault context<select className={inputClass} value={vault} onChange={e => { setVault(e.target.value); setMessages([]); }}><option value="">Saved strategies only</option>{agents.agents.map(a => <option key={a.vault} value={a.vault}>Agent #{a.id} - {a.vault}</option>)}</select></label>
+    <div className="space-y-3" aria-live="polite">{!messages.length && <p className="text-sm text-fg-70">Ask about your allocation or vault risk policy. No example conversations are preloaded.</p>}{messages.map((m, i) => <article key={i} className="rounded-xl border border-line p-4"><p className="text-xs text-fg-70">{m.role === "user" ? "You" : "Siro"}</p><p className="whitespace-pre-wrap text-sm mt-2">{m.content}</p></article>)}</div>
+    <form className="space-y-3" onSubmit={e => { e.preventDefault(); send(); }}><textarea aria-label="Message to Siro" className={inputClass} maxLength={4000} rows={3} value={input} onChange={e => setInput(e.target.value)} placeholder="Ask about your strategy..." /><button className={buttonClass} disabled={!ws.authenticated || !config.data?.configured || busy || !input.trim()}>{busy ? "Waiting for OpenRouter..." : "Send"}</button><button type="button" className={buttonClass} disabled={busy} onClick={() => setMessages([])}>Clear conversation</button></form>{error && <p role="alert">{error}</p>}</div></AppShell>;
 }

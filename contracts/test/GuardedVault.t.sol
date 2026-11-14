@@ -301,4 +301,42 @@ contract GuardedVaultTest is Test {
         vm.expectRevert();
         vault.redeemInKind(tooMany, alice, alice);
     }
+
+    // ------------------------------------------------------------ audit regressions
+
+    function _togglePermission(address token, bool allowed) internal {
+        vm.prank(owner);
+        vault.queueTokenPermission(token, allowed);
+        vm.warp(block.timestamp + DELAY);
+        oracle.setUpdatedAt(block.timestamp);
+        vault.activateTokenPermission(token);
+    }
+
+    /// Disallow then re-allow must not track the token twice (double-counted NAV, over-paid in-kind exits).
+    function test_audit_reallowDoesNotDuplicateTrackedAsset() public {
+        _buyNvda(800e6);
+        _togglePermission(address(nvda), false);
+        _togglePermission(address(nvda), true);
+        assertEq(vault.trackedAssetCount(), 2);
+        assertEq(vault.totalAssets(), 2_000e6);
+        uint256 shares = vault.balanceOf(alice);
+        vm.prank(alice);
+        vault.redeemInKind(shares, alice, alice);
+        assertEq(nvda.balanceOf(alice), 4e18);
+    }
+
+    /// Share price must not be set from a stale quote: deposits and withdrawals wait, in-kind exit still works.
+    function test_audit_staleHoldingBlocksPricedEntryAndExit() public {
+        _buyNvda(800e6);
+        vm.warp(block.timestamp + 2 hours);
+        usdg.mint(alice, 100e6);
+        vm.startPrank(alice);
+        usdg.approve(address(vault), 100e6);
+        vm.expectRevert(GuardedVault.StaleOracle.selector);
+        vault.deposit(100e6, alice);
+        vm.expectRevert(GuardedVault.StaleOracle.selector);
+        vault.withdraw(10e6, alice, alice);
+        vault.redeemInKind(vault.balanceOf(alice), alice, alice);
+        vm.stopPrank();
+    }
 }

@@ -1,4 +1,5 @@
 node_modules
+/target/
 .next
 out
 .preview/
@@ -17,3 +18,14 @@ cache/
 
 # internal content brief, never published
 design/PROJECT-BRIEF.md
+
+# Deployment candidates are not verified frontend records.
+contracts/deployments/*.pending.json
+contracts/deployments/*.json.tmp
+
+# Private authenticated workspace database
+.data/
+
+# Phase 9 ingestion: raw source payloads are large and reproducible from the manifest
+data/real/*/raw/
+data/universe/raw/

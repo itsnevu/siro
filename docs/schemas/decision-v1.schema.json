@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:siro:decision:v1",
+  "title": "Frozen decision record v1 (execution not enabled in phase 1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision_id", "agent_id", "agent_version", "parent_version", "strategy_hash", "tick_ts", "commit_ts", "reveal_ts", "prev_hash", "commit_hash", "universe_snapshot_hash", "features", "regime_label", "action", "target_weight", "notional_usd", "predicted_prob_up", "horizon_h", "expected_edge_bps", "cost_estimate_bps", "rationale_struct", "rationale_text", "risk_veto", "risk_adjusted", "confidence"],
+  "$defs": {
+    "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "timestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "uuidv7": { "type": "string", "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-7[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$" }
+  },
+  "properties": {
+    "decision_id": { "$ref": "#/$defs/uuidv7" },
+    "agent_id": { "type": "string", "minLength": 1 },
+    "agent_version": { "type": "integer", "minimum": 1 },
+    "parent_version": { "type": ["integer", "null"], "minimum": 1 },
+    "strategy_hash": { "$ref": "#/$defs/hash" },
+    "tick_ts": { "$ref": "#/$defs/timestamp" },
+    "commit_ts": { "$ref": "#/$defs/timestamp" },
+    "reveal_ts": { "$ref": "#/$defs/timestamp" },
+    "prev_hash": { "$ref": "#/$defs/hash" },
+    "commit_hash": { "$ref": "#/$defs/hash" },
+    "universe_snapshot_hash": { "$ref": "#/$defs/hash" },
+    "features": {
+      "type": "object",
+      "required": ["z_48h", "rsi_14", "atr_pct"],
+      "properties": { "z_48h": { "type": "number" }, "rsi_14": { "type": "number", "minimum": 0, "maximum": 100 }, "atr_pct": { "type": "number", "minimum": 0 } },
+      "additionalProperties": { "type": "number" }
+    },
+    "regime_label": { "enum": ["trending_up", "chop", "risk_off", "vol_shock"] },
+    "action": { "enum": ["buy", "sell", "hold", "reduce"] },
+    "target_weight": { "type": "number", "minimum": -1, "maximum": 1 },
+    "notional_usd": { "type": "number", "minimum": 0 },
+    "predicted_prob_up": { "type": "number", "minimum": 0, "maximum": 1 },
+    "horizon_h": { "type": "integer", "minimum": 1 },
+    "expected_edge_bps": { "type": "number" },
+    "cost_estimate_bps": { "type": "number", "minimum": 0 },
+    "rationale_struct": {
+      "type": "object", "additionalProperties": false,
+      "required": ["rule_id", "threshold", "observed"],
+      "properties": { "rule_id": { "type": "string", "minLength": 1 }, "threshold": { "type": "number" }, "observed": { "type": "number" } }
+    },
+    "rationale_text": { "type": "string", "minLength": 1 },
+    "risk_veto": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["code", "observed", "limit"],
+        "properties": { "code": { "type": "string", "minLength": 1 }, "observed": { "type": "number" }, "limit": { "type": "number" } }
+      }
+    },
+    "risk_adjusted": { "type": "boolean" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "supersedes": { "$ref": "#/$defs/uuidv7" }
+  },
+  "$comment": "Cross-field timing, version lineage, canonical hashing, feature citations, cost gating, and chain validation must be checked by the phase 3 ledger validator; this schema alone does not establish those properties. Genesis prev_hash is 64 zeroes. Tick timestamps must be UTC hour boundaries. tick_ts <= commit_ts < tick_ts+5s; reveal_ts >= tick_ts+3600s. Resolve contradictory 'before hour close' wording as closed-bar tick plus <5s publication deadline; historical replay timestamps never establish external publication."
+}

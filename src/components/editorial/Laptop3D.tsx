@@ -102,7 +102,7 @@ function drawApp(ctx: CanvasRenderingContext2D, mark: HTMLCanvasElement | null) 
   ctx.fillRect(0, 0, 1000, 660);
 
   text("siro.", 36, 34, 26, C.text, { font: SERIF });
-  text("Agent Studio", 500, 34, 17, C.muted, { weight: 500, align: "center" });
+  text("Illustration · not live data", 500, 34, 17, C.muted, { weight: 500, align: "center" });
   panel(818, 17, 146, 34, 17, "rgba(143,227,176,0.10)", "rgba(143,227,176,0.28)");
   text("● Paper mode", 891, 34.5, 15, C.mint, { weight: 500, align: "center" });
   ctx.fillStyle = C.line;

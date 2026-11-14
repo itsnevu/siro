@@ -58,7 +58,7 @@ export default function Page() {
           configuring appropriate risk parameters, and managing your own tax and regulatory obligations.
         </p>
         <p>
-          Questions: <a href="mailto:support@siro.trade">support@siro.trade</a>
+          Questions: <a href="mailto:support@usesiro.xyz">support@usesiro.xyz</a>
         </p>
       </Section>
     </ProsePage>

@@ -1,0 +1,72 @@
+{
+  "agent_id": "real-smoke-portfolio",
+  "version": 1,
+  "parent_version": null,
+  "legs": [
+    {
+      "strategy": {
+        "agent_id": "real-smoke-nvda",
+        "version": 1,
+        "parent_version": null,
+        "asset": "NVDA",
+        "entry_z": -1,
+        "exit_z": 0.5,
+        "max_weight": 0.25,
+        "horizon_h": 4,
+        "logistic_intercept": 0,
+        "logistic_z": -0.6,
+        "logistic_rsi": 0,
+        "up_move_bps": 80,
+        "down_move_bps": 60,
+        "trained_model_hash": "880d7086570d3f5a4352bdc29c08006d1a68d24daf91bba15308a07290ebd00e",
+        "stop_loss_pct": 0.08
+      },
+      "venue": {
+        "protocol_bps": 0,
+        "lp_bps": 5,
+        "slippage_k": 200,
+        "calibration_id": "uniswap-v3-depth-2pct-definition"
+      },
+      "sector": "NVDA"
+    },
+    {
+      "strategy": {
+        "agent_id": "real-smoke-aapl",
+        "version": 1,
+        "parent_version": null,
+        "asset": "AAPL",
+        "entry_z": -1,
+        "exit_z": 0.5,
+        "max_weight": 0.25,
+        "horizon_h": 4,
+        "logistic_intercept": 0,
+        "logistic_z": -0.6,
+        "logistic_rsi": 0,
+        "up_move_bps": 80,
+        "down_move_bps": 60,
+        "trained_model_hash": "2f8dffdd9ac36bcbec8d9d3724c5e775a92fc06a2e08a3aa3bc7819c6e2f86f7",
+        "stop_loss_pct": 0.08
+      },
+      "venue": {
+        "protocol_bps": 0,
+        "lp_bps": 5,
+        "slippage_k": 200,
+        "calibration_id": "uniswap-v3-depth-2pct-definition"
+      },
+      "sector": "AAPL"
+    }
+  ],
+  "initial_usd": 10000,
+  "from": 1794441600000,
+  "through": 1794564000000,
+  "mode": "backtest",
+  "asset_class": "tokenized_equity",
+  "risk_profile": "safe-defaults",
+  "internal": true,
+  "bars": "C:\\Users\\user\\Documents\\SIRO\\data\\real\\smoke\\bars.parquet",
+  "market_data": "C:\\Users\\user\\Documents\\SIRO\\data\\real\\smoke\\market.jsonl",
+  "journal": "C:\\Users\\user\\Documents\\SIRO\\data\\real\\smoke\\journal.jsonl",
+  "risk_program": "C:\\Users\\user\\Documents\\SIRO\\target\\debug\\riskengine.exe",
+  "seed": 7,
+  "bootstrap_block": 5
+}

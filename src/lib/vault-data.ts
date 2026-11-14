@@ -1,0 +1,2 @@
+export type VaultSnapshot = { id: number; vault: string; creator: string; metadataURI: string; active: boolean; shares: string; shareValue: string | null; totalAssets: string | null; totalSupply: string; paused: boolean; assets: { token: string; symbol: string; decimals: number; vaultBalance: string; yourBalance: string }[]; error?: string };
+export type VaultPage = { configured: boolean; chainId: number; total: number; offset: number; next: number | null; block: string | null; vaults: VaultSnapshot[] };

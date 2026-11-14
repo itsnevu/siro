@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { SiroMark } from "@/components/Header";
 import { ConnectButton } from "@/components/ConnectButton";
-import { NetworkSwitcher } from "@/lib/network";
-import { CHAIN_LIST_TEXT } from "@/lib/chains";
 import "@/styles/workspace.css";
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -19,8 +17,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="siro-workspace flex-1 bg-bg text-ink">
       <div className="bg-soft text-center text-[12.5px] py-[7px] px-4 text-fg-70">
-        <span className="font-semibold text-ink">Siro Copy Trading is in open beta.</span> AI-powered
-        portfolio mirroring on {CHAIN_LIST_TEXT}.
+        <span className="font-semibold text-ink">Siro GuardedVault.</span> Connect your wallet to manage vaults and strategies.
       </div>
       <header className="workspace-header mx-auto w-full max-w-[1040px] px-5 sm:px-6">
         <div className="workspace-nav-panel flex items-center justify-between h-[88px]">
@@ -41,12 +38,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <NetworkSwitcher className="hidden sm:inline-flex" />
             <ConnectButton />
           </div>
-        </div>
-        <div className="sm:hidden pb-3">
-          <NetworkSwitcher />
         </div>
       </header>
       <nav className="workspace-sections" aria-label="Workspace">{[["Overview","/app"],["Portfolio","/app/portfolio"],["Strategies","/app/strategies"],["Studio","/app/studio"],["Agent","/app/agent"],["Approvals","/app/approvals"],["Schedules","/app/schedules"],["Policies","/app/policies"],["Token","/app/token"],["Settings","/app/settings"]].map(([label,href])=><Link key={href} href={href} aria-current={path===href?"page":undefined}>{label}</Link>)}</nav>

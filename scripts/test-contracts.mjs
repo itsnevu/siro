@@ -1,0 +1,11 @@
+import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { homedir } from "node:os";
+import { resolve } from "node:path";
+if (existsSync(".env.local")) process.loadEnvFile(".env.local");
+const fork = process.argv.includes("--fork");
+const forge = resolve(homedir(), ".foundry/bin", process.platform === "win32" ? "forge.exe" : "forge");
+if (fork && !process.env.ALCHEMY_RPC_URL_4663 && !process.env.RH_RPC_URL) throw new Error("Configure a mainnet RPC before running fork tests.");
+const result = spawnSync(forge, ["test", "--root", "contracts", "-vv", ...(fork ? ["--match-path", "test/fork/*"] : ["--no-match-path", "test/fork/*"])], { stdio: "inherit", env: { ...process.env, ...(fork ? { RH_RPC_URL: process.env.ALCHEMY_RPC_URL_4663 || process.env.RH_RPC_URL } : {}) } });
+if (result.error) throw result.error;
+process.exitCode = result.status ?? 1;

@@ -52,7 +52,7 @@ export default function Page() {
           operated by someone else and carries its own policy, which governs what it sees.
         </p>
         <p>
-          Questions: <a href="mailto:support@siro.trade">support@siro.trade</a>
+          Questions: <a href="mailto:support@usesiro.xyz">support@usesiro.xyz</a>
         </p>
       </Section>
     </ProsePage>

@@ -1,0 +1,143 @@
+# Hand-written from crates/api/src/main.rs on 2026-11-13. Generation from code is PLANNED.
+openapi: 3.1.0
+info:
+  title: Siro read-only API
+  version: 0.1.0-testing
+servers:
+  - url: http://127.0.0.1:4010
+paths:
+  /agents:
+    get:
+      summary: Latest report per agent, with advisory comparison attached
+      responses:
+        "200": { $ref: "#/components/responses/Envelope" }
+        "503": { $ref: "#/components/responses/Failure" }
+  /decisions:
+    get:
+      summary: Decisions in journal order, 100 per page
+      parameters:
+        - { name: after, in: query, required: false, schema: { type: integer, minimum: 0 } }
+      responses:
+        "200":
+          description: Page of public decisions
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/Envelope"
+                  - properties:
+                      data:
+                        type: object
+                        required: [records, next, total]
+                        properties:
+                          records: { type: array, items: { $ref: "#/components/schemas/PublicDecision" } }
+                          next: { type: [integer, "null"] }
+                          total: { type: integer }
+        "503": { $ref: "#/components/responses/Failure" }
+  /decisions/{id}:
+    get:
+      summary: Same handler as /verify/{id}
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      responses:
+        "200": { $ref: "#/components/responses/Proof" }
+        "503": { $ref: "#/components/responses/Failure" }
+  /verify/{id}:
+    get:
+      summary: Decision with Merkle proofs to hour and daily roots and anchor receipt
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      responses:
+        "200": { $ref: "#/components/responses/Proof" }
+        "503": { $ref: "#/components/responses/Failure" }
+  /roots:
+    get:
+      summary: Hourly and daily Merkle roots
+      responses:
+        "200": { $ref: "#/components/responses/Envelope" }
+        "503": { $ref: "#/components/responses/Failure" }
+  /ws:
+    get:
+      summary: WebSocket. Emits PublicDecision on commit and again on reveal; polls journal every 250 ms.
+      responses:
+        "101": { description: Switching protocols }
+components:
+  parameters:
+    Id: { name: id, in: path, required: true, schema: { type: string, minLength: 36, maxLength: 36 } }
+  schemas:
+    Hash: { type: string, pattern: "^[0-9a-f]{64}$" }
+    Envelope:
+      type: object
+      required: [prev_hash, verification_url, data]
+      properties:
+        prev_hash: { $ref: "#/components/schemas/Hash" }
+        verification_url: { type: string }
+        data: {}
+    ProofStep:
+      type: object
+      required: [sibling, left]
+      properties: { sibling: { $ref: "#/components/schemas/Hash" }, left: { type: boolean } }
+    PublicDecision:
+      oneOf:
+        - type: object
+          required: [status, decision_id, commit_hash, commit_ts, reveal_ts, prev_hash, verification_url]
+          properties:
+            status: { const: committed }
+            decision_id: { type: string }
+            commit_hash: { $ref: "#/components/schemas/Hash" }
+            commit_ts: { type: string, format: date-time }
+            reveal_ts: { type: string, format: date-time }
+            prev_hash: { $ref: "#/components/schemas/Hash" }
+            verification_url: { type: string }
+        - type: object
+          required: [status, record, prev_hash, verification_url]
+          properties:
+            status: { const: revealed }
+            record: { $ref: "../schemas/decision-v1.schema.json" }
+            prev_hash: { $ref: "#/components/schemas/Hash" }
+            verification_url: { type: string }
+  responses:
+    Envelope:
+      description: Success envelope
+      content: { application/json: { schema: { $ref: "#/components/schemas/Envelope" } } }
+    Proof:
+      description: Decision proof
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/Envelope"
+              - properties:
+                  data:
+                    type: object
+                    properties:
+                      chain_integrity: { type: boolean }
+                      decision: { $ref: "#/components/schemas/PublicDecision" }
+                      hour_root: { $ref: "#/components/schemas/Hash" }
+                      daily_root: { $ref: "#/components/schemas/Hash" }
+                      day: { type: integer }
+                      decision_proof: { type: array, items: { $ref: "#/components/schemas/ProofStep" } }
+                      hour_proof: { type: array, items: { $ref: "#/components/schemas/ProofStep" } }
+                      anchor: { type: [object, "null"] }
+                      publication_proven: { type: boolean, description: "Equals publication.proven" }
+                      publication:
+                        type: object
+                        required: [proven, reason, max_lag_ms]
+                        properties:
+                          proven: { type: boolean, description: "tick <= witnessed_at <= min(reveal, tick + max_lag_ms)" }
+                          reason: { type: string }
+                          witnessed_at: { type: string, format: date-time }
+                          lag_from_tick_ms: { type: integer }
+                          max_lag_ms: { type: integer }
+                          root: { $ref: "#/components/schemas/Hash" }
+                          proof: { type: array, items: { $ref: "#/components/schemas/ProofStep" } }
+                          chain_id: { type: integer }
+                          contract: { type: string }
+                          tx_hash: { type: string }
+                          block_number: { type: string }
+    Failure:
+      description: Journal unreadable or invalid. No partial data.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [error, prev_hash, verification_url]
+            properties: { error: { type: string }, prev_hash: { type: string }, verification_url: { type: string } }

@@ -35,7 +35,7 @@ export default function CookiesPage() {
 
         <h2 className="font-serif text-2xl text-fg mt-8">Contact</h2>
         <p>
-          Questions about this policy? Email <a href="mailto:support@siro.trade" className="underline hover:text-fg">support@siro.trade</a>.
+          Questions about this policy? Email <a href="mailto:support@usesiro.xyz" className="underline hover:text-fg">support@usesiro.xyz</a>.
         </p>
       </div>
     </main>

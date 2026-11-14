@@ -33,7 +33,7 @@ export default async function MarketsPage() {
   const updatedAt = markets[0]?.updatedAt;
 
   return (
-    <ProsePage
+    <ProsePage wide
       eyebrow="Markets"
       title="Tokenized Stocks"
       lede="Robinhood Stock Tokens live on Robinhood Chain, priced from Robinhood's Stock Token API and Chainlink's onchain feeds."

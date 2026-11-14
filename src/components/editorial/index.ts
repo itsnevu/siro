@@ -12,6 +12,5 @@ export { AllocationBar } from "./AllocationBar";
 export { Ladder } from "./Ladder";
 export { ReceiptsTable } from "./ReceiptsTable";
 export { CTABand } from "./CTABand";
-export { MockAppCard } from "./MockAppCard";
 export { Navbar } from "./Navbar";
 export { Footer } from "./Footer";

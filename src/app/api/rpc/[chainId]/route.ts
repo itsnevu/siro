@@ -1,3 +1,4 @@
+import { serverRpcs } from "@/lib/server/rpc";
 import { NextResponse, type NextRequest } from "next/server";
 import { getChain } from "@/lib/chains";
 
@@ -84,14 +85,14 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ chainI
     if (!batch) return respond(answers[0]);
     if (answers.every(Boolean)) return respond(answers);
     const allowed = requests.filter((_, i) => !refused[i]);
-    const fwd = await forwardAny(chain.serverRpcs, JSON.stringify(allowed));
+    const fwd = await forwardAny(serverRpcs(chain.id), JSON.stringify(allowed));
     if (!fwd.ok) return fwd.response;
     const upstream = Array.isArray(fwd.json) ? fwd.json : [];
     let cursor = 0;
     return respond(answers.map((a) => a ?? upstream[cursor++] ?? rpcError(null, -32603, "Missing upstream answer")));
   }
 
-  return (await forwardAny(chain.serverRpcs, raw)).response;
+  return (await forwardAny(serverRpcs(chain.id), raw)).response;
 }
 
 // Network failures move on to the next upstream; a JSON-RPC answer, even an error, is final.

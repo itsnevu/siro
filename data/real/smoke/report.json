@@ -1,0 +1,168 @@
+{
+  "advisory_comparison": null,
+  "agent_id": "real-smoke-portfolio",
+  "agent_version": 1,
+  "asset_class": "tokenized_equity",
+  "calibration": {
+    "brier": 0.25887134090120273,
+    "curve": [
+      {
+        "count": 0,
+        "mean_prediction": null,
+        "observed_frequency": null
+      },
+      {
+        "count": 0,
+        "mean_prediction": null,
+        "observed_frequency": null
+      },
+      {
+        "count": 11,
+        "mean_prediction": 0.2701899313290337,
+        "observed_frequency": 0.45454545454545453
+      },
+      {
+        "count": 10,
+        "mean_prediction": 0.33558630569645154,
+        "observed_frequency": 0.6
+      },
+      {
+        "count": 13,
+        "mean_prediction": 0.43601457272562705,
+        "observed_frequency": 0.5384615384615384
+      },
+      {
+        "count": 12,
+        "mean_prediction": 0.5612560966077061,
+        "observed_frequency": 0.75
+      },
+      {
+        "count": 5,
+        "mean_prediction": 0.6668527385352919,
+        "observed_frequency": 0.6
+      },
+      {
+        "count": 9,
+        "mean_prediction": 0.7458801101373687,
+        "observed_frequency": 0.6666666666666666
+      },
+      {
+        "count": 2,
+        "mean_prediction": 0.8284031737293769,
+        "observed_frequency": 1
+      },
+      {
+        "count": 0,
+        "mean_prediction": null,
+        "observed_frequency": null
+      }
+    ]
+  },
+  "capacity_usd": 134.50471751081776,
+  "capital_usd": 10000,
+  "gate": {
+    "checks": [
+      {
+        "detail": "required bull/bear/long_chop/vol_shock/gap_news; observed [\"vol_shock\"]",
+        "name": "regimes",
+        "passed": false
+      },
+      {
+        "detail": "0 windows; minimum 12",
+        "name": "walk_forward",
+        "passed": false
+      },
+      {
+        "detail": "Every +/-20% parameter perturbation must survive at least 70% of OOS windows",
+        "name": "parameter_sensitivity",
+        "passed": false
+      },
+      {
+        "detail": "DSR None; total trials 0; independent trials 0; minimum probability .95",
+        "name": "deflated_sharpe",
+        "passed": false
+      },
+      {
+        "detail": "net Sharpe Some(12.340092589981804); must exceed .8",
+        "name": "net_sharpe",
+        "passed": true
+      },
+      {
+        "detail": "net DD 0.012538118007167087; duration 0.4166666666666667 days",
+        "name": "drawdown",
+        "passed": true
+      },
+      {
+        "detail": "net edge with 2x slippage 0",
+        "name": "double_slippage",
+        "passed": false
+      },
+      {
+        "detail": "0 externally verified locks for 0 windows",
+        "name": "oos_publication",
+        "passed": false
+      }
+    ],
+    "passed": false
+  },
+  "internal": true,
+  "legs": [
+    {
+      "asset": "NVDA",
+      "sector": "NVDA",
+      "strategy_hash": "549c7c101c428e2966223cef509083290f881b149df474ccfc1467f076b7f6aa"
+    },
+    {
+      "asset": "AAPL",
+      "sector": "AAPL",
+      "strategy_hash": "10abd7d2e44b58d567446d6c2cd21cbfc5eda715cbc1b4a24b23eab4b8200493"
+    }
+  ],
+  "metrics": {
+    "average_exposure": 0.23207987847322029,
+    "average_loss": null,
+    "average_win": null,
+    "calmar": 1990.858698335349,
+    "gross_return": 0.013507861074284033,
+    "gross_sharpe": 12.744155632782551,
+    "hit_rate": null,
+    "longest_drawdown_days": 0.4166666666666667,
+    "max_drawdown": 0.012538118007167087,
+    "net_return": 0.01308760371218276,
+    "net_sharpe": 12.340092589981804,
+    "qqq": {
+      "alpha_annual": 3.246615267800393,
+      "beta": -0.041317719892079205,
+      "information_ratio": 11.386391401288781
+    },
+    "sortino": 22.05411374015586,
+    "spy": {
+      "alpha_annual": 3.284646379055588,
+      "beta": -0.003589923776305325,
+      "information_ratio": 13.920418096743349
+    },
+    "tail_ratio": 1.1951344042757583,
+    "time_in_market": 0.9714285714285714,
+    "turnover": 0.25
+  },
+  "mode": "backtest",
+  "observations": 35,
+  "parent_version": null,
+  "portfolio": "long-only; one shared cash balance; risk telemetry uses portfolio weight, sector weight and 47-return pairwise correlation",
+  "prev_hash": "0995892fccec026b1085249aa4dfa5e541a676510300a788124a5696236915cd",
+  "publication": "historical replay does not prove timely public commitment",
+  "regime": "mixed",
+  "regime_breakdown": [
+    {
+      "gross_return": 0.01350786107428359,
+      "net_return": 0.013087603712182316,
+      "regime": "vol_shock",
+      "samples": 35
+    }
+  ],
+  "risk_free_rate": 0,
+  "risk_profile": "safe-defaults",
+  "strategy_hash": "cefcddaa34110149937380cad068bba5c89909840ec8095fea8c5ae13352204a",
+  "verification_url": "/roots",
+  "note": "Real prices and costs; untrained fixed parameters. Not a strategy claim."
+}

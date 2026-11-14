@@ -3,15 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/check-performance.mjs",
+    "test:trading": "node --test tests/advisory.test.mjs tests/decision-proof.test.mjs tests/receipt-chaos.test.mjs tests/publication.test.mjs tests/live-recovery.test.mjs tests/scheduler.test.mjs tests/workspace-schedules.test.mjs tests/metrics/formulas.test.mjs tests/ingest.test.mjs tests/rpc-quorum.test.mjs tests/universe.test.mjs tests/decay.test.mjs tests/recon.test.mjs tests/sanitize.test.mjs tests/observe.test.mjs tests/clock.test.mjs tests/geo-i18n.test.mjs tests/board-recon.test.mjs tests/scheduler-worker.test.mjs tests/db-mirror.test.mjs tests/session-abi.test.mjs && node --experimental-transform-types --no-warnings --test tests/transform/roles.test.mjs && node scripts/test-trading-integration.mjs",
+    "advisory": "node services/advisory/server.mjs",
+    "anchor": "node services/anchor/worker.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "chain": "anvil --port ${ANVIL_PORT:-8545} --chain-id 31337",
-    "deploy:local": "cd contracts && forge script script/DeploySiro.s.sol:DeploySiro --rpc-url ${RPC_URL:-http://127.0.0.1:8545} --broadcast && cd .. && npm run abi:sync",
+    "chain": "anvil --port 8545 --chain-id 31337",
+    "deploy:local": "node scripts/deploy.mjs local",
     "abi:sync": "node scripts/sync-abi.mjs",
     "contracts:build": "cd contracts && forge build",
-    "contracts:test": "cd contracts && forge test -vvv"
+    "contracts:test": "cd contracts && forge test -vvv",
+    "deploy:testnet": "node scripts/deploy.mjs testnet",
+    "deploy:mainnet": "node scripts/deploy.mjs mainnet",
+    "docs:lint": "node --no-warnings scripts/docs-lint.ts",
+    "witness": "node services/anchor/witness.mjs",
+    "scheduler": "node services/scheduler/worker.mjs",
+    "ingest:backfill": "node services/ingest/backfill.mjs",
+    "db:migrate": "node scripts/db-migrate.mjs",
+    "db:verify": "node scripts/db-verify.mjs",
+    "ops:clock": "node services/ops/clock.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
@@ -19,7 +32,8 @@
     "@tanstack/react-query": "^5.102.8",
     "@types/three": "^0.187.0",
     "framer-motion": "^14.10.1",
-    "next": "16.3.4",
+    "next": "16.4.3",
+    "pg": "8.23.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "three": "^0.187.0",
@@ -32,8 +46,13 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.4",
+    "eslint-config-next": "16.4.3",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "sharp": "0.35.5",
+    "zod": "4.6.7",
+    "source-map-js": "1.2.2"
   }
 }

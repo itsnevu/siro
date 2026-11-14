@@ -44,6 +44,7 @@
     "ambient.d.ts",
     "contracts",
     "siro-video",
-    "node_modules"
+    "node_modules",
+    "vaulta"
   ]
 }

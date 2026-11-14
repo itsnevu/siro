@@ -5,3 +5,8 @@
 .editorial-site .ed-product-page>section:first-of-type>p:first-child:not(:only-child) { color:var(--fg-70); }
 .editorial-site .ed-product-page :is(input,select,textarea) { background:var(--surface-2); color:var(--fg); border-color:var(--line); }
 @media(max-width:900px) { .ed-product-intro-art { display:none; }.editorial-site .ed-product-page[data-artwork="true"]>section:first-of-type { padding-right:0!important; min-height:0; } }
+
+/* Pin the hero artwork to the page header; without these it falls back to .classical-art{width:100%} and floats over the content. */
+.ed-product-page[data-artwork="true"]{position:relative}
+.ed-product-page .classical-art.ed-product-intro-art{position:absolute;top:88px;right:32px;width:220px;opacity:.75;z-index:0}
+@media(max-width:900px){.ed-product-page .classical-art.ed-product-intro-art{display:none}}

@@ -1,0 +1,30 @@
+{
+  "universe_version": "43074b117b20c1e1",
+  "effective_from": "2026-11-13T13:00:00.000Z",
+  "rule": {
+    "id": "liquid-per-sector-v1",
+    "description": "From the official token allowlist, keep tokens whose deepest USDG pool needs at least min_depth_usd to move price 2%, then the top per_sector tokens by that depth in each sector.",
+    "min_depth_usd": 5000,
+    "per_sector": 3,
+    "recompute": "monthly, first day 00:00 UTC"
+  },
+  "rule_hash": "8cbf2f53dd9b98d3b4a9b0a99e63192369e940b6e8524c33df8c03003f4a192b",
+  "members": [
+    {
+      "symbol": "AAPL",
+      "address": "0xaf3d76f1834a1d425780943c99ea8a608f8a93f9",
+      "sector": "hardware",
+      "pool": "0xaae0d815ee56e4092a5e5c2911e676fea50b2d6d",
+      "depth_usd": 19599
+    },
+    {
+      "symbol": "NVDA",
+      "address": "0xd0601ce157db5bdc3162bbac2a2c8af5320d9eec",
+      "sector": "semiconductors",
+      "pool": "0xd4eb21209c4d6093f80b5b84f5c45cc093ea14a3",
+      "depth_usd": 70367
+    }
+  ],
+  "observed_at": "block 113347049 2026-11-13T12:17:26.927Z",
+  "hash": "43074b117b20c1e14bec25cc76726457042145ddeca4cbda950e17a23aeb38b2"
+}

@@ -1,4 +1,11 @@
+---
+status: TESTING
+last_reviewed: 2026-11-14
+---
+
 # Audit kesiapan testnet Siro
+
+> Catatan 13 November 2026: laporan di bawah adalah snapshot historis. Jalur deploy, ABI, dan dashboard telah dipindah ke GuardedVault; sebagian temuan integrasi dan tampilan sudah ditangani. Lihat `STATUS.md` dan `docs/GUARDED_VAULT_RUNBOOK.md` untuk keadaan terbaru. Adapter DEX, deployment publik, keeper/indexer, audit independen, dan uji wallet testnet tetap belum selesai.
 
 Tanggal: 8 November 2026. Target browser: http://localhost:3001/.
 
@@ -133,8 +140,8 @@ Alamat RPC, chain ID yang benar, token decimals, gas token, dan explorer perlu d
 | Agent | Jawaban dan proposal tetap untuk setiap prompt; tidak ada engine AI/keeper dalam alur ini. Label Online belum membuktikan service tersedia. |
 | Approvals | Approve dan Reject sama-sama menghapus kartu lokal; tidak ada transaksi atau persetujuan yang tersimpan. Diverifikasi lewat browser: 3 proposal menjadi 2. |
 | Policies | Save hanya `setSaved(true)` dan menampilkan Saved successfully. Tidak menulis risk config onchain atau persistensi backend. |
-| Schedules | Sudah diberi Coming Soon dan tombol Activate disabled; status ini sesuai implementasi. |
-| Token | Saldo 4.250, stake 2.000, dan APY 12% hardcoded; belum terhubung kontrak token/staking. |
+| Schedules | Per 2026-11-13: hanya schedule yang di-link ke job engine terdaftar yang bisa di-enable, dan hanya oleh pemilik vault on-chain. Worker `services/scheduler/worker.mjs` menjalankan runner tervalidasi per tick. Konfigurasi rebalance alokasi tetap tidak otomatis. |
+| Token | Per 2026-11-13: tidak ada angka saldo, stake, atau imbal hasil tertanam. Halaman menyatakan kontrak staking belum dikonfigurasi. Tidak ada kontrak token SIRO (lihat `docs/token.md`). |
 | Settings | Wallet, API key, dan tanggal contoh; notifikasi hanya state lokal. Generate Key/Copy/Disconnect di daftar belum memiliki handler. Tombol Disconnect header menggunakan wagmi dan bekerja pada simulasi. |
 | Onboarding | Menyebut Privy meski SDK/integrasinya tidak tersedia; hanya tur langkah, bukan create-vault onboarding. |
 | Markets/strategies/statistics | Menggunakan data mock; perlu label demo, terutama nilai finansial dan status Live. |

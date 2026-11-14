@@ -17,9 +17,9 @@ export type ChainConfig = {
   mode: EscrowMode;
   token: { symbol: string; decimals: number; address?: Address };
   gasSymbol: string;
-  copyVault?: Address;
-  riskGuard?: Address;
-  leaderboard?: Address;
+  guardedVaultFactory?: Address;
+  agentRegistry?: Address;
+  oracle?: Address;
   deployBlock: bigint;
   testnet: boolean;
   relayByDefault: boolean;
@@ -28,10 +28,10 @@ export type ChainConfig = {
 type Deployment = {
   chainId: number;
   deployer?: string;
-  usdc?: string;
-  copyVault?: string;
-  riskGuard?: string;
-  leaderboard?: string;
+  usdg?: string;
+  guardedVaultFactory?: string;
+  agentRegistry?: string;
+  oracle?: string;
   deployBlock?: number;
 };
 const DEPLOYMENTS = deployments as unknown as Record<string, Deployment | undefined>;
@@ -49,10 +49,11 @@ const isNonZero = (v: string | undefined): v is Address => isAddr(v) && v !== ze
 
 const ENV = {
   4663: { rpc: process.env.NEXT_PUBLIC_RPC_URL_4663, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_4663 },
+  46630: { rpc: process.env.NEXT_PUBLIC_RPC_URL_46630, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_46630 },
   31337: { rpc: process.env.NEXT_PUBLIC_RPC_URL_31337, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_31337 },
 } as const;
 
-type Base = Omit<ChainConfig, "chain" | "rpcUrl" | "serverRpc" | "serverRpcs" | "copyVault" | "riskGuard" | "leaderboard" | "deployBlock" | "explorerUrl" | "token"> & {
+type Base = Omit<ChainConfig, "chain" | "rpcUrl" | "serverRpc" | "serverRpcs" | "deployBlock" | "explorerUrl" | "token"> & {
   publicRpc: string;
   /** Upstreams for the server-side relay, tried in order. Defaults to [publicRpc]. */
   serverRpcs?: string[];
@@ -61,7 +62,7 @@ type Base = Omit<ChainConfig, "chain" | "rpcUrl" | "serverRpc" | "serverRpcs" | 
   token: { symbol: string; decimals: number };
 };
 
-// Network parameters from docs.robinhood.com/chain/connecting. Siro targets mainnet only.
+// Network parameters from docs.robinhood.com/chain/connecting. Deployment records determine contract availability.
 // Browsers use the same-origin /api/rpc relay because some ISPs filter robinhood.com.
 const BASES: Base[] = [
   {
@@ -80,6 +81,19 @@ const BASES: Base[] = [
     relayByDefault: true,
   },
   {
+    id: 46630,
+    key: "robinhood",
+    name: "Robinhood Chain Testnet",
+    short: "Testnet",
+    publicRpc: process.env.NEXT_PUBLIC_RPC_URL_46630 || "",
+    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+    mode: "erc20",
+    token: { symbol: "USDG", decimals: 6 },
+    gasSymbol: "ETH",
+    testnet: true,
+    relayByDefault: true,
+  },
+  {
     id: 31337,
     key: "anvil",
     name: "Anvil (local)",
@@ -87,7 +101,7 @@ const BASES: Base[] = [
     publicRpc: "http://127.0.0.1:8545",
     nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
     mode: "erc20",
-    token: { symbol: "USDC", decimals: 6 },
+    token: { symbol: "USDG", decimals: 6 },
     gasSymbol: "ETH",
     testnet: true,
     relayByDefault: false,
@@ -97,7 +111,7 @@ const BASES: Base[] = [
 function build(b: Base): ChainConfig {
   const env = ENV[b.id as keyof typeof ENV];
   const dep = DEPLOYMENTS[String(b.id)];
-  const serverRpcs = b.serverRpcs ?? [b.publicRpc];
+  const serverRpcs = env?.rpc ? [env.rpc] : b.serverRpcs ?? [b.publicRpc];
   const serverRpc = serverRpcs[0];
   const rpcUrl = env?.rpc || (b.relayByDefault ? relayUrl(b.id) : serverRpc);
   const explorerUrl = (env?.explorer ?? b.explorerUrl)?.replace(/\/$/, "");
@@ -109,7 +123,7 @@ function build(b: Base): ChainConfig {
     ...(explorerUrl ? { blockExplorers: { default: { name: "Explorer", url: explorerUrl } } } : {}),
     testnet: b.testnet,
   });
-  const tokenAddress = dep?.usdc && dep.usdc !== zero && isAddr(dep.usdc) ? dep.usdc : undefined;
+  const tokenAddress = isNonZero(dep?.usdg) ? dep.usdg : undefined;
   return {
     ...b,
     chain,
@@ -118,20 +132,23 @@ function build(b: Base): ChainConfig {
     serverRpcs,
     explorerUrl,
     token: { ...b.token, address: tokenAddress },
-    mode: dep ? (tokenAddress ? "erc20" : "native") : b.mode,
-    copyVault: isNonZero(dep?.copyVault) ? dep!.copyVault : undefined,
-    riskGuard: isNonZero(dep?.riskGuard) ? dep!.riskGuard : undefined,
-    leaderboard: isNonZero(dep?.leaderboard) ? dep!.leaderboard : undefined,
+    mode: "erc20",
+    guardedVaultFactory: tokenAddress && isNonZero(dep?.guardedVaultFactory) && isNonZero(dep?.agentRegistry) && isNonZero(dep?.oracle) ? dep.guardedVaultFactory : undefined,
+    agentRegistry: isNonZero(dep?.agentRegistry) ? dep.agentRegistry : undefined,
+    oracle: isNonZero(dep?.oracle) ? dep.oracle : undefined,
     deployBlock: BigInt(dep?.deployBlock ?? 0),
   };
 }
 
-export const ALL_CHAINS: Record<number, ChainConfig> = Object.fromEntries(BASES.map((b) => [b.id, build(b)]));
+export const ALL_CHAINS: Record<number, ChainConfig> = Object.fromEntries(BASES.filter(b => b.id !== 46630 || !!ENV[46630].rpc).map((b) => [b.id, build(b)]));
 
 function enabledIds(): number[] {
   const raw = process.env.NEXT_PUBLIC_CHAINS;
   if (raw && raw.trim()) {
-    const ids = raw.split(",").map((s) => Number(s.trim())).filter((id) => ALL_CHAINS[id]);
+    if (raw.split(",").some(id => Number(id.trim()) === 46630) && !ENV[46630].rpc) {
+      throw new Error("NEXT_PUBLIC_RPC_URL_46630 is required to enable testnet.");
+    }
+    const ids = raw.split(",").map((s) => Number(s.trim())).filter((id) => ALL_CHAINS[id] && (id !== 46630 || !!ENV[46630].rpc));
     if (ids.length) return ids;
   }
   return [4663];

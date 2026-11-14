@@ -29,7 +29,7 @@ export default async function AssetDetailPage({ params }: Props) {
 
   if (m === "unavailable") {
     return (
-      <ProsePage eyebrow={ticker.toUpperCase()} title={ticker.toUpperCase()} lede="Live prices are unavailable right now.">
+      <ProsePage wide eyebrow={ticker.toUpperCase()} title={ticker.toUpperCase()} lede="Live prices are unavailable right now.">
         <p style={{ color: "var(--fg-70)" }}>The Robinhood Stock Token API did not respond. Nothing is shown rather than stale or invented data.</p>
       </ProsePage>
     );

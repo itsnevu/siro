@@ -55,7 +55,7 @@ export default function SecurityPage() {
             Found a vulnerability? We offer bounties up to <strong style={{ color: "var(--ink)" }}>$50,000</strong> for critical smart contract bugs.
           </p>
           <p style={{ fontSize: 14, color: "var(--fg-70)", margin: 0 }}>
-            Report to <a href="mailto:security@siro.trade" style={{ color: "var(--accent)" }}>security@siro.trade</a>. Please include a proof of concept and refrain from exploiting the vulnerability.
+            Report to <a href="mailto:security@usesiro.xyz" style={{ color: "var(--accent)" }}>security@usesiro.xyz</a>. Please include a proof of concept and refrain from exploiting the vulnerability.
           </p>
         </div>
       </section>

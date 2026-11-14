@@ -23,10 +23,11 @@ export default function Page() {
             <p className="siro-doc-eyebrow">Writing</p>
             <h1>Blog</h1>
             <p className="siro-doc-lede">
-              Notes on self-repaying credit and the constraints that shape it.
+              Writing about how Siro works and where it can fail.
             </p>
           </header>
 
+          {posts.length === 0 && <p>No articles are published yet.</p>}
           <div className="blog-archive">
             {posts.map((p) => (
               <article key={p.slug}>

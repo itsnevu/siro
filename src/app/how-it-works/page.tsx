@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const STEPS = [
-  { icon: "🔗", title: "Connect Wallet", desc: "Sign in with your existing wallet or create a new one via Privy. Non-custodial  your keys, your funds." },
+  { icon: "🔗", title: "Connect Wallet", desc: "Connect an injected EVM wallet. Your keys stay in your wallet. Email login is not available." },
   { icon: "🔍", title: "Browse Strategies", desc: "Explore the marketplace: filter by return, risk, Sharpe ratio, or asset class. Every strategy has a transparent track record." },
   { icon: "📈", title: "Backtest", desc: "Run any strategy against 5 years of historical data. See simulated returns, max drawdown, win rate, and more  before risking a dollar." },
   { icon: "📝", title: "Paper Trade", desc: "Deploy on paper mode with virtual USDG. Watch it trade in real market conditions with zero risk." },

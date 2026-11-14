@@ -83,4 +83,36 @@ contract ChainlinkOracleTest is Test {
         vm.expectRevert();
         oracle.setFeed(address(other), IAggregatorV3(address(nvdaFeed)), false);
     }
+
+    function _withSequencer(int256 status, uint256 startedAt) internal returns (MockAggregatorV3 seq) {
+        seq = new MockAggregatorV3(0, "L2 Sequencer Uptime");
+        seq.setAnswer(status, startedAt, 1);
+        vm.prank(owner);
+        oracle.setSequencerFeed(IAggregatorV3(address(seq)));
+    }
+
+    function test_audit_revertsWhileSequencerDown() public {
+        _withSequencer(1, block.timestamp - 10 hours);
+        vm.expectRevert(ChainlinkOracle.SequencerDown.selector);
+        oracle.quote(address(nvda), address(usdg), 1e18);
+    }
+
+    function test_audit_revertsDuringSequencerGrace() public {
+        _withSequencer(0, block.timestamp - 10 minutes);
+        vm.expectRevert(ChainlinkOracle.SequencerDown.selector);
+        oracle.quote(address(nvda), address(usdg), 1e18);
+    }
+
+    function test_audit_quotesAfterSequencerGrace() public {
+        _withSequencer(0, block.timestamp - 2 hours);
+        (uint256 out,) = oracle.quote(address(nvda), address(usdg), 1e18);
+        assertGt(out, 0);
+    }
+
+    function test_audit_sequencerFeedIsWriteOnce() public {
+        _withSequencer(0, block.timestamp - 2 hours);
+        vm.prank(owner);
+        vm.expectRevert(ChainlinkOracle.FeedAlreadySet.selector);
+        oracle.setSequencerFeed(IAggregatorV3(address(usdgFeed)));
+    }
 }

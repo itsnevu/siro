@@ -1,0 +1,15 @@
+{
+  "status": "BASELINE - requires review by legal counsel before production. Not legal advice.",
+  "reviewed_by_counsel": false,
+  "country_header": "Read from the CDN in front of the app: x-vercel-ip-country (Vercel) or cf-ipcountry (Cloudflare). Region codes use x-vercel-ip-country-region.",
+  "unknown_country": "allow-with-flag",
+  "blocked": {
+    "reason": "Comprehensively sanctioned jurisdictions (baseline only).",
+    "countries": ["CU", "IR", "KP", "SY"],
+    "regions": [{ "country": "UA", "regions": ["43", "14", "09"], "note": "Crimea, Donetsk, Luhansk (ISO 3166-2:UA)" }]
+  },
+  "no_tokenized_stocks": {
+    "reason": "Jurisdictions where tokenized stock access is restricted. Undetermined: counsel must fill this list.",
+    "countries": []
+  }
+}

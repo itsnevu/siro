@@ -24,6 +24,7 @@ export function ProsePage({
   numbered,
   children,
   footNote,
+  wide,
 }: {
   eyebrow?: string;
   title: string;
@@ -36,6 +37,8 @@ export function ProsePage({
   numbered?: boolean;
   children: ReactNode;
   footNote?: ReactNode;
+  /** Drop the reading-width cap, for pages that are mostly tables or data. */
+  wide?: boolean;
 }) {
   return (
     <>
@@ -66,7 +69,7 @@ export function ProsePage({
                 ))}
               </nav>
             )}
-            <div className="blog-prose" data-numbered={numbered ? "true" : "false"}>
+            <div className="blog-prose" data-numbered={numbered ? "true" : "false"} data-wide={wide ? "true" : undefined}>
               {children}
             </div>
           </div>

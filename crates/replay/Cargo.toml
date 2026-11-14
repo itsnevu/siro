@@ -1,0 +1,21 @@
+[package]
+name = "replay"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+[dependencies]
+tickstore = { path = "../tickstore" }
+features = { path = "../features" }
+serde.workspace = true
+serde_json.workspace = true
+ledger = { path = "../ledger" }
+engine = { path = "../engine" }
+costmodel = { path = "../costmodel" }
+metrics = { path = "../metrics" }
+riskengine = { path = "../riskengine" }
+execution = { path = "../exec" }
+chrono.workspace = true
+tokio.workspace = true
+statrs = { version = "0.18", default-features = false }
+[lints]
+workspace = true

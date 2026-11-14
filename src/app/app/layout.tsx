@@ -5,6 +5,7 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { wagmiConfig } from "@/lib/chain";
 import { NetworkProvider } from "@/lib/network";
+import { RiskDisclaimerClient } from "@/components/RiskDisclaimerClient";
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -13,7 +14,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <NetworkProvider>{children}</NetworkProvider>
+        <NetworkProvider>{children}<RiskDisclaimerClient /></NetworkProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

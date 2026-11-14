@@ -52,6 +52,7 @@ contract GuardedVault is ERC4626, Ownable2Step, ReentrancyGuard {
     mapping(address => PendingPermission) public pendingRouterPermission;
     mapping(address => PendingPermission) public pendingExecutorPermission;
     address[] public trackedAssets;
+    mapping(address => bool) public isTracked;
 
     error Unauthorized();
     error InvalidPolicy();
@@ -90,6 +91,7 @@ contract GuardedVault is ERC4626, Ownable2Step, ReentrancyGuard {
         policy = initialPolicy;
         allowedTokens[address(asset_)] = true;
         trackedAssets.push(address(asset_));
+        isTracked[address(asset_)] = true;
     }
 
     function totalAssets() public view override returns (uint256 value) {
@@ -129,9 +131,11 @@ contract GuardedVault is ERC4626, Ownable2Step, ReentrancyGuard {
 
     function activateTokenPermission(address token) external {
         bool allowed = _activatePermission(pendingTokenPermission, token, keccak256("TOKEN"));
-        if (allowed && !allowedTokens[token]) {
+        // Tracking is permanent: a disallowed token keeps being valued, so re-allowing must not add it twice.
+        if (allowed && !isTracked[token]) {
             if (trackedAssets.length >= MAX_TRACKED_ASSETS) revert AssetLimitReached();
             trackedAssets.push(token);
+            isTracked[token] = true;
         }
         allowedTokens[token] = allowed;
     }
@@ -197,16 +201,30 @@ contract GuardedVault is ERC4626, Ownable2Step, ReentrancyGuard {
 
     // Share-price-sensitive entry points share the trade lock, so a router cannot
     // deposit or redeem while a swap has the vault half-converted.
+    // Both also require every non-base holding to have a fresh quote, so nobody can enter or
+    // exit at a stale share price. redeemInKind remains the oracle-free exit.
     function _deposit(address caller, address receiver, uint256 assets, uint256 shares) internal override nonReentrant {
+        _requireFreshHoldings();
         super._deposit(caller, receiver, assets, shares);
     }
 
     function _withdraw(address caller, address receiver, address shareOwner, uint256 assets, uint256 shares) internal override nonReentrant {
+        _requireFreshHoldings();
         super._withdraw(caller, receiver, shareOwner, assets, shares);
     }
 
     // 1e6 virtual shares per asset unit makes a first-deposit donation attack cost far more than it can steal.
     function _decimalsOffset() internal pure override returns (uint8) { return 6; }
+
+    function _requireFreshHoldings() private view {
+        address base = asset();
+        for (uint256 i; i < trackedAssets.length; ++i) {
+            address token = trackedAssets[i];
+            if (token == base) continue;
+            uint256 balance = IERC20(token).balanceOf(address(this));
+            if (balance != 0) _freshQuote(token, base, balance);
+        }
+    }
 
     function _recordLoss(uint256 loss, uint256 vaultValue) private {
         uint64 today = uint64(block.timestamp / 1 days);

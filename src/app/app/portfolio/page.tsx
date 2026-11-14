@@ -1,122 +1,23 @@
 "use client";
-
 import { useState } from "react";
+import { useAccount } from "wagmi";
+import { useQuery } from "@tanstack/react-query";
 import { AppShell, Stat } from "@/components/app/AppShell";
-
-const HOLDINGS = [
-  { token: "USDC", amount: "12,450.00", value: "$12,450.00", pnl: 0, allocation: 42.3 },
-  { token: "ETH", amount: "3.2145", value: "$8,234.12", pnl: 12.4, allocation: 28.0 },
-  { token: "WBTC", amount: "0.1523", value: "$5,612.50", pnl: -3.2, allocation: 19.1 },
-  { token: "SOL", amount: "45.80", value: "$2,180.40", pnl: 8.7, allocation: 7.4 },
-  { token: "ARB", amount: "1,200.00", value: "$936.00", pnl: -1.5, allocation: 3.2 },
-];
-
-const TRANSACTIONS = [
-  { date: "Nov 7, 2026", type: "Swap", asset: "USDC → ETH", amount: "$500.00", hash: "0xabc1...def2" },
-  { date: "Nov 6, 2026", type: "Deposit", asset: "USDC", amount: "$2,000.00", hash: "0x1234...5678" },
-  { date: "Nov 5, 2026", type: "Swap", asset: "ETH → WBTC", amount: "$1,200.00", hash: "0x9abc...def0" },
-  { date: "Nov 4, 2026", type: "Withdrawal", asset: "USDC", amount: "$300.00", hash: "0xfed1...2345" },
-  { date: "Nov 3, 2026", type: "Swap", asset: "USDC → SOL", amount: "$800.00", hash: "0x6789...abcd" },
-];
-
+import { AddressLink, TxLink } from "@/components/app/Explorer";
+import { useVaultPage } from "@/lib/vaults";
+import { useNetwork } from "@/lib/network";
+import { fmtUnits } from "@/lib/contracts";
+import { buttonClass } from "@/components/app/StrategyStudio";
 export default function PortfolioPage() {
-  const [tab, setTab] = useState<"holdings" | "history">("holdings");
-  const totalValue = "$29,413.02";
-  const totalPnl = "+$2,847.30 (10.7%)";
-
-  return (
-    <AppShell>
-      <div className="space-y-8">
-        <div>
-          <h1 className="font-serif text-[28px] text-ink">Portfolio</h1>
-          <p className="text-[13px] text-fg-70 mt-1">Your aggregated holdings across all vaults.</p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Stat label="Total Value" value={totalValue} />
-          <Stat label="Total PnL" value={totalPnl} accent />
-          <Stat label="Assets" value={HOLDINGS.length} sub="Across 2 vaults" />
-        </div>
-
-        <div>
-          <div className="flex gap-4 border-b border-line mb-4">
-            <button
-              onClick={() => setTab("holdings")}
-              className={`pb-2 text-[13px] font-medium border-b-2 ${tab === "holdings" ? "border-ink text-ink" : "border-transparent text-fg-70 hover:text-ink"}`}
-            >
-              Holdings
-            </button>
-            <button
-              onClick={() => setTab("history")}
-              className={`pb-2 text-[13px] font-medium border-b-2 ${tab === "history" ? "border-ink text-ink" : "border-transparent text-fg-70 hover:text-ink"}`}
-            >
-              Transaction History
-            </button>
-          </div>
-
-          {tab === "holdings" && (
-            <div className="rounded-[12px] border border-line bg-surface overflow-x-auto">
-              <table className="w-full text-[13px]">
-                <thead>
-                  <tr className="border-b border-line text-fg-70 text-left">
-                    <th className="px-4 py-3 font-medium">Token</th>
-                    <th className="px-4 py-3 font-medium">Amount</th>
-                    <th className="px-4 py-3 font-medium">Value</th>
-                    <th className="px-4 py-3 font-medium">PnL %</th>
-                    <th className="px-4 py-3 font-medium">Allocation</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {HOLDINGS.map((h) => (
-                    <tr key={h.token} className="border-b border-line last:border-0">
-                      <td className="px-4 py-3 font-medium text-ink">{h.token}</td>
-                      <td className="px-4 py-3">{h.amount}</td>
-                      <td className="px-4 py-3">{h.value}</td>
-                      <td className={`px-4 py-3 ${h.pnl > 0 ? "text-fg-70" : h.pnl < 0 ? "text-danger" : "text-fg-70"}`}>
-                        {h.pnl > 0 ? "+" : ""}{h.pnl}%
-                      </td>
-                      <td className="px-4 py-3">{h.allocation}%</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          {tab === "history" && (
-            <div className="rounded-[12px] border border-line bg-surface overflow-x-auto">
-              <table className="w-full text-[13px]">
-                <thead>
-                  <tr className="border-b border-line text-fg-70 text-left">
-                    <th className="px-4 py-3 font-medium">Date</th>
-                    <th className="px-4 py-3 font-medium">Type</th>
-                    <th className="px-4 py-3 font-medium">Asset</th>
-                    <th className="px-4 py-3 font-medium">Amount</th>
-                    <th className="px-4 py-3 font-medium">Tx Hash</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {TRANSACTIONS.map((tx, i) => (
-                    <tr key={i} className="border-b border-line last:border-0">
-                      <td className="px-4 py-3">{tx.date}</td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium ${
-                          tx.type === "Deposit" ? "bg-surface-2 text-fg-70" :
-                          tx.type === "Withdrawal" ? "bg-danger/10 text-danger" :
-                          "bg-surface-2 text-fg-70"
-                        }`}>{tx.type}</span>
-                      </td>
-                      <td className="px-4 py-3">{tx.asset}</td>
-                      <td className="px-4 py-3">{tx.amount}</td>
-                      <td className="px-4 py-3 text-fg-70 font-mono text-[12px]">{tx.hash}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </div>
-    </AppShell>
-  );
+  const net = useNetwork(); const { address } = useAccount(); const [offset, setOffset] = useState(0); const data = useVaultPage(offset);
+  const [vault, setVault] = useState(""); const [cursor, setCursor] = useState<string>();
+  const selected = data.data?.vaults.find(v => v.vault === vault)?.vault || data.data?.vaults[0]?.vault;
+  const history = useQuery<{ events: { name: string; args: unknown; hash: string; block: string }[]; next: string | null; fromBlock: string; toBlock: string }>({ queryKey: ["vault-history", net.id, selected, cursor], queryFn: async () => { const r = await fetch(`/api/vault-history?chainId=${net.id}&vault=${selected}${cursor ? `&toBlock=${cursor}` : ""}`); const body = await r.json(); if (!r.ok) throw new Error(body.error || "History unavailable."); return body; }, enabled: !!net.guardedVaultFactory && !!selected, retry: false, refetchInterval: false });
+  const positions = data.data?.vaults.filter(v => BigInt(v.shares) > 0n) || [];
+  const total = positions.every(v => v.shareValue !== null && !v.error) ? positions.reduce((sum, v) => sum + BigInt(v.shareValue!), 0n) : undefined;
+  return <AppShell><div className="py-10 space-y-5"><h1 className="font-serif text-3xl">Portfolio</h1>{!address && <p>Connect your wallet to load its vault positions.</p>}{data.isLoading && <p role="status">Reading onchain positions...</p>}{data.error && <p role="alert">{data.error.message}</p>}{data.data && !data.data.configured && <p>No GuardedVault deployment is configured on {net.name}. No balances are estimated.</p>}
+    {address && data.data?.configured && <><div className="grid sm:grid-cols-3 gap-3"><Stat label="Position value on this page" value={net.fmt(total)} sub="USDG, based on vault share conversion" /><Stat label="Vault positions on this page" value={positions.length} /><Stat label="Snapshot block" value={data.data.block || "Unavailable"} /></div>{!positions.length && <p>No shares held in the vaults on this page.</p>}{positions.map(v => <article className="rounded-xl border border-line p-5 space-y-3" key={v.vault}><h2 className="font-serif text-xl">Agent #{v.id} <AddressLink address={v.vault} /></h2><p className="text-sm">Share value: {net.fmt(v.shareValue === null ? undefined : BigInt(v.shareValue))} USDG</p>{v.error && <p role="alert">{v.error}</p>}{v.assets.map(a => <p key={a.token} className="text-sm">{a.symbol}: {fmtUnits(BigInt(a.yourBalance), a.decimals, 6)} <AddressLink address={a.token} /></p>)}<p className="text-xs text-fg-70">Amounts are your pro-rata underlying holdings before rounding during redemption. No cost-basis or PnL estimate is shown.</p></article>)}</>}
+    {data.data?.configured && <div className="flex gap-3"><button className={buttonClass} disabled={offset === 0} onClick={() => { setOffset(Math.max(0, offset - 10)); setCursor(undefined); }}>Newer vaults</button><button className={buttonClass} disabled={data.data.next === null} onClick={() => { setOffset(data.data!.next!); setCursor(undefined); }}>Older vaults</button><span className="text-sm">{data.data.total} registered vaults</span></div>}
+    {!!data.data?.vaults.length && <section className="space-y-3"><h2 className="font-serif text-xl">Onchain vault event history</h2><select aria-label="History vault" className="rounded-lg border border-line p-2 w-full" value={selected || ""} onChange={e => { setVault(e.target.value); setCursor(undefined); }}>{data.data.vaults.map(v => <option key={v.vault} value={v.vault}>Agent #{v.id} - {v.vault}</option>)}</select>{history.isLoading && <p>Loading events...</p>}{history.error && <p role="alert">{history.error.message}</p>}{history.data && <><p className="text-xs">Blocks {history.data.fromBlock} to {history.data.toBlock}. Events are vault-wide, not a personal trade ledger.</p>{!history.data.events.length && <p>No events in this block range.</p>}{history.data.events.map((e, i) => <article key={`${e.hash}:${i}`} className="border border-line rounded-lg p-3 text-sm"><p>{e.name} | block {e.block} | <TxLink hash={e.hash} /></p><details><summary>Event details</summary><pre className="text-xs whitespace-pre-wrap break-all">{JSON.stringify(e.args, null, 2)}</pre></details></article>)}<button className={buttonClass} disabled={!history.data.next} onClick={() => setCursor(history.data!.next!)}>Earlier 250 blocks</button><button className={buttonClass} onClick={() => { setCursor(undefined); history.refetch(); }}>Latest events</button></>}</section>}
+  </div></AppShell>;
 }

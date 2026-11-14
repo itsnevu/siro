@@ -1,73 +1,41 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t, SAFE_DEFAULTS, type MessageKey } from "@/lib/i18n";
+import { useLocale } from "@/lib/use-locale";
 
-const STEPS = [
-  {
-    title: "Welcome to Siro",
-    desc: "An agentic investment platform for tokenized stocks on Robinhood Chain. Non-custodial, transparent, AI-powered.",
-    icon: "👋",
-  },
-  {
-    title: "Connect your wallet",
-    desc: "Use your existing wallet or create one via Privy. Your keys stay yours. Export any time.",
-    icon: "🔗",
-  },
-  {
-    title: "Pick a strategy",
-    desc: "Browse proven strategies from top traders. Or build your own in Studio. Backtest before committing.",
-    icon: "📊",
-  },
-  {
-    title: "Start trading",
-    desc: "Go live with real funds or paper trade first. The agent executes within your risk policies. You approve everything.",
-    icon: "🚀",
-  },
+// Phase 18 onboarding: safe defaults, one line of explanation each, in Indonesian or English.
+const DEFAULTS: { key: MessageKey; value: string }[] = [
+  { key: "default.stop_loss", value: `stop_loss_pct = ${SAFE_DEFAULTS.stop_loss_pct}` },
+  { key: "default.max_per_asset", value: `max_weight = ${SAFE_DEFAULTS.max_weight}` },
+  { key: "default.universe", value: `universe = ${SAFE_DEFAULTS.universe}` },
+  { key: "default.capital", value: `initial_usd = ${SAFE_DEFAULTS.initial_usd}, mode = ${SAFE_DEFAULTS.mode}` },
 ];
 
 export default function OnboardingPage() {
-  const [step, setStep] = useState(0);
   const router = useRouter();
-  const current = STEPS[step];
-
+  const [locale, setLocale] = useLocale();
+  const switchLocale = () => setLocale(locale === "id" ? "en" : "id");
   return (
-    <main className="min-h-[80vh] flex items-center justify-center px-6">
-      <div className="max-w-lg w-full">
-        <div className="flex gap-2 mb-10">
-          {STEPS.map((_, i) => (
-            <div
-              key={i}
-              className={`h-1 flex-1 rounded-full transition-colors ${
-                i <= step ? "bg-fg" : "bg-line"
-              }`}
-            />
+    <main className="min-h-[80vh] flex items-center justify-center px-6 py-16" lang={locale}>
+      <div className="max-w-2xl w-full space-y-8">
+        <div className="flex justify-end">
+          <button type="button" onClick={switchLocale} className="btn-secondary">{t(locale, "locale.switch")}</button>
+        </div>
+        <header>
+          <h1 className="font-serif text-[36px] md:text-[48px] leading-tight mb-4">{t(locale, "onboarding.title")}</h1>
+          <p className="text-muted text-lg">{t(locale, "onboarding.lede")}</p>
+        </header>
+        <ol className="space-y-4">
+          {DEFAULTS.map(d => (
+            <li key={d.key} className="rounded-xl border border-line p-4">
+              <p>{t(locale, d.key)}</p>
+              <code className="text-xs text-muted">{d.value}</code>
+            </li>
           ))}
-        </div>
-
-        <div className="text-center mb-12">
-          <span className="text-5xl mb-6 block">{current.icon}</span>
-          <h1 className="font-serif text-[36px] md:text-[48px] leading-tight mb-4">{current.title}</h1>
-          <p className="text-muted text-lg max-w-md mx-auto">{current.desc}</p>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => setStep((s) => s - 1)}
-            disabled={step === 0}
-            className="btn-secondary disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            Back
-          </button>
-          {step < STEPS.length - 1 ? (
-            <button onClick={() => setStep((s) => s + 1)} className="btn-primary">
-              Next
-            </button>
-          ) : (
-            <button onClick={() => router.push("/app")} className="btn-primary">
-              Get started
-            </button>
-          )}
+        </ol>
+        <div className="flex justify-end">
+          <button type="button" onClick={() => router.push("/app")} className="btn-primary">{t(locale, "onboarding.start")}</button>
         </div>
       </div>
     </main>

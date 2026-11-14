@@ -102,3 +102,7 @@ main.glow-header { background-image:radial-gradient(ellipse at 0 0,var(--glow-su
     filter: none !important;
   }
 }
+
+/* Product heroes: run the sky up behind the sticky header (as on the home hero) and fade the bottom edge instead of cutting it. */
+.ed-product-hero>.cinematic-background{top:-160px;-webkit-mask-image:linear-gradient(180deg,#000 75%,transparent);mask-image:linear-gradient(180deg,#000 75%,transparent)}
+@media(max-width:768px){.ed-product-hero>.cinematic-background{top:-118px}}
