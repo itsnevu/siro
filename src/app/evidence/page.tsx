@@ -28,7 +28,7 @@ export default async function EvidencePage() {
     { label: "Contracts on mainnet", done: !!chain && Object.values(chain.live).every(Boolean), note: "Anchor, executor, vault factory, registry and oracle." },
     { label: "Vault creation", done: !!chain?.live.GuardedVaultFactory, note: "Anyone can create a guarded USDG vault from the app." },
     { label: "Swap router", done: router, note: router ? "Agents can route trades through the approved adapter." : "UniswapV3Adapter is being deployed so agents can trade." },
-    { label: "Trading engine", done: !!board, note: board ? "Engine is publishing reconciled days." : "Engine service is being brought online on our server." },
+    { label: "Trading engine", done: !!board, note: board ? (board.visible.length + board.hidden.length ? "Engine is online and publishing agent runs." : "Engine is online. It publishes here after the first agent's first scheduled run.") : "Engine service is being brought online on our server." },
   ];
   return (
     <ProsePage wide eyebrow={t.eyebrow} title={t.title} lede={t.lede}>
