@@ -25,7 +25,16 @@
 .driver-popover.siro-tour .driver-popover-title{font-family:var(--font-display);font-size:20px;font-weight:400}
 .driver-popover.siro-tour .driver-popover-description{color:rgba(244,242,238,.72);font-size:14px;line-height:1.5}
 .driver-popover.siro-tour .driver-popover-progress-text{color:rgba(244,242,238,.5)}
-.driver-popover.siro-tour button{background:#0A0B12;color:#F4F2EE;border:1px solid rgba(236,228,216,.18);border-radius:8px;text-shadow:none;padding:6px 12px}
+.driver-popover.siro-tour .driver-popover-footer button{background:#0A0B12;color:#F4F2EE;border:1px solid rgba(236,228,216,.18);border-radius:8px;text-shadow:none;padding:6px 12px}
 .driver-popover.siro-tour .driver-popover-next-btn{background:linear-gradient(100deg,#A597FF,#EEB2CB 70%,#F3CDB0);color:#1B1620;border:0}
-.driver-popover.siro-tour .driver-popover-close-btn{background:transparent;border:0;color:rgba(244,242,238,.6)}
-.driver-popover.siro-tour .driver-popover-arrow{border-color:#191B27}
+.driver-popover.siro-tour .driver-popover-close-btn{top:10px;right:10px;width:28px;height:28px;padding:0;display:grid;place-items:center;background:transparent;border:0;border-radius:8px;color:rgba(244,242,238,.55);font-size:18px;line-height:1;outline:none;box-shadow:none}
+.driver-popover.siro-tour .driver-popover-close-btn:hover{background:rgba(244,242,238,.08);color:#F4F2EE}
+.driver-popover.siro-tour .driver-popover-close-btn:focus-visible{outline:2px solid rgba(165,151,255,.7);outline-offset:1px}
+.driver-popover.siro-tour .driver-popover-footer button:focus{outline:none}
+.driver-popover.siro-tour .driver-popover-footer button:focus-visible{outline:2px solid rgba(165,151,255,.7);outline-offset:2px}
+.driver-popover.siro-tour .driver-popover-title{padding-right:28px}
+.driver-popover.siro-tour .driver-popover-arrow{border:5px solid transparent}
+.driver-popover.siro-tour .driver-popover-arrow-side-top{border-top-color:#191B27}
+.driver-popover.siro-tour .driver-popover-arrow-side-bottom{border-bottom-color:#191B27}
+.driver-popover.siro-tour .driver-popover-arrow-side-left{border-left-color:#191B27}
+.driver-popover.siro-tour .driver-popover-arrow-side-right{border-right-color:#191B27}
