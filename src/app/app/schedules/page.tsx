@@ -27,25 +27,25 @@ export default function SchedulesPage() {
     <p className="text-sm">Engine scheduler: {scheduler.data ? (scheduler.data.online ? "online" : "offline. Enabled schedules will not run until it is back") : "unknown"}. Legacy keeper (monitoring only): {keeper.data?.heartbeat?.online ? keeper.data.heartbeat.mode : "Offline"}.</p>
     {(scheduler.error || keeper.error) && <p role="alert">{(scheduler.error ?? keeper.error)?.message}</p>}
 
-    <section className="rounded-xl border border-line p-5 space-y-3" aria-labelledby="engine-heading">
+    <section className="rounded-xl border border-line p-6 md:p-8 space-y-5" aria-labelledby="engine-heading">
       <h2 id="engine-heading" className="font-serif text-xl">Link an engine job</h2>
       {jobs.length === 0 ? <p className="text-sm">No engine job is registered for this network. The operator registers jobs in the scheduler registry.</p> : <>
-        <label className="text-sm">Engine job<select className={inputClass} value={jobId} onChange={e => setJobId(e.target.value)}><option value="">Select an engine job</option>{jobs.map(j => <option key={j.id} value={j.id}>{j.name} | vault {j.vault} | {j.state?.status ?? "not run yet"}</option>)}</select></label>
+        <label className="block text-sm font-medium">Engine job<select className={inputClass} value={jobId} onChange={e => setJobId(e.target.value)}><option value="">Select an engine job</option>{jobs.map(j => <option key={j.id} value={j.id}>{j.name} | vault {j.vault} | {j.state?.status ?? "not run yet"}</option>)}</select></label>
         <button className={buttonClass} disabled={!ws.workspace || !jobId || ws.busy} onClick={() => { const job = jobs.find(j => j.id === jobId)!; void save([...schedules, { id: crypto.randomUUID(), strategyId: "", intervalHours: 1, startsAt: new Date().toISOString(), vault: job.vault, adapter: "", enabled: false, engineJobId: job.id }], "Engine schedule saved paused. Enable it to let the scheduler run the job."); }}>Save engine schedule (paused)</button>
       </>}
     </section>
 
-    <section className="rounded-xl border border-line p-5 space-y-3" aria-labelledby="legacy-heading">
+    <section className="rounded-xl border border-line p-6 md:p-8 space-y-5" aria-labelledby="legacy-heading">
       <h2 id="legacy-heading" className="font-serif text-xl">Rebalance configuration (not automated)</h2>
       <p className="text-sm text-fg-70">Allocation rebalances have no committed decisions or release gate, so they cannot be enabled. They are stored for reference only.</p>
-      <label className="text-sm">Strategy<select className={inputClass} value={strategy} onChange={e => setStrategy(e.target.value)}><option value="">Select a saved strategy</option>{ws.workspace?.strategies.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
-      <label className="text-sm">Interval (hours)<input className={inputClass} min="1" max="8760" type="number" value={hours} onChange={e => setHours(Number(e.target.value))} /></label>
-      <label className="text-sm">Vault<select className={inputClass} value={vault} onChange={e => setVault(e.target.value)}><option value="">Select vault</option>{agents.agents.map(a => <option key={a.vault} value={a.vault}>Agent #{a.id} - {a.vault}</option>)}</select></label>
-      <label className="text-sm">Guarded router adapter<input className={inputClass} value={adapter} onChange={e => setAdapter(e.target.value)} placeholder="Adapter contract address" /></label>
+      <label className="block text-sm font-medium">Strategy<select className={inputClass} value={strategy} onChange={e => setStrategy(e.target.value)}><option value="">Select a saved strategy</option>{ws.workspace?.strategies.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
+      <label className="block text-sm font-medium">Interval (hours)<input className={inputClass} min="1" max="8760" type="number" value={hours} onChange={e => setHours(Number(e.target.value))} /></label>
+      <label className="block text-sm font-medium">Vault<select className={inputClass} value={vault} onChange={e => setVault(e.target.value)}><option value="">Select vault</option>{agents.agents.map(a => <option key={a.vault} value={a.vault}>Agent #{a.id} - {a.vault}</option>)}</select></label>
+      <label className="block text-sm font-medium">Guarded router adapter<input className={inputClass} value={adapter} onChange={e => setAdapter(e.target.value)} placeholder="Adapter contract address" /></label>
       <button className={buttonClass} disabled={!ws.workspace || !strategy || ws.busy} onClick={() => void save([...schedules, { id: crypto.randomUUID(), strategyId: strategy, intervalHours: hours, startsAt: new Date(Date.now() + hours * 3600_000).toISOString(), vault, adapter, enabled: false }], "Rebalance configuration saved. It is not automated.")}>Save rebalance configuration</button>
     </section>
 
-    {schedules.map(s => { const job = scheduler.data?.jobs.find(j => j.id === s.engineJobId); return <article key={s.id} className="rounded-xl border border-line p-5 space-y-3">
+    {schedules.map(s => { const job = scheduler.data?.jobs.find(j => j.id === s.engineJobId); return <article key={s.id} className="rounded-xl border border-line p-6 md:p-8 space-y-5">
       <h2>{s.engineJobId ? `Engine job: ${job?.name ?? s.engineJobId}` : ws.workspace!.strategies.find(x => x.id === s.strategyId)?.name ?? "Rebalance configuration"}</h2>
       <p className="text-sm">{s.engineJobId ? "Runs every closed hour" : `Every ${s.intervalHours} hours (not automated)`} | {s.enabled ? "Enabled" : "Paused"}</p>
       <p className="text-xs break-all">Vault: {s.vault || "Not selected"}{s.adapter ? ` | Adapter: ${s.adapter}` : ""}</p>

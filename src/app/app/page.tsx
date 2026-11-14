@@ -44,7 +44,7 @@ function VaultDashboard() {
     <div><h1 className="font-serif text-[36px] text-ink">Guarded Vault</h1><p className="mt-2 text-sm text-fg-70">One ERC-4626 vault per agent on {net.name}. Trading requires a configured router and executor.</p></div>
     {!net.guardedVaultFactory && <p role="status" className="rounded-lg border border-line p-4 text-sm">GuardedVaultFactory is not deployed or its configuration is incomplete on {net.name}. Transactions are unavailable.</p>}
     {list.isError && <p role="alert">Could not load agents from this network. Check the RPC and deployment configuration.</p>}
-    <section className="rounded-xl border border-line p-5 space-y-3">
+    <section className="rounded-xl border border-line p-6 md:p-8 space-y-5">
       <h2 className="font-serif text-xl">Create an agent</h2>
       <p className="text-sm text-fg-70">Creates an empty vault with a one-day policy timelock and no trading permissions. Deposit after creation. No creator fee is charged by this flow.</p>
       <div className="flex flex-wrap gap-3"><input aria-label="Agent name" className={field} placeholder="Agent name" maxLength={64} value={name} onChange={e => setName(e.target.value)} /><button className={button} disabled={!ready || !name.trim()} onClick={() => execute(() => actions.create(name), "Agent created. Select its vault below to deposit.")}>Create agent</button></div>
@@ -59,7 +59,7 @@ function VaultDashboard() {
       <Stat label="Trading switch" value={!vault || data.killed.data === undefined ? "Unavailable" : data.killed.data ? "Paused" : "Unpaused"} sub="Does not indicate keeper availability" />
     </section>
     {data.total.isError && <p role="alert" className="text-sm">NAV could not be read. In-kind redemption remains available without an oracle.</p>}
-    <section className="rounded-xl border border-line p-5 space-y-3">
+    <section className="rounded-xl border border-line p-6 md:p-8 space-y-5">
       <h2 className="font-serif text-xl">Deposit / withdraw {net.symbol}</h2>
       <p className="text-sm text-fg-70">Wallet: {net.fmt(data.wallet.data)} {net.symbol}. USDG withdrawals require enough liquid USDG. Redeem all shares in kind to receive your proportional holdings of every vault asset.</p>
       <div className="flex flex-wrap gap-3"><input aria-label="Amount in USDG" className={field} inputMode="decimal" placeholder="Amount in USDG" value={amount} onChange={e => setAmount(e.target.value)} />
