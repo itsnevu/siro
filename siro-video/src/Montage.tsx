@@ -44,7 +44,7 @@ const Stage: React.FC<
 );
 };
 
-const Coin = ({
+export const Coin = ({
   size = 400,
   rotation = 0,
 }: {
@@ -141,7 +141,7 @@ const Allocation = ({
   </div>
 );
 
-const Phone: React.FC<
+export const Phone: React.FC<
   React.PropsWithChildren<{ style?: React.CSSProperties; landing?: boolean }>
 > = ({ children, style, landing = false }) => (
   <div

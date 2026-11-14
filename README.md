@@ -17,7 +17,7 @@ Mainnet only: Robinhood Chain (4663), explorer [robinhoodchain.blockscout.com](h
 | `ChainlinkOracle` (USDG/USD feed `0x61B7e5650328764B076A108EFF5fa7282a1B9aD2`) | `0x18d197cD6454eF08d80c5FA92209B3aF31926ea9` | deployed 2026-11-15 |
 | `AgentRegistry` | `0x0662564d7Ead0A9eb85E4F17cD21d422d339c459` | deployed 2026-11-15 |
 | `GuardedVaultFactory` | `0x33f420792328958739e4983A9Bac7FB44297Cf91` | deployed 2026-11-15 |
-| `UniswapV3Adapter` (router) | — | not deployed: vaults cannot trade yet |
+| `UniswapV3Adapter` (router) | `0x8E662a5D28d089960d601e817aBa430e5981fdd2` | deployed 2026-11-15; routes + feeds for AAPL, MSFT, NVDA, AMZN, GOOGL, TSLA, META, SPY, QQQ, COIN |
 
 Not audited by a third party. Records: `contracts/deployments/`.
 `SiroCopyVault`, `SiroRiskGuard` and `SiroLeaderboard` are legacy contracts with known unsafe behavior

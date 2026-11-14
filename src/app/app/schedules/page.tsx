@@ -8,13 +8,14 @@ import { AppShell } from "@/components/app/AppShell";
 import { WorkspaceAccess } from "@/components/app/WorkspaceAccess";
 import { buttonClass, inputClass } from "@/components/app/StrategyStudio";
 import { useWorkspace } from "@/lib/workspace";
+import { deployment } from "@/lib/generated/deployment";
 import type { Schedule } from "@/lib/workspace-model";
 
 type Job = { id: string; name: string; chain_id: number; vault: string; state: { status: string; detail: string; last_tick: number; updated: number } | null };
 
 export default function SchedulesPage() {
   const ws = useWorkspace(); const net = useNetwork(); const agents = useAgents(); const { address } = useAccount();
-  const [vault, setVault] = useState(""), [adapter, setAdapter] = useState(""), [strategy, setStrategy] = useState(""), [hours, setHours] = useState(168), [jobId, setJobId] = useState(""), [message, setMessage] = useState("");
+  const [vault, setVault] = useState(""), [adapter, setAdapter] = useState<string>(deployment.uniswapV3Adapter), [strategy, setStrategy] = useState(""), [hours, setHours] = useState(168), [jobId, setJobId] = useState(""), [message, setMessage] = useState("");
   const keeper = useQuery<{ heartbeat: { online: boolean; mode: string; signer: string | null } | null }>({ queryKey: ["keeper", address], queryFn: async () => { const r = await fetch("/api/keeper"); const data = await r.json(); if (!r.ok) throw new Error(data.error); return data; }, enabled: ws.authenticated, refetchInterval: 10_000, retry: false });
   const scheduler = useQuery<{ online: boolean; jobs: Job[] }>({ queryKey: ["scheduler", address], queryFn: async () => { const r = await fetch("/api/scheduler"); const data = await r.json(); if (!r.ok) throw new Error(data.error); return data; }, enabled: ws.authenticated, refetchInterval: 10_000, retry: false });
   const jobs = (scheduler.data?.jobs ?? []).filter(j => j.chain_id === net.id);

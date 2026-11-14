@@ -8,6 +8,7 @@ export const deployments = {
     "guardedVaultFactory": "0x33f420792328958739e4983A9Bac7FB44297Cf91",
     "oracle": "0x18d197cD6454eF08d80c5FA92209B3aF31926ea9",
     "usdg": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+    "uniswapV3Adapter": "0x8E662a5D28d089960d601e817aBa430e5981fdd2",
     "anchor": "0xbf9f13791c1c5bcd6e342fb500c711e574fb04e0",
     "sessionExecutor": "0x3933768da40ead71fcf1104e45483d13112287e8",
     "evidenceOwner": "0xB4c47187dc00fA2991460FE57F9dBB0521AFa9a4",

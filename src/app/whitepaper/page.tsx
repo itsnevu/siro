@@ -23,7 +23,7 @@ export default function WhitepaperPage() {
       <h2>What would prove it wrong</h2>
       <p>The conditions under which Siro adds no value are written down in advance with metrics and dates, in the repository under <code>docs/falsification.md</code>. Corrections are logged in <code>docs/honesty-log.md</code>.</p>
       <h2>Status</h2>
-      <p>The evidence and vault contracts are on Robinhood Chain mainnet. No router adapter is configured, so no agent trades real money, and nothing has a third-party audit. See <Link href="/security">Security</Link>.</p>
+      <p>The evidence and vault contracts are on Robinhood Chain mainnet. A swap adapter over Uniswap V3 is live for 10 stock tokens; no agent trades real money until its vault owner grants permissions and the execution engine is online. Nothing has a third-party audit. See <Link href="/security">Security</Link>.</p>
     </ProsePage>
   );
 }

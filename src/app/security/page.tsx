@@ -14,6 +14,7 @@ const link = (address: string) => (MAINNET.explorerUrl ? `${MAINNET.explorerUrl}
 const DEPLOYED = [
   { name: "Anchor", address: MAINNET.anchor, desc: "Daily Merkle roots and permissionless publication witness for committed decisions." },
   { name: "SessionExecutor", address: MAINNET.sessionExecutor, desc: "Scoped session keys: per-trade and daily caps, expiry, asset and router allowlists, revoke and revoke-all." },
+  { name: "UniswapV3Adapter", address: "0x8E662a5D28d089960d601e817aBa430e5981fdd2", desc: "Swap adapter over the official Uniswap V3 deployment. Write-once routes for 10 stock tokens (AAPL, MSFT, NVDA, AMZN, GOOGL, TSLA, META, SPY, QQQ, COIN) against USDG." },
   { name: "GuardedVaultFactory", address: MAINNET.guardedVaultFactory, desc: "Creates one ERC-4626 GuardedVault per agent, owned by the creator, with a one-day policy timelock." },
   { name: "AgentRegistry", address: MAINNET.agentRegistry, desc: "Records which vaults the factory created. Only the factory can register." },
   { name: "ChainlinkOracle", address: MAINNET.oracle, desc: "Reads Chainlink feeds (USDG/USD 0x61B7…9aD2) and rejects stale or paused prices." },
@@ -45,7 +46,7 @@ export default function SecurityPage() {
           </tbody>
         </table>
       )}
-      <p>Every contract is owned by a single address, not a multisig. Robinhood Chain has no sequencer uptime feed yet, so the oracle cannot detect a sequencer outage. Trading also needs a router adapter and executor permissions, which are not configured yet: vaults can be created and funded, but agents cannot trade.</p>
+      <p>Every contract is owned by a single address, not a multisig. Robinhood Chain has no sequencer uptime feed yet, so the oracle cannot detect a sequencer outage. The swap adapter is live with routes and Chainlink feeds for 10 stock tokens. A vault only trades after its owner allows the adapter, the tokens and an executor, each behind the one-day timelock, and the execution engine is still being brought online.</p>
 
       {NOT_DEPLOYED.length > 0 && <>
         <h2>Not deployed yet</h2>
