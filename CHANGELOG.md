@@ -6,6 +6,10 @@ juga dicatat di [docs/honesty-log.md](docs/honesty-log.md).
 
 ## Unreleased (branch `feat/phase-0-harness`, belum di-commit)
 
+- **Deploy mainnet 2026-11-14 (Robinhood Chain, 4663):** `Anchor` `0xbf9f13791c1c5bcd6e342fb500c711e574fb04e0`,
+  `SessionExecutor` `0x3933768da40ead71fcf1104e45483d13112287e8`, owner `0xB4c47187dc00fA2991460FE57F9dBB0521AFa9a4`.
+  Belum diaudit pihak ketiga. Rincian di `contracts/deployments/4663-evidence.json`.
+
 - Engine Rust (tickstore, features, costmodel, metrics, ledger, riskengine, engine, exec,
   replay, api), kontrak `Anchor` dan `SessionExecutor`, service advisory dan anchor.
 - Dokumentasi skeptis: `docs/metrics.md`, `docs/falsification.md`, `docs/limitations.md`,

@@ -28,7 +28,7 @@ function save(key, status, detail, next, hash = null, raw = null) { db.prepare("
 const clients = new Map();
 function clientsFor(id) {
   if (clients.has(id)) return clients.get(id);
-  const rpc = process.env[`ALCHEMY_RPC_URL_${id}`] || process.env[`NEXT_PUBLIC_RPC_URL_${id}`] || (id === 31337 ? "http://127.0.0.1:8545" : undefined);
+  const rpc = process.env[`ALCHEMY_RPC_URL_${id}`] || process.env[`NEXT_PUBLIC_RPC_URL_${id}`];
   if (!rpc) throw new Error("RPC is not configured for this schedule's chain.");
   const chain = defineChain({ id, name: `Siro ${id}`, nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 }, rpcUrls: { default: { http: [rpc] } } });
   const client = createPublicClient({ chain, transport: http(rpc, { timeout: 12_000, retryCount: 0 }) });

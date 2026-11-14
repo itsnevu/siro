@@ -8,6 +8,7 @@ contract DeployEvidence is Script {
     function run() external returns(Anchor anchor,SessionExecutor executor){
         address anchorOwner=vm.envAddress("SIRO_ANCHOR_OWNER");address sessionOwner=vm.envAddress("SIRO_SESSION_OWNER");
         require(anchorOwner!=address(0)&&sessionOwner!=address(0),"owners required");
+        require(block.chainid!=4663||vm.envOr("ALLOW_MAINNET_DEPLOY",false),"Mainnet requires explicit opt-in: ALLOW_MAINNET_DEPLOY=true");
         vm.startBroadcast(vm.envUint("SIRO_DEPLOYER_PRIVATE_KEY"));anchor=new Anchor(anchorOwner);executor=new SessionExecutor(sessionOwner);vm.stopBroadcast();
         emit EvidenceDeployed(address(anchor),address(executor),anchorOwner,sessionOwner);
     }

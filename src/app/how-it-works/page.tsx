@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 
 const STEPS = [
   { icon: "🔗", title: "Connect Wallet", desc: "Connect an injected EVM wallet. Your keys stay in your wallet. Email login is not available." },
-  { icon: "🔍", title: "Browse Strategies", desc: "Explore the marketplace: filter by return, risk, Sharpe ratio, or asset class. Every strategy has a transparent track record." },
-  { icon: "📈", title: "Backtest", desc: "Run any strategy against 5 years of historical data. See simulated returns, max drawdown, win rate, and more  before risking a dollar." },
-  { icon: "📝", title: "Paper Trade", desc: "Deploy on paper mode with virtual USDG. Watch it trade in real market conditions with zero risk." },
-  { icon: "🚀", title: "Go Live", desc: "Deposit USDC into your vault. The strategy executes on-chain via Siro's keeper network. Withdraw anytime." },
+  { icon: "🔍", title: "Browse Strategies", desc: "Compare strategies by net return, drawdown and costs. Every number is labelled backtest or paper; no agent trades real money yet." },
+  { icon: "📈", title: "Backtest", desc: "Backtest on real hourly prices from Robinhood Chain pools, with fees, slippage and gas. Data starts when each pool started trading." },
+  { icon: "📝", title: "Paper Trade", desc: "Run in paper mode with $10,000 virtual capital and safe defaults before any real funds are involved." },
+  { icon: "🚀", title: "Go Live", desc: "Live trading opens only after a strategy passes walk-forward validation. Your vault, your session keys, revocable at any time." },
 ];
 
 export default function HowItWorksPage() {

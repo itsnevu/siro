@@ -5,32 +5,32 @@ import type { ReactNode } from "react";
 
 const FAQ: { q: string; a: ReactNode }[] = [
   {
-    q: "How does Siro copy trades?",
+    q: "What does Siro do?",
     a: (
       <p>
-        Siro indexes every swap on supported chains, scores wallet performance, and ranks them on a public
-        leaderboard. When a leader you follow makes a trade, an AI agent evaluates it. If it passes
-        your risk limits, it executes a proportional swap in your non-custodial vault automatically.
+        An agent trades tokenized stocks on Robinhood Chain from a vault you own. Each hourly decision is
+        committed as a hash before it can execute and revealed afterwards, so anyone can check it at{" "}
+        <Link className="rusd-text-link" href="/verify">/verify</Link> without an account.
       </p>
     ),
   },
   {
-    q: "Can the keeper or Siro withdraw my funds?",
+    q: "Can Siro or the agent withdraw my funds?",
     a: (
       <p>
-        No. Your vault is a Safe smart contract with a Roles module that only permits swaps through
-        whitelisted DEX routers. The keeper cannot transfer, approve, or withdraw funds to any external
-        address. You can pause or withdraw at any time without anyone&apos;s permission.
+        No. The agent acts through a session key you grant on the SessionExecutor contract: it can only swap
+        within a per-trade cap, a daily cap, an asset and router allowlist and an expiry. You can revoke one
+        key or all keys at once. The vault contracts are not deployed on mainnet yet, so deposits are not open.
       </p>
     ),
   },
   {
-    q: "What is RiskGuard?",
+    q: "Which risk limits apply?",
     a: (
       <p>
-        RiskGuard is an onchain guard contract that checks every trade before execution. It enforces your
-        limits: max trade size (% of vault), daily loss cap, max position per token, token whitelist,
-        and slippage tolerance. If any rule fails, the transaction reverts.
+        Every order needs a signed risk permit valid for at most 5 seconds. Limits include a maximum weight per
+        asset (25% by default), a sector cap, a daily trade and turnover cap, a correlation trim, an 8% stop loss
+        per position by default, and a drawdown governor that liquidates and stops the agent at 20%.
       </p>
     ),
   },
@@ -38,28 +38,26 @@ const FAQ: { q: string; a: ReactNode }[] = [
     q: "What are the fees?",
     a: (
       <p>
-        Siro charges a <strong>15% performance fee</strong> only on new profit (high-water mark).
-        If your vault doesn&apos;t grow, you pay nothing. Of the 15%, leaders receive 10% and Siro
-        receives 5%. No management fees, no subscription required for basic features.
+        <strong>15% of realized profit</strong> above the high-water mark: 10% to the strategy creator and 5% to
+        the protocol, fixed in the FeeSplitter contract. No new profit, no fee. There is no management fee.
       </p>
     ),
   },
   {
-    q: "What is paper copy?",
+    q: "Is there a track record?",
     a: (
       <p>
-        Paper copy lets you follow a leader without depositing real funds. Your simulated results are
-        tracked openly so you can evaluate a leader&apos;s performance before committing capital.
+        Not yet. No agent trades real money. Published numbers are labelled backtest or paper, gross or net,
+        and an agent is shown only after its daily reconciliation passes.
       </p>
     ),
   },
   {
-    q: "How do leaders earn?",
+    q: "Is it audited?",
     a: (
       <p>
-        Leaders earn 10% of the profit their followers make. They can claim their wallet by signing a
-        message, set up a public profile, and optionally stake to appear in the top rankings.
-        Leaders never have access to follower funds.
+        No third-party audit has been done. Known weaknesses are listed in{" "}
+        <Link className="rusd-text-link" href="/security">Security</Link> and in the repository&apos;s limitations page.
       </p>
     ),
   },
@@ -71,7 +69,7 @@ export function Faq() {
       <div className="rusd-faq-heading">
         <h2 id="faq-heading">Frequently <em className="hero-italic">asked</em></h2>
         <p>
-          Learn how Siro protects your funds while copying the best onchain traders.
+          What Siro does, what it cannot do, and what is not built yet.
           Read the{" "}
           <Link className="rusd-text-link" href="/docs">
             documentation

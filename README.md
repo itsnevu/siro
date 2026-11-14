@@ -8,30 +8,35 @@ Describe a strategy in one sentence. An agent trades tokenized stocks inside a v
 
 Siro runs on **Robinhood Chain** (Arbitrum Orbit L2). Deposits are in **USDG**, gas is ETH.
 
-| Network | Chain id | Explorer | Status |
-|---|---|---|---|
-| Robinhood Chain | 4663 | [robinhoodchain.blockscout.com](https://robinhoodchain.blockscout.com) | Not deployed |
-| Robinhood Chain Testnet | 46630 | [explorer.testnet.chain.robinhood.com](https://explorer.testnet.chain.robinhood.com) | Not deployed |
+Mainnet only: Robinhood Chain (4663), explorer [robinhoodchain.blockscout.com](https://robinhoodchain.blockscout.com). There is no testnet or local deployment.
 
-Not audited. `contracts/test/ReadinessAudit.t.sol` reproduces open vault issues that must be fixed before any deployment with real funds.
+| Contract | Address | Status |
+|---|---|---|
+| `Anchor` | `0xbf9f13791c1c5bcd6e342fb500c711e574fb04e0` | deployed 2026-11-14 |
+| `SessionExecutor` | `0x3933768da40ead71fcf1104e45483d13112287e8` | deployed 2026-11-14 |
+| `GuardedVaultFactory`, `GuardedVault`, `AgentRegistry`, `ChainlinkOracle` | — | not deployed (`npm run deploy:mainnet`) |
+
+Not audited by a third party. Records: `contracts/deployments/`.
+`SiroCopyVault`, `SiroRiskGuard` and `SiroLeaderboard` are legacy contracts with known unsafe behavior
+reproduced in `contracts/test/ReadinessAudit.t.sol`. The app does not use them; never deploy them.
 
 ## Structure
 - `contracts/`: Foundry project.
-  - `src/SiroCopyVault.sol`, `src/SiroRiskGuard.sol`, `src/SiroLeaderboard.sol`: vault, per-user risk limits, leader stats.
+  - `src/SiroCopyVault.sol`, `src/SiroRiskGuard.sol`, `src/SiroLeaderboard.sol`: legacy, unsafe, not deployed.
   - `src/GuardedVault.sol`, `src/DecisionLog.sol`, `src/AgentRegistry.sol`, `src/AgentTokenFactory.sol`, `src/FeeSplitter.sol`, `src/BuybackBurn.sol`: guarded agent platform.
-  - `script/DeploySiro.s.sol`: deploys the vault, guard and leaderboard and writes `deployments/<chainId>.json`.
+  - `script/DeploySiro.s.sol`: mainnet-only deploy of oracle, registry and vault factory; writes `deployments/4663.json`.
+  - `script/DeployEvidence.s.sol`: `Anchor` + `SessionExecutor`; `npm run deploy:evidence` writes `deployments/4663-evidence.json`.
 - `scripts/sync-abi.mjs`: copies ABIs and deployment records into `src/lib/generated`.
 - `src/lib/chains.ts`: network registry. `src/app/api/rpc/[chainId]/route.ts`: same-origin RPC relay with fallback upstreams, since robinhood.com is ISP-filtered in Indonesia.
 - `src/lib/robinhood.ts`, `src/lib/chainlink-feeds.ts`, `src/lib/robinhood-chain.ts`: live Stock Token prices (Robinhood API, Chainlink feeds) and chain reads for `/markets`.
 
-## Local development
-Requires Node 20+ and Foundry.
+## Development
+Requires Node 24+ and Foundry. The app always targets Robinhood Chain mainnet.
 
 ```bash
 npm install
 npm run contracts:build
 npm run contracts:test     # fork tests need RH_RPC_URL, e.g. https://robinhood-rpc.publicnode.com
-npm run chain              # local Anvil
-npm run deploy:local       # DeploySiro + abi:sync
+npm run abi:sync           # ABIs + contracts/deployments → src/lib/generated
 npm run dev                # http://localhost:3000
 ```

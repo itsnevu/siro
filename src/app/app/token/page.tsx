@@ -6,7 +6,7 @@ import { AddressLink } from "@/components/app/Explorer";
 import { useAgents } from "@/lib/guarded";
 import { useNetwork } from "@/lib/network";
 import { Erc20Abi, fmtUnits } from "@/lib/contracts";
-const protocolTokens: Record<number, string | undefined> = { 4663: process.env.NEXT_PUBLIC_SIRO_TOKEN_4663, 46630: process.env.NEXT_PUBLIC_SIRO_TOKEN_46630, 31337: process.env.NEXT_PUBLIC_SIRO_TOKEN_31337 };
+const protocolTokens: Record<number, string | undefined> = { 4663: process.env.NEXT_PUBLIC_SIRO_TOKEN_4663 };
 export default function TokenPage() {
  const net = useNetwork(); const data = useAgents(); const configured = protocolTokens[net.id]; const protocol = configured && isAddress(configured) && configured !== zeroAddress ? configured : undefined;
  const tokens = [...new Set([...(protocol ? [protocol] : []), ...data.agents.map(a => a.creatorToken).filter(a => a !== zeroAddress)])] as Address[];

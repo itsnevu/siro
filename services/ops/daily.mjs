@@ -13,6 +13,7 @@ import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import { derivedEquity, reconcile } from "../recon/core.mjs";
 import { evaluate, graveyardRow } from "../decay/core.mjs";
+import { mirrorToPostgres } from "../db/mirror.mjs";
 
 const arg = n => { const i = process.argv.indexOf(`--${n}`); return i > 0 ? process.argv[i + 1] : undefined; };
 const journalPath = resolve(arg("journal") ?? "");
@@ -84,3 +85,9 @@ const row = {
 };
 appendFileSync(file, JSON.stringify(row) + "\n");
 console.log(JSON.stringify({ agent_id: row.agent_id, day: row.day, recon: recon.status, worst: recon.worst_relative_diff, decay: decay.status }));
+
+// Mirror journal, anchors and the daily row into Postgres when DATABASE_URL is set (phase 12).
+if (process.env.DATABASE_URL) {
+  const m = await mirrorToPostgres({ journal: journalPath, daily: file, anchor: process.env.SIRO_ANCHOR_JOURNAL, owner: arg("owner") ?? "unknown" });
+  console.log(JSON.stringify({ postgres_mirror: m.ok ? "ok" : m.reason }));
+}

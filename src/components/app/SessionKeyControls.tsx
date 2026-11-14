@@ -13,7 +13,7 @@ const abi = parseAbi([
 ]);
 export function SessionKeyControls({ vault, isOwner }: { vault?: Address; isOwner: boolean }) {
   const net=useNetwork(); const account=useAccount(); const { switchChainAsync }=useSwitchChain(); const { writeContractAsync }=useWriteContract();
-  const [contract,setContract]=useState(""); const [key,setKey]=useState(""); const [trade,setTrade]=useState(""); const [daily,setDaily]=useState(""); const [expiry,setExpiry]=useState(""); const [assets,setAssets]=useState(""); const [venues,setVenues]=useState(""); const [busy,setBusy]=useState(false); const [message,setMessage]=useState("");
+  const [contract,setContract]=useState<string>(net.sessionExecutor ?? ""); const [key,setKey]=useState(""); const [trade,setTrade]=useState(""); const [daily,setDaily]=useState(""); const [expiry,setExpiry]=useState(""); const [assets,setAssets]=useState(""); const [venues,setVenues]=useState(""); const [busy,setBusy]=useState(false); const [message,setMessage]=useState("");
   const target=isAddress(contract)&&contract!==zeroAddress?contract:undefined;
   const owner=useReadContract({address:target,abi,functionName:"owner",chainId:net.id,query:{enabled:!!target}});
   const killed=useReadContract({address:target,abi,functionName:"killed",chainId:net.id,query:{enabled:!!target}});

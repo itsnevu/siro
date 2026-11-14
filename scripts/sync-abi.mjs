@@ -25,16 +25,22 @@ for (const name of contracts) {
 }
 writeFileSync(resolve(out, "abis.ts"), abis);
 
-// Every contracts/deployments/<chainId>.json (and local.json = 31337) becomes one entry,
-// keyed by chain id. The app is dual chain, so all records ship together; which ones are
-// offered is decided at runtime by src/lib/chains.ts.
+// Mainnet only (Robinhood Chain 4663). contracts/deployments/<chainId>.json holds the core vault
+// contracts (DeploySiro); <chainId>-evidence.json holds Anchor + SessionExecutor (DeployEvidence).
+// Both merge into one entry; the app shows each feature only when its contracts are present.
 const depDir = resolve(root, "contracts/deployments");
 const map = {};
+const MAINNET = 4663;
 if (existsSync(depDir)) {
   for (const f of readdirSync(depDir).filter((f) => /^\d+\.json$/.test(f))) {
     const dep = JSON.parse(readFileSync(resolve(depDir, f), "utf8"));
-    if (typeof dep?.chainId !== "number" || !dep.guardedVaultFactory || !dep.usdg || !dep.agentRegistry || !dep.oracle) continue;
-    map[String(dep.chainId)] = dep;
+    if (dep?.chainId !== MAINNET || !dep.guardedVaultFactory || !dep.usdg || !dep.agentRegistry || !dep.oracle) continue;
+    map[String(dep.chainId)] = { ...(map[String(dep.chainId)] ?? {}), ...dep };
+  }
+  for (const f of readdirSync(depDir).filter((f) => /^\d+-evidence\.json$/.test(f))) {
+    const ev = JSON.parse(readFileSync(resolve(depDir, f), "utf8"));
+    if (ev?.chainId !== MAINNET || !ev.contracts?.Anchor || !ev.contracts?.SessionExecutor) continue;
+    map[String(ev.chainId)] = { ...(map[String(ev.chainId)] ?? { chainId: ev.chainId }), anchor: ev.contracts.Anchor, sessionExecutor: ev.contracts.SessionExecutor, evidenceOwner: ev.owners?.Anchor, evidenceBlock: ev.transactions?.[0]?.block ?? 0 };
   }
 }
 const ordered = Object.fromEntries(Object.keys(map).sort((a, b) => Number(a) - Number(b)).map((k) => [k, map[k]]));

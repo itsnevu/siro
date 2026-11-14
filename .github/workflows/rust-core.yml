@@ -14,6 +14,9 @@ jobs:
       - run: cargo test --workspace --locked
       - run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - run: cargo build --workspace --locked
+      # Supply chain: RustSec advisories for every crate in Cargo.lock.
+      - run: cargo install cargo-audit --version 0.22.2 --locked
+      - run: cargo audit
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24

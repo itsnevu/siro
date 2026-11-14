@@ -67,4 +67,4 @@ tanggal, apa yang salah, angka sebelum dan sesudah, siapa yang menemukan, commit
   yang dikirim ke chain. Root per jam tidak punya saksi luar.
 - **Ditemukan oleh.** Review dokumentasi verifikasi.
 - **Perbaikan.** Witness on-chain per batch commit (ADR 0005). `publication_proven` sekarang
-  dihitung dari timestamp blok witness. Kontrak dan worker berstatus TESTING; belum di-deploy.
+  dihitung dari timestamp blok witness. Kontrak di-deploy ke Robinhood Chain pada 2026-11-14 (`0xbf9f13791c1c5bcd6e342fb500c711e574fb04e0`); worker witness belum berjalan.

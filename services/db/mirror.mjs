@@ -83,3 +83,27 @@ if (process.argv[1]?.endsWith("mirror.mjs")) {
     console.log(JSON.stringify({ agent: journal.agent.agent_id, decisions: journal.decisions.length, reveals: journal.reveals.length, fills: journal.fills.length }));
   } finally { await client.end(); }
 }
+
+/**
+ * Best-effort automatic mirror used by the scheduler and the daily job. No-op without DATABASE_URL.
+ * Never throws: the journal stays the source of truth, so a database outage must not stop trading.
+ * Returns { ok, reason?, counts? }.
+ */
+export async function mirrorToPostgres({ journal, daily, anchor, owner }) {
+  if (!process.env.DATABASE_URL) return { ok: false, reason: "DATABASE_URL not set" };
+  const { readFileSync, existsSync } = await import("node:fs");
+  const lines = p => (p && existsSync(p) ? readFileSync(p, "utf8").split("\n").filter(Boolean).map(l => JSON.parse(l)) : []);
+  let client;
+  try {
+    const pg = (await import("pg")).default;
+    client = new pg.Client({ connectionString: process.env.DATABASE_URL, ssl: process.env.PGSSLMODE === "disable" ? false : { rejectUnauthorized: process.env.PGSSL_REJECT_UNAUTHORIZED !== "false" }, connectionTimeoutMillis: 10_000 });
+    await client.connect();
+    const rows = rowsFromJournal(lines(journal));
+    await write(client, owner, { journal: rows, anchors: rowsFromAnchors(lines(anchor)), daily: rowsFromDaily(lines(daily)) });
+    return { ok: true, counts: { decisions: rows.decisions.length, fills: rows.fills.length } };
+  } catch (e) {
+    return { ok: false, reason: e.message.replace(/postgres(ql)?:\/\/\S+/g, "[database]") };
+  } finally {
+    await client?.end().catch(() => {});
+  }
+}

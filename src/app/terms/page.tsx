@@ -1,66 +1,29 @@
-import { ProsePage, Section } from "@/components/ProsePage";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ProsePage } from "@/components/ProsePage";
 
-export const metadata = {
-  title: "Terms  Siro",
-  description:
-    "Siro is non-custodial copy trading software. The terms, parameters, and user responsibilities.",
+export const metadata: Metadata = {
+  title: "Terms | Siro",
+  description: "Terms of use for Siro, non-custodial trading-agent software on Robinhood Chain.",
 };
 
-const TOC = [
-  { id: "what-this-is", heading: "What this is" },
-  { id: "what-it-costs", heading: "What it costs" },
-  { id: "what-you-risk", heading: "Copy trading risks" },
-  { id: "your-responsibility", heading: "Your responsibility" },
-];
-
-export default function Page() {
+export default function TermsPage() {
   return (
-    <ProsePage
-      eyebrow="Legal"
-      title="Terms of Use"
-      lede="Plain language, clear parameters. Siro is software that interacts directly with onchain smart contracts."
-      meta={["Updated November 2026"]}
-      toc={TOC}
-    >
-      <Section id="what-this-is" heading="What this is">
-        <p>
-          Siro is non-custodial copy trading software, not a bank, not a fund manager, and not a financial
-          advisor. It provides an interface to <code>SiroCopyVault.sol</code>, <code>SiroRiskGuard.sol</code>,
-          and <code>SiroLeaderboard.sol</code>. Responsibility for selecting leaders, configuring risk
-          parameters, and managing your vault resides entirely with the user.
-        </p>
-      </Section>
-
-      <Section id="what-it-costs" heading="What it costs">
-        <p>
-          Siro charges a 15% performance fee on profit above your vault&rsquo;s high-water mark, collected
-          on withdrawal. 10% goes to the leaders you follow, 5% to the protocol. All transactions require
-          the network gas fee.
-        </p>
-      </Section>
-
-      <Section id="what-you-risk" heading="Copy trading risks">
-        <p>
-          Funds deposited into a copy vault are held by the smart contract and traded by an AI keeper
-          agent through whitelisted DEX routers. Trading involves risk of loss. Past performance of leaders
-          does not guarantee future returns. The RiskGuard contract enforces your risk parameters, but cannot
-          eliminate market risk.
-        </p>
-        <p>
-          Withdrawals are always available. Performance fees are deducted from profit only. If your vault
-          balance is at or below the high-water mark, no fee is charged.
-        </p>
-      </Section>
-
-      <Section id="your-responsibility" heading="Your responsibility">
-        <p>
-          You are responsible for safeguarding your private keys, evaluating the leaders you follow,
-          configuring appropriate risk parameters, and managing your own tax and regulatory obligations.
-        </p>
-        <p>
-          Questions: <a href="mailto:support@usesiro.xyz">support@usesiro.xyz</a>
-        </p>
-      </Section>
+    <ProsePage eyebrow="Terms" title="Terms of use" lede="Draft terms. They have not been reviewed by legal counsel.">
+      <h2>What Siro is</h2>
+      <p>Siro is software. It is not a bank, broker, fund manager or investment adviser. It provides an interface to contracts on Robinhood Chain that you control.</p>
+      <h2>Your funds and keys</h2>
+      <p>Funds stay in contracts owned by your wallet. You grant agents limited session keys and can revoke them at any time. You are responsible for your private keys.</p>
+      <h2>Fees</h2>
+      <p>15% of realized profit above the high-water mark: 10% to the strategy creator and 5% to the protocol, as fixed in the FeeSplitter contract.</p>
+      <h2>Numbers</h2>
+      <p>Published results are historical or simulated and labelled as such. They do not promise future results.</p>
+      <h2>Jurisdictions</h2>
+      <p>You must make sure using Siro is legal where you are. Access is blocked from some jurisdictions.</p>
+      <h2>No warranty</h2>
+      <p>The software and contracts are provided as is, without a third-party audit. See <Link href="/risk">Risk disclosures</Link>.</p>
+      <h2>Contact</h2>
+      <p><a href="mailto:support@usesiro.xyz">support@usesiro.xyz</a></p>
     </ProsePage>
   );
 }

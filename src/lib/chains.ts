@@ -5,7 +5,7 @@ export type EscrowMode = "native" | "erc20";
 
 export type ChainConfig = {
   id: number;
-  key: "robinhood" | "anvil";
+  key: "robinhood";
   name: string;
   short: string;
   chain: Chain;
@@ -20,6 +20,9 @@ export type ChainConfig = {
   guardedVaultFactory?: Address;
   agentRegistry?: Address;
   oracle?: Address;
+  /** Evidence contracts (DeployEvidence): decision witness and scoped session keys. */
+  anchor?: Address;
+  sessionExecutor?: Address;
   deployBlock: bigint;
   testnet: boolean;
   relayByDefault: boolean;
@@ -32,6 +35,8 @@ type Deployment = {
   guardedVaultFactory?: string;
   agentRegistry?: string;
   oracle?: string;
+  anchor?: string;
+  sessionExecutor?: string;
   deployBlock?: number;
 };
 const DEPLOYMENTS = deployments as unknown as Record<string, Deployment | undefined>;
@@ -49,8 +54,6 @@ const isNonZero = (v: string | undefined): v is Address => isAddr(v) && v !== ze
 
 const ENV = {
   4663: { rpc: process.env.NEXT_PUBLIC_RPC_URL_4663, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_4663 },
-  46630: { rpc: process.env.NEXT_PUBLIC_RPC_URL_46630, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_46630 },
-  31337: { rpc: process.env.NEXT_PUBLIC_RPC_URL_31337, explorer: process.env.NEXT_PUBLIC_EXPLORER_URL_31337 },
 } as const;
 
 type Base = Omit<ChainConfig, "chain" | "rpcUrl" | "serverRpc" | "serverRpcs" | "deployBlock" | "explorerUrl" | "token"> & {
@@ -79,32 +82,6 @@ const BASES: Base[] = [
     gasSymbol: "ETH",
     testnet: false,
     relayByDefault: true,
-  },
-  {
-    id: 46630,
-    key: "robinhood",
-    name: "Robinhood Chain Testnet",
-    short: "Testnet",
-    publicRpc: process.env.NEXT_PUBLIC_RPC_URL_46630 || "",
-    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-    mode: "erc20",
-    token: { symbol: "USDG", decimals: 6 },
-    gasSymbol: "ETH",
-    testnet: true,
-    relayByDefault: true,
-  },
-  {
-    id: 31337,
-    key: "anvil",
-    name: "Anvil (local)",
-    short: "Local",
-    publicRpc: "http://127.0.0.1:8545",
-    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-    mode: "erc20",
-    token: { symbol: "USDG", decimals: 6 },
-    gasSymbol: "ETH",
-    testnet: true,
-    relayByDefault: false,
   },
 ];
 
@@ -136,21 +113,16 @@ function build(b: Base): ChainConfig {
     guardedVaultFactory: tokenAddress && isNonZero(dep?.guardedVaultFactory) && isNonZero(dep?.agentRegistry) && isNonZero(dep?.oracle) ? dep.guardedVaultFactory : undefined,
     agentRegistry: isNonZero(dep?.agentRegistry) ? dep.agentRegistry : undefined,
     oracle: isNonZero(dep?.oracle) ? dep.oracle : undefined,
+    anchor: isNonZero(dep?.anchor) ? dep.anchor : undefined,
+    sessionExecutor: isNonZero(dep?.sessionExecutor) ? dep.sessionExecutor : undefined,
     deployBlock: BigInt(dep?.deployBlock ?? 0),
   };
 }
 
-export const ALL_CHAINS: Record<number, ChainConfig> = Object.fromEntries(BASES.filter(b => b.id !== 46630 || !!ENV[46630].rpc).map((b) => [b.id, build(b)]));
+export const ALL_CHAINS: Record<number, ChainConfig> = Object.fromEntries(BASES.map((b) => [b.id, build(b)]));
 
+/** Mainnet only: Robinhood Chain (4663). There is no testnet or local chain in the app. */
 function enabledIds(): number[] {
-  const raw = process.env.NEXT_PUBLIC_CHAINS;
-  if (raw && raw.trim()) {
-    if (raw.split(",").some(id => Number(id.trim()) === 46630) && !ENV[46630].rpc) {
-      throw new Error("NEXT_PUBLIC_RPC_URL_46630 is required to enable testnet.");
-    }
-    const ids = raw.split(",").map((s) => Number(s.trim())).filter((id) => ALL_CHAINS[id] && (id !== 46630 || !!ENV[46630].rpc));
-    if (ids.length) return ids;
-  }
   return [4663];
 }
 

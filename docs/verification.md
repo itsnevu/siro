@@ -83,7 +83,8 @@ inklusi; hasilnya harus `root`. Pastikan `witnessedAt(root)` di chain sama denga
   harga sampai `max_lag_ms` (default 300 detik) setelah tick sebelum hash wajib publik. Untuk
   keputusan tanpa witness, `publication_proven` bernilai `false`, dan klaim "commit sebelum
   harga bergerak" tidak berlaku untuknya.
-- Per 2026-11-13 kontrak witness belum di-deploy, jadi semua keputusan saat ini bernilai
+- Kontrak `Anchor` ada di Robinhood Chain (`0xbf9f13791c1c5bcd6e342fb500c711e574fb04e0`, sejak
+  2026-11-14). Sampai worker witness berjalan, semua keputusan tetap bernilai
   `publication_proven: false`.
 - Operator bisa memilih untuk tidak mem-witness keputusan tertentu. Hitung proporsi keputusan
   dengan `proven: false`; proporsi yang tinggi adalah tanda bahaya.

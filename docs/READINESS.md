@@ -3,7 +3,10 @@ status: TESTING
 last_reviewed: 2026-11-14
 ---
 
-# Audit kesiapan testnet Siro
+# Audit kesiapan Siro (Robinhood Chain mainnet)
+
+> **Sejak 2026-11-14 Siro hanya berjalan di Robinhood Chain mainnet (4663).** Tidak ada testnet maupun
+> chain lokal. Semua rujukan testnet di bawah adalah bagian dari snapshot historis dan tidak berlaku lagi.
 
 > Catatan 13 November 2026: laporan di bawah adalah snapshot historis. Jalur deploy, ABI, dan dashboard telah dipindah ke GuardedVault; sebagian temuan integrasi dan tampilan sudah ditangani. Lihat `STATUS.md` dan `docs/GUARDED_VAULT_RUNBOOK.md` untuk keadaan terbaru. Adapter DEX, deployment publik, keeper/indexer, audit independen, dan uji wallet testnet tetap belum selesai.
 

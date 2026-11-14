@@ -1,7 +1,7 @@
 import { createPublicClient, http } from "viem";
 import { ALL_CHAINS } from "../chains";
 export function serverRpcs(chainId: number): string[] {
-  const privateUrl = chainId === 4663 ? process.env.ALCHEMY_RPC_URL_4663 : chainId === 46630 ? process.env.ALCHEMY_RPC_URL_46630 : undefined;
+  const privateUrl = chainId === 4663 ? process.env.ALCHEMY_RPC_URL_4663 : undefined;
   return [...(privateUrl?.trim() ? [privateUrl.trim()] : []), ...(ALL_CHAINS[chainId]?.serverRpcs ?? [])];
 }
 export function serverClient(chainId: number) {

@@ -9,7 +9,7 @@ import { allPosts, formatDate } from "@/lib/posts";
 export const metadata = {
   title: "Blog  Siro",
   description:
-    "Writing from Siro on AI copy trading, onchain risk management, and DeFi portfolio mirroring.",
+    "Writing from Siro on verifiable trading agents, onchain risk limits and tokenized stocks on Robinhood Chain.",
 };
 
 export default function Page() {

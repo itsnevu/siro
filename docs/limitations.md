@@ -22,9 +22,9 @@ diperbaiki dipindahkan ke bagian "Sudah ditangani" beserta commit-nya, bukan dih
 
 ## Verifikasi
 
-5. **Witness waktu publikasi belum di-deploy, dan jendelanya tidak nol.** Kode witness per batch
-   commit sudah ada (ADR 0005), tapi belum berjalan di chain mana pun. Setelah berjalan pun,
-   operator punya sampai `max_lag` (default 300 detik) setelah tick sebelum hash wajib
+5. **Kontrak witness sudah di-deploy, tapi worker witness belum berjalan, dan jendelanya tidak nol.**
+   `Anchor` ada di Robinhood Chain sejak 2026-11-14 (`0xbf9f…04e0`), tapi belum ada keputusan
+   produksi yang di-witness. Setelah worker berjalan pun, operator punya sampai `max_lag` (default 300 detik) setelah tick sebelum hash wajib
    ter-witness. Operator juga bisa memilih untuk tidak mem-witness keputusan buruk. Keputusan itu
    tampil `proven: false`, jadi terlihat, tapi tidak dicegah.
 6. **Kunci anchor dan session key dibaca dari env var** (`SIRO_ANCHOR_PRIVATE_KEY`,
@@ -43,9 +43,10 @@ diperbaiki dipindahkan ke bagian "Sudah ditangani" beserta commit-nya, bukan dih
 11. **Risk-free rate = 0** di semua rasio. Sharpe kami lebih tinggi daripada Sharpe excess-return.
 12. **Test di `tests/metrics/` menguji formula dokumen, bukan output crate Rust.** Kalau kode
     Rust berubah tanpa dokumen berubah, CI dokumentasi tidak akan menangkapnya.
-13. **Audit supply chain hanya untuk npm.** GitHub Actions sudah di-pin ke hash commit, dan CI
-    menjalankan `npm audit signatures` serta `npm audit --audit-level=high --omit=dev`. Crate Rust
-    belum diaudit (`cargo audit` belum ada di CI). Image Postgres tidak dipakai.
+13. **Audit supply chain berjalan di CI untuk npm dan Rust** (`npm audit`, `npm audit signatures`,
+    `cargo audit` 0.22.2), dan GitHub Actions di-pin ke hash commit. Per 2026-11-14 tidak ada advisory
+    terbuka: `arrow`/`parquet` dinaikkan ke 59.3.2 untuk menutup RUSTSEC-2026-0442 dan RUSTSEC-2026-0435.
+    Audit hanya menangkap kerentanan yang sudah diketahui publik.
 14. **Median `average_win`/`average_loss` tidak dipublikasikan.** Rata-rata disetir outlier.
 15. **Brier tidak dibandingkan dengan baseline base rate** di UI (RT-08).
 16. **Label rezim pasar diisi di data input**, bukan dideteksi. Satu bar berlabel cukup untuk
@@ -95,9 +96,12 @@ diperbaiki dipindahkan ke bagian "Sudah ditangani" beserta commit-nya, bukan dih
 28. **i18n mencakup** header, footer, disclaimer, onboarding, pesan geo, `/verify`, verifier, dan
     `/evidence`. Isi halaman konten lain (docs, whitepaper, FAQ, legal, dan sebagainya) masih
     berbahasa Inggris.
-36. **Postgres (fase 12)** punya skema, migrasi, script verifikasi, dan mirror journal → Postgres
-    yang idempoten (`services/db/mirror.mjs`). Semuanya belum pernah dijalankan terhadap database
-    sungguhan. Targetnya Postgres production lewat `DATABASE_URL` (tanpa Docker). `db:verify` aman untuk production karena semua ujinya di-rollback. Journal file tetap sumber kebenaran.
+36. **Postgres (fase 12) berjalan di VPS** (PostgreSQL 16, hanya mendengarkan localhost, diakses
+    lewat tunnel SSH `npm run db:tunnel`). Migrasi 0001–0002 sudah diterapkan, dan `db:verify`
+    lulus di sana pada 2026-11-14. Scheduler (setelah setiap run sukses) dan job harian
+    menyalin journal ke Postgres secara otomatis bila `DATABASE_URL` diisi; kegagalan database hanya
+    dicatat dan tidak menghentikan trading. Runner Rust sendiri tetap menulis ke journal file. Journal file tetap sumber kebenaran. Belum ada
+    backup otomatis untuk database ini.
 37. **Jam mesin build meleset sekitar 350 ms dari NTP** pada 2026-11-13, di atas ambang alarm 200
     ms. Mode live tidak boleh dijalankan sebelum jam disinkronkan.
 38. **Login hanya lewat wallet.** Login email OTP dan Google tidak dibangun, karena dikecualikan

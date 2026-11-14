@@ -169,7 +169,7 @@ BEGIN
                  name, month_start, (month_start + interval '1 month')::date);
   RETURN name;
 END $$;
-SELECT decisions_ensure_month(date_trunc('month', now())::date - interval '1 month');
+SELECT decisions_ensure_month((date_trunc('month', now()) - interval '1 month')::date);
 SELECT decisions_ensure_month(date_trunc('month', now())::date);
 SELECT decisions_ensure_month((date_trunc('month', now()) + interval '1 month')::date);
 

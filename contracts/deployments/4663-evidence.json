@@ -1,0 +1,25 @@
+{
+  "chainId": 4663,
+  "deployedAt": "2026-11-14T16:29:08.398Z",
+  "deployer": "0xB4c47187dc00fA2991460FE57F9dBB0521AFa9a4",
+  "contracts": {
+    "Anchor": "0xbf9f13791c1c5bcd6e342fb500c711e574fb04e0",
+    "SessionExecutor": "0x3933768da40ead71fcf1104e45483d13112287e8"
+  },
+  "owners": {
+    "Anchor": "0xB4c47187dc00fA2991460FE57F9dBB0521AFa9a4",
+    "SessionExecutor": "0xB4c47187dc00fA2991460FE57F9dBB0521AFa9a4"
+  },
+  "transactions": [
+    {
+      "hash": "0x03a15a00e74efbd0a2fc3f2f6b1d7ce9afe4a6742a5d8a93b9f8e947169c7617",
+      "block": 114292465,
+      "status": "0x1"
+    },
+    {
+      "hash": "0xb6d7f83a5c130ef08cfc2dc56550cf59b989ef9efbb47a3914ed517476e1ac0c",
+      "block": 114292469,
+      "status": "0x1"
+    }
+  ]
+}

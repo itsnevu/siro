@@ -12,7 +12,7 @@ export { DEFAULT_POLICY, type Policy } from "./workspace-model";
 export function useAgents() {
   const net = useNetwork();
   const count = useReadContract({ address: net.guardedVaultFactory, abi: GuardedVaultFactoryAbi, functionName: "vaultCount", chainId: net.id, query: { enabled: !!net.guardedVaultFactory } });
-  // Show the latest 100 agents; no indexer is required for initial testnet usage.
+  // Show the latest 100 agents; no indexer is used yet.
   const total = Number(count.data ?? 0n);
   const agents = useReadContracts({ contracts: Array.from({ length: Math.min(total, 100) }, (_, i) => ({ address: net.agentRegistry!, abi: AgentRegistryAbi, functionName: "getAgent" as const, args: [BigInt(total - i)] as const, chainId: net.id })), query: { enabled: !!net.agentRegistry && total > 0 } });
   return { agents: (agents.data ?? []).flatMap((r, i) => r.status === "success" ? [{ id: total - i, ...r.result }] : []), isLoading: count.isLoading || (total > 0 && agents.isLoading), isError: count.isError || agents.isError || !!agents.data?.some(r => r.status === "failure"), refetch: async () => { await count.refetch(); await agents.refetch(); } };

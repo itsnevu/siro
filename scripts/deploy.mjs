@@ -6,15 +6,15 @@ import { homedir } from "node:os";
 import { createPublicClient, http, parseAbi } from "viem";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const target = process.argv[2];
-const id = { local: 31337, testnet: 46630, mainnet: 4663 }[target];
-if (!id) throw new Error("Usage: node scripts/deploy.mjs local|testnet|mainnet [--broadcast]");
+// Mainnet only: Robinhood Chain (4663). There is no testnet or local deployment.
+const id = 4663;
 const broadcast = process.argv.includes("--broadcast");
 // Foundry loads contracts/.env itself. RPC and signing configuration can also be
 // supplied by the shell; never print or pass private keys as command arguments.
 if (existsSync(resolve(root, "contracts/.env"))) process.loadEnvFile(resolve(root, "contracts/.env"));
-const rpc = process.env.RPC_URL || (id === 31337 ? "http://127.0.0.1:8545" : undefined);
-if (!rpc) throw new Error("RPC_URL is required for remote deployment.");
+if (existsSync(resolve(root, ".env.local"))) process.loadEnvFile(resolve(root, ".env.local"));
+const rpc = process.env.RPC_URL || process.env.ALCHEMY_RPC_URL_4663;
+if (!rpc) throw new Error("RPC_URL (contracts/.env) or ALCHEMY_RPC_URL_4663 (.env.local) is required.");
 const client = createPublicClient({ transport: http(rpc) });
 if (await client.getChainId() !== id) throw new Error(`RPC chain does not match target ${id}.`);
 const fallbackForge = resolve(homedir(), ".foundry/bin", process.platform === "win32" ? "forge.exe" : "forge");

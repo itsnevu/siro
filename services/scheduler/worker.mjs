@@ -14,6 +14,7 @@ import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { validateWorkspace } from "../../src/lib/workspace-model.ts";
 import { dueTick, validateRegistry, activations, classify, plan, derivedConfig, ownershipVerdict } from "./core.mjs";
+import { mirrorToPostgres } from "../db/mirror.mjs";
 
 const required = n => { if (!process.env[n]) throw new Error(`${n} is required`); return process.env[n]; };
 const registryPath = resolve(required("SIRO_SCHEDULER_REGISTRY"));
@@ -119,6 +120,12 @@ async function tick() {
     const { status, advance } = classify(result.code, result.stderr);
     const detail = (status === "ok" ? `Ran through ${new Date(p.through).toISOString()}` : result.stderr.trim().split("\n").at(-1) || status).replace(/https?:\/\/\S+/g, "[endpoint]").slice(0, 300);
     finish(job.id, p.through, status, detail, advance, started);
+    // Mirror the run's journal into Postgres (phase 12). Failures are logged, never fatal.
+    if (status === "ok" && process.env.DATABASE_URL) {
+      const base = JSON.parse(readFileSync(resolve(dirname(registryPath), job.config), "utf8"));
+      const m = await mirrorToPostgres({ journal: base.journal, anchor: process.env.SIRO_ANCHOR_JOURNAL, owner: active.get(job.id)?.[0]?.address ?? "unknown" });
+      console.log(`${job.id}: postgres mirror ${m.ok ? "ok" : "skipped: " + m.reason}`);
+    }
     console.log(`${job.id} through ${new Date(p.through).toISOString()}: ${status}`);
   }
 }

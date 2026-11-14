@@ -3,10 +3,8 @@ import { injected } from "wagmi/connectors";
 import { CHAINS, DEFAULT_CHAIN } from "./chains";
 
 /**
- * wagmi config over every enabled network (Arc and Robinhood Chain in production, Anvil
- * locally). The transport for each chain is its browser RPC from chains.ts: the public
- * endpoint for Arc, the same-origin /api/rpc relay for Robinhood Chain whose public RPC
- * is filtered by some ISPs.
+ * wagmi config for Robinhood Chain mainnet (4663), the only network. The browser transport is the
+ * same-origin /api/rpc relay, because the public RPC is filtered by some ISPs.
  *
  * "Which chain am I on" is not decided here: see network.tsx.
  */
