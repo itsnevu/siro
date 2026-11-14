@@ -18,8 +18,20 @@ Mainnet only: Robinhood Chain (4663), explorer [robinhoodchain.blockscout.com](h
 | `AgentRegistry` | `0x0662564d7Ead0A9eb85E4F17cD21d422d339c459` | deployed 2026-11-15 |
 | `GuardedVaultFactory` | `0x33f420792328958739e4983A9Bac7FB44297Cf91` | deployed 2026-11-15 |
 | `UniswapV3Adapter` (router) | `0x8E662a5D28d089960d601e817aBa430e5981fdd2` | deployed 2026-11-15; routes + feeds for AAPL, MSFT, NVDA, AMZN, GOOGL, TSLA, META, SPY, QQQ, COIN |
+| `SiroZap` (user swap + deposit) | `0x6F635334962beadc61c42011B8A892bc23ab7437` | deployed 2026-11-15, block 114474352; source verified on Sourcify (full match); whitelist: WETH9 only |
 
 Not audited by a third party. Records: `contracts/deployments/`.
+
+### Two swap paths, never mixed
+
+| Path | Contract | Who calls it | Purpose |
+|---|---|---|---|
+| **User zap** (canonical for users) | `SiroZap` | Any wallet, from `/app/swap` | Swap ETH/WETH into the vault's asset (`vault.asset()`, USDG today) via SwapRouter02, then deposit for the receiver in one transaction. Vault must pass `factory.isVault()`. |
+| **Vault-internal trades** | `UniswapV3Adapter` | Only a vault executor (SessionExecutor) | Rebalance trades inside a vault under its on-chain policy. Not for users; the zap never routes through it. |
+
+> **Trust note: SiroZap owner.** `owner()` is the deployer hot key `0xB4c47187dc00fA2991460FE57F9dBB0521AFa9a4`.
+> The owner can change the input-token whitelist. Ownership (`transferOwnership` + `acceptOwnership`)
+> must move to a multisig before any serious funds flow through the zap.
 `SiroCopyVault`, `SiroRiskGuard` and `SiroLeaderboard` are legacy contracts with known unsafe behavior
 reproduced in `contracts/test/ReadinessAudit.t.sol`. The app does not use them; never deploy them.
 
