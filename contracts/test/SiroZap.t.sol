@@ -26,10 +26,11 @@ contract ZapRouter {
     uint256 public spendBps = 10_000;
     uint24 public lastFee;
     address public lastRecipient;
+    address public lastTokenOut;
     function setRate(uint256 n, uint256 d) external { rateNum = n; rateDen = d; }
     function setSpendBps(uint256 b) external { spendBps = b; }
     function exactInputSingle(ISwapRouter02.ExactInputSingleParams calldata p) external payable returns (uint256 out) {
-        lastFee = p.fee; lastRecipient = p.recipient;
+        lastFee = p.fee; lastRecipient = p.recipient; lastTokenOut = p.tokenOut;
         uint256 spent = p.amountIn * spendBps / 10_000;
         IERC20(p.tokenIn).transferFrom(msg.sender, address(this), spent);
         out = spent * rateNum / rateDen;
@@ -213,6 +214,52 @@ contract SiroZapTest is Test {
         vm.expectRevert(StaleVault.StaleOracle.selector);
         zap.swapAndDeposit(address(stale), address(tokenIn), 1e18, 500, 0, 0, block.timestamp, receiver);
         assertEq(tokenIn.balanceOf(user), 1e30); // whole tx rolled back
+    }
+
+    // --- output asset is derived from vault.asset(), never hardcoded ---
+
+    function test_nonUsdgVaultUsesItsOwnAsset() public {
+        MockERC20 alt = new MockERC20("Alt Asset", "ALT", 8);
+        MockERC4626Vault altVault = new MockERC4626Vault(alt, "Alt Vault", "vALT");
+        factory.set(address(altVault), true);
+
+        vm.prank(user);
+        uint256 shares = zap.swapAndDeposit(address(altVault), address(tokenIn), 10e18, 3000, 20e18, 1, block.timestamp, receiver);
+
+        assertEq(router.lastTokenOut(), address(alt));
+        assertEq(alt.balanceOf(address(altVault)), 20e18);
+        assertEq(altVault.balanceOf(receiver), shares);
+        assertEq(usdg.balanceOf(address(zap)), 0);
+        assertEq(usdg.totalSupply(), 0); // USDG never touched
+        assertEq(alt.balanceOf(address(zap)), 0);
+        assertEq(alt.allowance(address(zap), address(altVault)), 0);
+    }
+
+    function test_revertSameTokenOnNonUsdgVault() public {
+        MockERC20 alt = new MockERC20("Alt Asset", "ALT", 8);
+        MockERC4626Vault altVault = new MockERC4626Vault(alt, "Alt Vault", "vALT");
+        factory.set(address(altVault), true);
+        zap.setWhitelisted(address(alt), true);
+        alt.mint(user, 1e8);
+        vm.startPrank(user);
+        alt.approve(address(zap), 1e8);
+        vm.expectRevert(SiroZap.SameToken.selector);
+        zap.swapAndDeposit(address(altVault), address(alt), 1e8, 500, 0, 0, block.timestamp, receiver);
+        vm.stopPrank();
+        // USDG is a legal input for this vault, since it is not the vault's asset.
+        zap.setWhitelisted(address(usdg), true);
+        usdg.mint(user, 1e6);
+        vm.startPrank(user);
+        usdg.approve(address(zap), 1e6);
+        zap.swapAndDeposit(address(altVault), address(usdg), 1e6, 500, 0, 0, block.timestamp, receiver);
+        vm.stopPrank();
+        assertEq(alt.balanceOf(address(altVault)), 2e6);
+    }
+
+    function test_revertNativeOverpay() public {
+        vm.prank(user);
+        vm.expectRevert(SiroZap.InvalidValue.selector);
+        zap.swapAndDeposit{value: 2 ether}(address(vault), address(0), 1 ether, 500, 0, 0, block.timestamp, receiver);
     }
 
     // --- refund, reentrancy, dust, admin ---
