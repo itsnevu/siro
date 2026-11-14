@@ -14,7 +14,6 @@ contract ManifestUniswap is Script {
 
         _checkCode("V3Factory", RobinhoodChain.UNISWAP_V3_FACTORY);
         _checkCode("SwapRouter02", RobinhoodChain.SWAP_ROUTER_02);
-        _checkCode("UniversalRouter", RobinhoodChain.UNIVERSAL_ROUTER);
         _checkCode("V4Quoter", RobinhoodChain.V4_QUOTER);
 
         IUniswapV3Factory factory = IUniswapV3Factory(RobinhoodChain.UNISWAP_V3_FACTORY);

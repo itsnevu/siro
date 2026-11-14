@@ -11,7 +11,6 @@ library RobinhoodChain {
     // --- Uniswap (official: github.com/Uniswap/contracts/blob/main/deployments/4663.md) ---
     address constant UNISWAP_V3_FACTORY = 0x1f7d7550B1b028f7571E69A784071F0205FD2EfA;
     address constant SWAP_ROUTER_02 = 0xCaf681a66D020601342297493863E78C959E5cb2;
-    address constant UNIVERSAL_ROUTER = 0x204FAca1764B154221e35c0d20aBb3c525710498;
     address constant V4_QUOTER = 0x8Dc178eFB8111BB0973Dd9d722ebeFF267c98F94;
 
     // --- Chainlink EACAggregatorProxy (verified on Blockscout, descriptions TBD via manifest) ---
