@@ -29,6 +29,14 @@ Not audited by a third party. Records: `contracts/deployments/`.
 | **User zap** (canonical for users) | `SiroZap` | Any wallet, from `/app/swap` | Swap ETH/WETH into the vault's asset (`vault.asset()`, USDG today) via SwapRouter02, then deposit for the receiver in one transaction. Vault must pass `factory.isVault()`. |
 | **Vault-internal trades** | `UniswapV3Adapter` | Only a vault executor (SessionExecutor) | Rebalance trades inside a vault under its on-chain policy. Not for users; the zap never routes through it. |
 
+### Vault funding
+
+| Date (UTC) | Vault | ETH in | USDG received | Deposited | Shares | Log |
+|---|---|---|---|---|---|---|
+| 2026-11-14 21:59 | agent #1 `0xB9db…242A` | 0.02 | 35.426113 (quote 35.421552, +0.013%) | 35.244444 | 35,244,444,000,000 | [docs/funding/2026-11-14-agent1-tranche1.md](docs/funding/2026-11-14-agent1-tranche1.md) |
+
+Script: `contracts/script/FundVault.s.sol`, configured through env (`FUND_VAULT`, `FUND_ETH_WEI`, reserve, slippage, USDG range). A new tranche needs explicit approval.
+
 > **Trust note: SiroZap owner.** `owner()` is the deployer hot key `0xB4c47187dc00fA2991460FE57F9dBB0521AFa9a4`.
 > The owner can change the input-token whitelist. Ownership (`transferOwnership` + `acceptOwnership`)
 > must move to a multisig before any serious funds flow through the zap.
