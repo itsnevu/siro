@@ -19,3 +19,13 @@
 .siro-workspace .rounded-\[12px\] { border-radius:20px; }
 .siro-workspace main [class*="rounded-[12px]"] { box-shadow:var(--shadow-sm)!important; }
 @media(max-width:768px) { .workspace-header { top:10px; margin-top:12px; }.workspace-nav-panel { height:66px; padding:0 14px; gap:12px; border-radius:20px; }.workspace-sections { width:calc(100% - 40px); margin-top:20px; margin-bottom:28px; }.workspace-sections a { padding:8px 10px; font-size:11px; }.workspace-nav-panel>.flex:last-child { gap:8px; }.siro-workspace .workspace-main h1 { font-size:34px; } }
+
+/* driver.js tour in Siro colours */
+.driver-popover.siro-tour{background:#191B27;color:#F4F2EE;border:1px solid rgba(165,151,255,.35);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.driver-popover.siro-tour .driver-popover-title{font-family:var(--font-display);font-size:20px;font-weight:400}
+.driver-popover.siro-tour .driver-popover-description{color:rgba(244,242,238,.72);font-size:14px;line-height:1.5}
+.driver-popover.siro-tour .driver-popover-progress-text{color:rgba(244,242,238,.5)}
+.driver-popover.siro-tour button{background:#0A0B12;color:#F4F2EE;border:1px solid rgba(236,228,216,.18);border-radius:8px;text-shadow:none;padding:6px 12px}
+.driver-popover.siro-tour .driver-popover-next-btn{background:linear-gradient(100deg,#A597FF,#EEB2CB 70%,#F3CDB0);color:#1B1620;border:0}
+.driver-popover.siro-tour .driver-popover-close-btn{background:transparent;border:0;color:rgba(244,242,238,.6)}
+.driver-popover.siro-tour .driver-popover-arrow{border-color:#191B27}

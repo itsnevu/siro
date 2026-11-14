@@ -1,13 +1,13 @@
 "use client";
 import { t } from "@/lib/i18n";
-import { useLocale } from "@/lib/use-locale";
 
-/** Client variant for client-rendered segments; the locale comes from the cookie set by the proxy. */
+/** Client variant for client-rendered segments. The outer container sets the width; the card sets its own padding. */
 export function RiskDisclaimerClient() {
-  const [locale] = useLocale();
   return (
-    <aside role="note" aria-label={t(locale, "disclaimer.title")} className="site-container my-6 rounded-xl border border-line p-4 text-sm">
-      <strong>{t(locale, "disclaimer.title")}.</strong> {t(locale, "disclaimer.body")}
-    </aside>
+    <div className="site-container">
+      <aside role="note" data-tour="disclaimer" aria-label={t("en", "disclaimer.title")} className="my-8 rounded-xl border border-line bg-surface px-5 py-4 text-sm leading-relaxed text-fg-70">
+        <strong className="text-ink">{t("en", "disclaimer.title")}.</strong> {t("en", "disclaimer.body")}
+      </aside>
+    </div>
   );
 }

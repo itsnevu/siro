@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { SiroMark } from "@/components/Header";
 import { ConnectButton } from "@/components/ConnectButton";
+import { AppTour } from "@/components/app/AppTour";
 import "@/styles/workspace.css";
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -38,12 +39,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="flex items-center gap-3">
-            <ConnectButton />
+            <AppTour />
+            <span data-tour="connect"><ConnectButton /></span>
           </div>
         </div>
       </header>
-      <nav className="workspace-sections" aria-label="Workspace">{[["Overview","/app"],["Portfolio","/app/portfolio"],["Strategies","/app/strategies"],["Studio","/app/studio"],["Agent","/app/agent"],["Approvals","/app/approvals"],["Schedules","/app/schedules"],["Policies","/app/policies"],["Token","/app/token"],["Settings","/app/settings"]].map(([label,href])=><Link key={href} href={href} aria-current={path===href?"page":undefined}>{label}</Link>)}</nav>
-      <main className="workspace-main mx-auto w-full max-w-[1040px] px-5 sm:px-6 pb-24" id="main-content" tabIndex={-1}>{children}</main>
+      <nav className="workspace-sections" data-tour="sections" aria-label="Workspace">{[["Overview","/app"],["Portfolio","/app/portfolio"],["Strategies","/app/strategies"],["Studio","/app/studio"],["Agent","/app/agent"],["Approvals","/app/approvals"],["Schedules","/app/schedules"],["Policies","/app/policies"],["Token","/app/token"],["Settings","/app/settings"]].map(([label,href])=><Link key={href} href={href} aria-current={path===href?"page":undefined}>{label}</Link>)}</nav>
+      <main data-tour="main" className="workspace-main mx-auto w-full max-w-[1040px] px-5 sm:px-6 pb-24" id="main-content" tabIndex={-1}>{children}</main>
     </div>
   );
 }
