@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProsePage, Section, Note } from "@/components/ProsePage";
 
-export const metadata: Metadata = { title: "API  Siro", description: "Explore Siro’s developer resources and JSON-RPC integration." };
+export const metadata: Metadata = { title: "API | Siro", description: "Explore Siro’s developer resources and JSON-RPC integration." };
 export default function APIPage() {
   return <ProsePage eyebrow="For builders" title="Build with a clearer foundation." lede="Explore the technical resources behind Siro. Start with the contracts and the same-origin JSON-RPC relay." toc={[{id:"resources",heading:"Developer resources"},{id:"relay",heading:"JSON-RPC relay"},{id:"limits",heading:"Request limits"}]}>
     <Section id="resources" heading="Start with the foundations"><p>Read the <Link href="/docs">documentation</Link> for the platform’s architecture, explore the <Link href="/security">security model</Link>, or learn about the <Link href="/x402">x402 payment design</Link>.</p></Section>

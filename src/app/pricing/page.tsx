@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { MarketingShell } from "@/components/editorial/MarketingShell";
 
 export const metadata: Metadata = {
-  title: "Pricing  Siro",
+  title: "Pricing | Siro",
   description: "Transparent fee structure. No hidden costs. Performance fees only on profit.",
 };
 

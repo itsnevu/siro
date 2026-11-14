@@ -14,15 +14,6 @@ const S = {
     confirm: (root: string) => `Confirm on chain: Anchor.witnessedAt(0x${root}) must equal the witnessed_at shown below.`,
     note: "Commitments remain hidden until reveal time. A valid local hash chain alone does not prove timely public publication. An absent anchor transaction remains unverified.",
   },
-  id: {
-    failed: "Verifikasi gagal.", id: "ID keputusan", verify: "Verifikasi", checking: "Memeriksa…", result: "Hasil verifikasi",
-    checks: "Pemeriksaan di browser", commitment: "komitmen", hourly: "proof Merkle per jam", daily: "proof Merkle harian", witness: "witness publikasi",
-    hidden: "tersembunyi sampai reveal", matches: "cocok", FAILED: "GAGAL",
-    absent: "tidak ada, jadi publikasi tepat waktu TIDAK terbukti", notIncluded: "GAGAL: commit hash tidak ada di batch yang di-witness",
-    afterReveal: "memuat hash ini; waktunya bisa dicek setelah reveal", timely: (s: number) => `tepat waktu (${s} detik setelah tick)`, late: (s: number) => `TIDAK tepat waktu (${s} detik setelah tick)`,
-    confirm: (root: string) => `Cek di chain: Anchor.witnessedAt(0x${root}) harus sama dengan witnessed_at di bawah.`,
-    note: "Komitmen tetap tersembunyi sampai waktu reveal. Rantai hash yang valid saja tidak membuktikan publikasi tepat waktu. Transaksi anchor yang tidak ada berarti belum terverifikasi.",
-  },
 } satisfies Record<Locale, unknown>;
 
 export function DecisionVerifier() {

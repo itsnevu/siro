@@ -1,7 +1,7 @@
 import { ProsePage, Section } from "@/components/ProsePage";
 
 export const metadata = {
-  title: "Privacy  Siro",
+  title: "Privacy | Siro",
   description:
     "Siro has no account and no signup. What the site sees, what the chain records, and what we never collect.",
 };

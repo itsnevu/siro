@@ -7,7 +7,7 @@ import { getLatestBlock, getTokenSupplies, type TokenSupply } from "@/lib/robinh
 import { getChainlinkStockPrices, type FeedPrice } from "@/lib/chainlink-feeds";
 
 export const metadata: Metadata = {
-  title: "Markets  Siro",
+  title: "Markets | Siro",
   description: "Live Robinhood Stock Token prices on Robinhood Chain.",
 };
 

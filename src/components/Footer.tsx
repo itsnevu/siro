@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { LINKS } from "@/lib/links";
-import { LocaleSwitch } from "@/components/LocaleSwitch";
 import { nav } from "@/lib/i18n";
 import { useLocale } from "@/lib/use-locale";
 
@@ -22,7 +21,7 @@ export function Footer() {
           {COLUMNS.map(column => <nav key={column.title} aria-label={column.title}><h2>{t(column.title)}</h2>{column.links.map(([label, href]) => <Link href={href} key={label}>{t(label)}</Link>)}</nav>)}
         </div>
         <p className="ed-footer-disclaimer">{t("Siro is in open beta. Digital assets involve risk, including the loss of capital. Published results identify their data source, trading mode and costs. Past performance does not guarantee future results.")}</p>
-        <div className="ed-footer-bottom"><span>© {new Date().getFullYear()} Siro</span><LocaleSwitch /><div><Link href="/legal">{t("Legal")}</Link><Link href="/terms">{t("Terms")}</Link><Link href="/privacy">{t("Privacy")}</Link><Link href="/risk">{t("Risk disclosures")}</Link></div><span>Thoughtfully onchain.</span></div>
+        <div className="ed-footer-bottom"><span>© {new Date().getFullYear()} Siro</span><div><Link href="/legal">{t("Legal")}</Link><Link href="/terms">{t("Terms")}</Link><Link href="/privacy">{t("Privacy")}</Link><Link href="/risk">{t("Risk disclosures")}</Link></div><span>Thoughtfully onchain.</span></div>
       </div>
     </footer>
   );

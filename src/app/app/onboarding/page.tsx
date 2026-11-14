@@ -14,14 +14,10 @@ const DEFAULTS: { key: MessageKey; value: string }[] = [
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const [locale, setLocale] = useLocale();
-  const switchLocale = () => setLocale(locale === "id" ? "en" : "id");
+  const [locale] = useLocale();
   return (
     <main className="min-h-[80vh] flex items-center justify-center px-6 py-16" lang={locale}>
       <div className="max-w-2xl w-full space-y-8">
-        <div className="flex justify-end">
-          <button type="button" onClick={switchLocale} className="btn-secondary">{t(locale, "locale.switch")}</button>
-        </div>
         <header>
           <h1 className="font-serif text-[36px] md:text-[48px] leading-tight mb-4">{t(locale, "onboarding.title")}</h1>
           <p className="text-muted text-lg">{t(locale, "onboarding.lede")}</p>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProsePage } from "@/components/ProsePage";
 
-export const metadata: Metadata = { title: "Legal  Siro", description: "Siro’s terms, privacy policy, and risk disclosures." };
+export const metadata: Metadata = { title: "Legal | Siro", description: "Siro’s terms, privacy policy, and risk disclosures." };
 const documents = [
   { title: "Terms of use", description: "The terms that govern your use of Siro.", href: "/terms" },
   { title: "Privacy policy", description: "How information is handled when you use the platform.", href: "/privacy" },

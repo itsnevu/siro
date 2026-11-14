@@ -9,11 +9,11 @@ export function proxy(request: NextRequest) {
   const geo = decideGeo(country, request.headers.get("x-vercel-ip-country-region"));
   const path = request.nextUrl.pathname;
   if (geo.action === "block") {
-    // 451 Unavailable For Legal Reasons, in both languages; nothing else is served.
-    return new NextResponse(`${t("en", "geo.blocked")}\n${t("id", "geo.blocked")}\n`, { status: 451, headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" } });
+    // 451 Unavailable For Legal Reasons; nothing else is served.
+    return new NextResponse(`${t("en", "geo.blocked")}\n`, { status: 451, headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" } });
   }
   if (geo.action === "no_stocks" && STOCK_PATHS.some(re => re.test(path))) {
-    return new NextResponse(`${t("en", "geo.no_stocks")}\n${t("id", "geo.no_stocks")}\n`, { status: 451, headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" } });
+    return new NextResponse(`${t("en", "geo.no_stocks")}\n`, { status: 451, headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" } });
   }
   const headers = new Headers(request.headers);
   headers.set("x-siro-locale", locale);
