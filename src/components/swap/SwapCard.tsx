@@ -14,6 +14,7 @@ import { useAllowance } from "@/hooks/swap/useAllowance";
 import { useSwapExecution } from "@/hooks/swap/useSwapExecution";
 import { useSlippageSettings } from "@/hooks/swap/useSlippageSettings";
 import { TokenInput } from "./TokenInput";
+import { TokenLogo } from "./TokenLogo";
 import { TokenSelector } from "./TokenSelector";
 import { FlipButton } from "./FlipButton";
 import { QuoteDetails } from "./QuoteDetails";
@@ -24,7 +25,7 @@ import { ConfirmHighImpactDialog } from "./ConfirmHighImpactDialog";
 import { SwapButton } from "./SwapButton";
 import { TxStatusSheet } from "./TxStatusSheet";
 
-export type VaultInfo = { address: Address; asset: Address; assetSymbol: string; assetDecimals: number; shareDecimals: number; name: string };
+export type VaultInfo = { address: Address; asset: Address; assetSymbol: string; assetDecimals: number; assetLogo: string; shareDecimals: number; name: string };
 const RANK: Record<ImpactLevel, number> = { neutral: 0, muted: 1, orange: 2, red: 3, blocked: 4 };
 
 export function SwapCard({ vault }: { vault: VaultInfo }) {
@@ -120,7 +121,7 @@ export function SwapCard({ vault }: { vault: VaultInfo }) {
           <output className="amount-out num" aria-labelledby="receive-label">
             {quote.status === "loading" && !q ? <span className="skeleton" aria-label="Getting quote" /> : q ? formatAmount(q.amountOut, vault.assetDecimals, 6) : <span className="muted">0</span>}
           </output>
-          <span className="token-pill" aria-disabled="true" aria-label={`Receive ${vault.assetSymbol}, set by the vault`}><span className="token-logo" aria-hidden>$</span>{vault.assetSymbol}</span>
+          <span className="token-pill" aria-disabled="true" aria-label={`Receive ${vault.assetSymbol}, set by the vault`}><TokenLogo src={vault.assetLogo} />{vault.assetSymbol}</span>
         </div>
         {quote.status === "no_route" && <p className="muted" style={{ fontSize: 13, margin: "8px 0 0" }}>No pool can route {token.symbol} to {vault.assetSymbol} right now.</p>}
         {quote.status === "error" && <p role="alert" style={{ fontSize: 13, margin: "8px 0 0", color: "var(--danger)" }}>{quote.error} <button type="button" className="max-btn" onClick={quote.refetch}>Retry</button></p>}

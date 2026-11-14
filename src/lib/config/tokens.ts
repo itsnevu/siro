@@ -14,22 +14,23 @@ export type SwapToken = {
   enabled: boolean;
   /** Address used to quote and route (WETH9 for native ETH). */
   routeAddress: Address;
+  /** Self-hosted icon under public/tokens (brand shapes from Simple Icons CC0; USDG from the Global Dollar brand kit). */
   logo: string;
 };
 
 export const NATIVE_TOKEN_IN = "0x0000000000000000000000000000000000000000" as const;
 
 export const SWAP_TOKENS: readonly SwapToken[] = [
-  { symbol: "ETH", name: "Ether", address: "native", decimals: 18, enabled: true, routeAddress: SWAP.weth9, logo: "Ξ" },
-  { symbol: "WETH", name: "Wrapped Ether", address: SWAP.weth9, decimals: 18, enabled: true, routeAddress: SWAP.weth9, logo: "W" },
-  { symbol: "AAPL", name: "Apple • Robinhood Token", address: "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9", decimals: 18, enabled: false, routeAddress: "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9", logo: "A" },
-  { symbol: "NVDA", name: "NVIDIA • Robinhood Token", address: "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC", decimals: 18, enabled: false, routeAddress: "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC", logo: "N" },
-  { symbol: "TSLA", name: "Tesla • Robinhood Token", address: "0x322F0929c4625eD5bAd873c95208D54E1c003b2d", decimals: 18, enabled: false, routeAddress: "0x322F0929c4625eD5bAd873c95208D54E1c003b2d", logo: "T" },
+  { symbol: "ETH", name: "Ether", address: "native", decimals: 18, enabled: true, routeAddress: SWAP.weth9, logo: "/tokens/ethereum.svg" },
+  { symbol: "WETH", name: "Wrapped Ether", address: SWAP.weth9, decimals: 18, enabled: true, routeAddress: SWAP.weth9, logo: "/tokens/weth.svg" },
+  { symbol: "AAPL", name: "Apple • Robinhood Token", address: "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9", decimals: 18, enabled: false, routeAddress: "0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9", logo: "/tokens/apple.svg" },
+  { symbol: "NVDA", name: "NVIDIA • Robinhood Token", address: "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC", decimals: 18, enabled: false, routeAddress: "0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC", logo: "/tokens/nvidia.svg" },
+  { symbol: "TSLA", name: "Tesla • Robinhood Token", address: "0x322F0929c4625eD5bAd873c95208D54E1c003b2d", decimals: 18, enabled: false, routeAddress: "0x322F0929c4625eD5bAd873c95208D54E1c003b2d", logo: "/tokens/tesla.svg" },
 ];
 
 export const DISABLED_TOKEN_REASON = "pool not ready";
 
 /** Vault deposit assets the UI knows how to display (tokenOut is read from vault.asset()). */
-export const VAULT_ASSETS: Record<string, { symbol: string; name: string; decimals: number }> = {
-  [SWAP.usdg.toLowerCase()]: { symbol: "USDG", name: "Global Dollar", decimals: 6 },
+export const VAULT_ASSETS: Record<string, { symbol: string; name: string; decimals: number; logo: string }> = {
+  [SWAP.usdg.toLowerCase()]: { symbol: "USDG", name: "Global Dollar", decimals: 6, logo: "/tokens/usdg.svg" },
 };

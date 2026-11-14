@@ -16,7 +16,7 @@ export function TxStatusSheet({ exec, shareDecimals, onClose, onRetry }: { exec:
       <Dialog.Portal>
         <Dialog.Overlay className="overlay" />
         <Dialog.Content className="sheet" aria-live="polite">
-          <Dialog.Title style={{ fontSize: 18, margin: 0 }}>{title}</Dialog.Title>
+          <div className="dialog-head"><Dialog.Title style={{ fontSize: 18, margin: 0 }}>{title}</Dialog.Title>{exec.phase !== "pending" && exec.phase !== "confirming" && <Dialog.Close className="icon-btn" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></Dialog.Close>}</div>
           <Dialog.Description className="muted" style={{ fontSize: 14, lineHeight: 1.5 }}>
             {exec.phase === "confirming" && "Review the transaction in your wallet. Nothing is sent until you approve it there."}
             {exec.phase === "pending" && "Waiting for Robinhood Chain to confirm. You can keep this sheet open."}

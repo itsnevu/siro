@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import { TokenLogo } from "./TokenLogo";
 import { DISABLED_TOKEN_REASON, SWAP_TOKENS, type SwapToken } from "@/lib/config/tokens";
 
 const RECENT_KEY = "siro_swap_recent_v1";
@@ -47,13 +48,13 @@ export function TokenSelector({ selected, onSelect, balances }: { selected: Swap
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Trigger asChild>
         <button type="button" className="token-pill" aria-label={`Pay with ${selected.name}. Change token`}>
-          <span className="token-logo" aria-hidden>{selected.logo}</span>{selected.symbol}<span aria-hidden>▾</span>
+          <TokenLogo src={selected.logo} />{selected.symbol}<span aria-hidden>▾</span>
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="overlay" />
         <Dialog.Content className="dialog" onKeyDown={onKey} aria-describedby={undefined}>
-          <Dialog.Title>Select a token</Dialog.Title>
+          <div className="dialog-head"><Dialog.Title>Select a token</Dialog.Title><Dialog.Close className="icon-btn" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg></Dialog.Close></div>
           <input className="search" placeholder="Search name or symbol" aria-label="Search tokens" value={query} autoFocus
             role="combobox" aria-expanded aria-controls="token-listbox" aria-activedescendant={rows[active] ? `token-${rows[active].symbol}` : undefined}
             onChange={(e) => { setQuery(e.target.value); setActive(0); }} />
@@ -70,7 +71,7 @@ export function TokenSelector({ selected, onSelect, balances }: { selected: Swap
                   <li key={t.symbol} id={`token-${t.symbol}`} data-index={i} role="option" aria-selected={i === active} aria-disabled={!t.enabled || undefined}
                     className="token-row" onMouseEnter={() => setActive(i)} onClick={() => choose(t)}
                     aria-label={`${t.name}, ${t.symbol}${t.enabled ? `, balance ${balances[t.symbol] ?? "unknown"}` : `, unavailable: ${DISABLED_TOKEN_REASON}`}`}>
-                    <span className="token-logo" aria-hidden>{t.logo}</span>
+                    <TokenLogo src={t.logo} size={36} />
                     <span style={{ flex: 1, minWidth: 0 }}><b>{t.symbol}</b><br /><span className="muted" style={{ fontSize: 12 }}>{t.name}</span></span>
                     <span className="num muted" style={{ fontSize: 13 }}>{t.enabled ? balances[t.symbol] ?? "" : DISABLED_TOKEN_REASON}</span>
                   </li>

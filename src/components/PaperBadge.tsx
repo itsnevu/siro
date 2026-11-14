@@ -9,7 +9,7 @@ export function PaperBadge({ className = "" }: { className?: string }) {
   return (
     <span
       className={`inline-flex items-center rounded-[6px] px-2 h-[22px] text-[11px] font-extrabold tracking-[0.08em] ${className}`}
-      style={{ background: "#F5A524", color: "#111" }}
+      style={{ background: "var(--gradient-brand)", color: "var(--text-on-light, #1B1620)" }}
       title="Paper mode: real prices and real fees, no real orders"
       aria-label="Paper mode"
     >

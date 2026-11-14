@@ -1,23 +1,14 @@
 /* SIRO swap/zap. Design tokens from docs/swap-brief.md, scoped to .siro-swap. Dark-first, light supported. */
+/* Colours come from the site theme (globals.css), so the swap page matches the rest of Siro in light and dark. */
 .siro-swap {
-  --bg: #0A0B0D; --surface: #121418; --surface-hover: #181B21; --border: #23262E;
-  --text: #F2F4F7; --text-muted: #8B93A1; --accent: #4C6FFF;
-  --success: #2ED47A; --warning: #F5A524; --danger: #EF4D5A;
+  --bg: var(--page-bg); --surface: var(--card); --surface-hover: var(--surface); --border: var(--line);
+  --text: var(--fg); --text-muted: var(--fg-70); --accent: var(--fg);
+  --success: #2ED47A; --warning: #C98A1A; --danger: #E5484D;
   --r-8: 8px; --r-12: 12px; --r-16: 16px; --r-24: 24px; --r-32: 32px;
   --ease: cubic-bezier(0.2, 0, 0, 1); --t-micro: 150ms; --t-layout: 200ms;
-  background: var(--bg); color: var(--text);
-  font-family: var(--font-swap-ui), system-ui, sans-serif;
-  min-height: 100dvh;
+  color: var(--text); font-family: var(--font-sans);
 }
-@media (prefers-color-scheme: light) {
-  .siro-swap:not([data-theme="dark"]) {
-    --bg: #F6F7F9; --surface: #FFFFFF; --surface-hover: #F0F2F5; --border: #DCE0E6;
-    --text: #0A0B0D; --text-muted: #5B6472;
-  }
-}
-.siro-swap[data-theme="light"] { --bg: #F6F7F9; --surface: #FFFFFF; --surface-hover: #F0F2F5; --border: #DCE0E6; --text: #0A0B0D; --text-muted: #5B6472; }
-
-.siro-swap .num { font-family: var(--font-swap-mono), ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+.siro-swap .num { font-variant-numeric: tabular-nums; }
 .siro-swap .muted { color: var(--text-muted); }
 .siro-swap :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
@@ -25,11 +16,11 @@
 .swap-card {
   width: 100%; max-width: 480px; background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--r-24); padding: 20px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 20px 48px rgba(0,0,0,.28);
+  box-shadow: 0 1px 2px var(--shadow-color), 0 12px 32px var(--shadow-color);
 }
 @media (max-width: 480px) {
-  .swap-wrap { padding: 0 0 calc(64px + env(safe-area-inset-bottom)); }
-  .swap-card { border-radius: 0; border-left: 0; border-right: 0; padding: 16px max(16px, env(safe-area-inset-left)); }
+  .swap-wrap { padding: 12px 0 calc(48px + env(safe-area-inset-bottom)); }
+  .swap-card { border-radius: var(--r-24); padding: 16px; }
 }
 .swap-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .swap-head h1 { font-size: 18px; font-weight: 600; margin: 0; }
@@ -40,16 +31,16 @@
 .swap-block { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-16); padding: 16px; }
 .swap-block label, .swap-block .label { font-size: 13px; color: var(--text-muted); }
 .swap-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
-.amount-input { width: 100%; min-width: 0; background: transparent; border: 0; color: var(--text); font-size: 34px; line-height: 1.1; padding: 0; outline: none; }
+.siro-swap .amount-input { width: 100%; min-width: 0; background: transparent !important; border: 0 !important; border-radius: var(--r-12); box-shadow: none !important; appearance: none; color: var(--text); font-size: 34px; line-height: 1.1; padding: 0; outline: none; }
 .amount-input::placeholder { color: var(--text-muted); opacity: .5; }
 .amount-out { font-size: 34px; line-height: 1.1; min-height: 38px; }
 .token-pill { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px 0 6px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-weight: 600; font-size: 16px; cursor: pointer; white-space: nowrap; }
 .token-pill[aria-disabled="true"] { cursor: default; }
-.token-logo { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--surface-hover); font-size: 13px; font-weight: 700; }
+.token-logo { display: inline-block; border-radius: 999px; flex: none; object-fit: cover; }
 .max-btn { border: 0; background: transparent; color: var(--accent); font-weight: 600; font-size: 13px; min-height: 44px; padding: 0 6px; cursor: pointer; }
 
 .seam { position: relative; height: 0; display: flex; justify-content: center; z-index: 1; }
-.flip-btn { position: absolute; top: -22px; width: 44px; height: 44px; border-radius: 999px; border: 4px solid var(--surface); background: var(--surface-hover); color: var(--text); display: grid; place-items: center; cursor: pointer; transition: transform var(--t-layout) var(--ease); }
+.flip-btn { position: absolute; top: -22px; width: 44px; height: 44px; border-radius: 999px; border: 4px solid var(--card); background: var(--surface); color: var(--text); display: grid; place-items: center; cursor: pointer; transition: transform var(--t-layout) var(--ease); }
 .flip-btn[data-turned="true"] { transform: rotate(180deg); }
 
 .skeleton { display: inline-block; height: 34px; width: 60%; border-radius: var(--r-8); background: linear-gradient(90deg, var(--surface-hover) 0%, var(--border) 50%, var(--surface-hover) 100%); background-size: 200% 100%; animation: shimmer 1.2s linear infinite; }
@@ -68,7 +59,7 @@
 .banner-red { border-color: color-mix(in srgb, var(--danger) 55%, transparent); background: color-mix(in srgb, var(--danger) 10%, transparent); color: var(--text); }
 .banner button { background: transparent; border: 0; color: var(--accent); font-weight: 600; cursor: pointer; min-height: 32px; }
 
-.swap-btn { margin-top: 16px; width: 100%; height: 56px; border-radius: var(--r-16); border: 0; background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: opacity var(--t-micro) var(--ease), transform var(--t-micro) var(--ease); }
+.swap-btn { margin-top: 16px; width: 100%; height: 56px; border-radius: var(--r-16); border: 0; background: var(--gradient-brand); color: var(--text-on-light); font-size: 16px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: opacity var(--t-micro) var(--ease), transform var(--t-micro) var(--ease); }
 .swap-btn:active { transform: scale(.99); }
 .swap-btn:disabled { background: var(--surface-hover); color: var(--text-muted); cursor: not-allowed; }
 .swap-btn[data-tone="danger"] { background: var(--danger); }
@@ -76,24 +67,24 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* Paper-mode label: solid, high-contrast, part of the layout so it survives any screenshot crop of the card. */
-.mode-banner { width: 100%; max-width: 480px; border: 1px solid var(--warning); border-radius: var(--r-16); padding: 12px 14px; font-size: 13px; line-height: 1.5; background: color-mix(in srgb, var(--warning) 8%, var(--surface)); }
-.paper-badge { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; background: var(--warning); color: #111; font-weight: 800; font-size: 11px; letter-spacing: .08em; }
+.mode-banner { width: 100%; max-width: 480px; border: 1px solid var(--line); border-radius: var(--r-16); padding: 12px 14px; font-size: 13px; line-height: 1.55; background: var(--card); color: var(--fg); }
 
 /* Overlays (Radix Dialog / Popover / Tooltip). */
-.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 50; }
-.dialog { position: fixed; z-index: 51; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(440px, calc(100vw - 32px)); max-height: min(640px, calc(100dvh - 32px)); display: flex; flex-direction: column; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-24); padding: 16px; box-shadow: 0 24px 64px rgba(0,0,0,.45); font-family: var(--font-swap-ui), system-ui, sans-serif; }
-.dialog h2 { font-size: 16px; margin: 0 0 12px; }
+.overlay { position: fixed; inset: 0; background: rgba(10,11,18,.45); backdrop-filter: blur(2px); z-index: 50; }
+.dialog { position: fixed; z-index: 51; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(440px, calc(100vw - 32px)); max-height: min(640px, calc(100dvh - 32px)); display: flex; flex-direction: column; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-24); padding: 16px; box-shadow: 0 24px 64px rgba(0,0,0,.45); font-family: var(--font-sans); }
+.dialog h2 { font-size: 16px; margin: 0; }
+.dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: -6px -6px 12px 0; }
 .search { width: 100%; height: 44px; border-radius: var(--r-12); border: 1px solid var(--border); background: var(--bg); color: var(--text); padding: 0 12px; font-size: 15px; }
 .token-list { list-style: none; margin: 12px 0 0; padding: 0; overflow-y: auto; }
 .token-row { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 10px; border-radius: var(--r-12); cursor: pointer; }
 .token-row[aria-selected="true"], .token-row:hover { background: var(--surface-hover); }
 .token-row[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
-.popover { z-index: 52; width: 300px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-16); padding: 14px; box-shadow: 0 16px 40px rgba(0,0,0,.4); font-size: 13px; font-family: var(--font-swap-ui), system-ui, sans-serif; }
+.popover { z-index: 52; width: 300px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: var(--r-16); padding: 14px; box-shadow: 0 16px 40px rgba(0,0,0,.4); font-size: 13px; font-family: var(--font-sans); }
 .seg { display: flex; gap: 6px; margin-top: 8px; }
 .seg button, .seg input { flex: 1; min-height: 44px; border-radius: var(--r-12); border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 13px; text-align: center; cursor: pointer; }
 .seg button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
-.tooltip { z-index: 53; background: var(--text); color: var(--bg); border-radius: var(--r-8); padding: 6px 10px; font-size: 12px; font-family: var(--font-swap-ui), system-ui, sans-serif; }
-.sheet { position: fixed; z-index: 51; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 480px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-bottom: 0; border-radius: var(--r-24) var(--r-24) 0 0; padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); font-family: var(--font-swap-ui), system-ui, sans-serif; }
+.tooltip { z-index: 53; background: var(--fg); color: var(--page-bg); border-radius: var(--r-8); padding: 6px 10px; font-size: 12px; font-family: var(--font-sans); }
+.sheet { position: fixed; z-index: 51; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 480px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-bottom: 0; border-radius: var(--r-24) var(--r-24) 0 0; padding: 20px 20px calc(20px + env(safe-area-inset-bottom)); font-family: var(--font-sans); }
 
 @media (prefers-reduced-motion: reduce) {
   .siro-swap *, .dialog, .sheet, .popover { animation: none !important; transition: none !important; }

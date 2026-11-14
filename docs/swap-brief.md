@@ -173,3 +173,11 @@ swap.
 
 Tanpa limit order, cross-chain, lebih dari 2 hop, UniswapX, API aggregator, redesain modal
 wallet, fork AMM, hook v4, vault picker. Tanpa deploy mainnet tanpa izin eksplisit.
+
+## Revisi 2026-11-15 (keputusan pemilik produk)
+
+- Warna mengikuti tema situs Siro (variabel di `globals.css`: `--page-bg`, `--card`, `--line`, `--fg`, `--gradient-brand`), bukan palet gelap terpisah di atas. Font mengikuti situs (Instrument Sans), bukan Inter/JetBrains Mono.
+- Badge PAPER memakai gradient brand Siro, bukan kuning.
+- Kartu tetap rounded di mobile (tidak full-bleed).
+- Logo token asli disimpan sendiri di `public/tokens/`: bentuk brand dari Simple Icons (CC0) dengan warna resmi, USDG dari brand kit Global Dollar. CDN Robinhood hanya memberi placeholder yang sama untuk semua saham.
+- Semua dialog punya tombol tutup (X).

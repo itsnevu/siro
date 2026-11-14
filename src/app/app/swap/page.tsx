@@ -1,4 +1,3 @@
-import { Inter, JetBrains_Mono } from "next/font/google";
 import { getAddress, isAddress, type Address } from "viem";
 import { AppShell } from "@/components/app/AppShell";
 import { SwapCard, type VaultInfo } from "@/components/swap/SwapCard";
@@ -13,8 +12,6 @@ import "@/styles/swap.css";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Deposit | Siro" };
 
-const ui = Inter({ subsets: ["latin"], variable: "--font-swap-ui", display: "swap" });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-swap-mono", display: "swap" });
 const factoryAbi = [{ type: "function", name: "isVault", stateMutability: "view", inputs: [{ name: "", type: "address" }], outputs: [{ name: "", type: "bool" }] }] as const;
 
 /** ?vault=0x… must pass factory.isVault(); otherwise the single agent vault is used (no picker by design). */
@@ -37,7 +34,7 @@ async function resolveVault(param: string | undefined): Promise<{ vault: VaultIn
     ]);
     const meta = VAULT_ASSETS[asset.toLowerCase()];
     if (!meta) return { vault: null, note: "This vault's deposit asset is not supported by the swap page yet." };
-    return { vault: { address, asset, assetSymbol: meta.symbol, assetDecimals: meta.decimals, shareDecimals: decimals, name }, note };
+    return { vault: { address, asset, assetSymbol: meta.symbol, assetDecimals: meta.decimals, assetLogo: meta.logo, shareDecimals: decimals, name }, note };
   } catch {
     return { vault: null, note: "Robinhood Chain did not answer. Refresh in a moment." };
   }
@@ -48,7 +45,7 @@ export default async function SwapPage({ searchParams }: { searchParams: Promise
   const { vault, note } = await resolveVault(typeof raw === "string" ? raw : undefined);
   return (
     <AppShell>
-      <div className={`siro-swap ${ui.variable} ${mono.variable}`} style={{ minHeight: "auto" }}>
+      <div className="siro-swap" style={{ minHeight: "auto" }}>
         <div className="swap-wrap">
           <div className="mode-banner" role="note" aria-label="Execution modes">
             <PaperBadge /> <b>Strategy: {STRATEGY_MODE} mode.</b> The agent decides on real prices and real fees but sends no real orders until its strategy passes walk-forward validation.
