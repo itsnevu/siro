@@ -98,7 +98,7 @@ contract GuardedVaultTest is Test {
         vault.queueRouterPermission(address(router), true);
         vault.queueExecutorPermission(agent, true);
         vm.stopPrank();
-        vm.warp(block.timestamp + DELAY);
+        vm.warp(vm.getBlockTimestamp() + DELAY);
         oracle.setUpdatedAt(block.timestamp);
         vault.activateTokenPermission(address(nvda));
         vault.activateRouterPermission(address(router));
@@ -187,7 +187,7 @@ contract GuardedVaultTest is Test {
         _buyNvda(800e6);
         vm.prank(owner);
         vault.queueTokenPermission(address(nvda), false);
-        vm.warp(block.timestamp + DELAY);
+        vm.warp(vm.getBlockTimestamp() + DELAY);
         oracle.setUpdatedAt(block.timestamp);
         vault.activateTokenPermission(address(nvda));
         assertEq(vault.totalAssets(), 2_000e6);
@@ -198,7 +198,7 @@ contract GuardedVaultTest is Test {
         evil.setVault(vault);
         vm.prank(owner);
         vault.queueRouterPermission(address(evil), true);
-        vm.warp(block.timestamp + DELAY);
+        vm.warp(vm.getBlockTimestamp() + DELAY);
         oracle.setUpdatedAt(block.timestamp);
         vault.activateRouterPermission(address(evil));
 
@@ -307,8 +307,8 @@ contract GuardedVaultTest is Test {
     function _togglePermission(address token, bool allowed) internal {
         vm.prank(owner);
         vault.queueTokenPermission(token, allowed);
-        vm.warp(block.timestamp + DELAY);
-        oracle.setUpdatedAt(block.timestamp);
+        vm.warp(vm.getBlockTimestamp() + DELAY);
+        oracle.setUpdatedAt(vm.getBlockTimestamp());
         vault.activateTokenPermission(token);
     }
 
