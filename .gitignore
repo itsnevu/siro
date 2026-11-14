@@ -29,3 +29,7 @@ contracts/deployments/*.json.tmp
 # Phase 9 ingestion: raw source payloads are large and reproducible from the manifest
 data/real/*/raw/
 data/universe/raw/
+
+# Playwright
+/test-results/
+/playwright-report/

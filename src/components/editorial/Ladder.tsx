@@ -20,7 +20,7 @@ export function Ladder({ steps }: { steps: Step[] }) {
             <div className="flex items-center gap-2">
               <span className="font-serif text-lg">{step.label}</span>
               {step.live ? (
-                <span className="pill-badge text-[11px]">Live</span>
+                <span className="pill-badge text-[11px]">Available</span>
               ) : (
                 <span className="pill-badge text-[11px] opacity-60">Unlocks when it ships</span>
               )}

@@ -29,6 +29,28 @@ Not audited by a third party. Records: `contracts/deployments/`.
 | **User zap** (canonical for users) | `SiroZap` | Any wallet, from `/app/swap` | Swap ETH/WETH into the vault's asset (`vault.asset()`, USDG today) via SwapRouter02, then deposit for the receiver in one transaction. Vault must pass `factory.isVault()`. |
 | **Vault-internal trades** | `UniswapV3Adapter` | Only a vault executor (SessionExecutor) | Rebalance trades inside a vault under its on-chain policy. Not for users; the zap never routes through it. |
 
+### Swap page (/app/swap)
+
+Spec: [docs/swap-brief.md](docs/swap-brief.md). Every address and tunable lives in `src/lib/config/swap.ts` and `src/lib/config/tokens.ts`.
+
+- **Env:** set `NEXT_PUBLIC_SIRO_ZAP=0x6F635334962beadc61c42011B8A892bc23ab7437`. Startup throws if it is missing, zero or malformed. RPC goes through the existing relay `/api/rpc/4663`.
+- **Add an input token:**
+  1. The SiroZap owner calls `setWhitelisted(token, true)`.
+  2. Confirm that a Uniswap v3 pool against the vault asset exists and has liquidity.
+  3. Add the token to `SWAP_TOKENS` with `enabled: true`.
+
+  Disabled entries show "pool not ready".
+- **Fee tiers:** the tier with the best quoted output wins. `EXCLUDED_FEE_TIERS` (1% today) is a policy rule, applied only in `selectBestQuote`. The contract still accepts that tier.
+- **Deploy the zap:**
+  1. Dry run: `DEX_V3_ROUTER=… WETH9=… VAULT_FACTORY=… ZAP_WHITELIST=<WETH9> ALLOW_MAINNET_DEPLOY=true forge script script/DeploySiroZap.s.sol --rpc-url $RH_RPC_URL`
+  2. Run the same command again with `--broadcast`.
+  3. Verify with `forge verify-contract … --verifier sourcify`. Blockscout's API sits behind a Cloudflare challenge, so it cannot be used for this.
+- **Tests:**
+  - `npm run test:unit` runs Vitest: minOut, priceImpact, format, quote selection, errors and button states, plus the MSW interception proof.
+  - `npm run test:e2e` runs Playwright: the happy path, and the no-route/insufficient-balance flow. It uses an in-page wallet stub and a mocked RPC.
+  - On Windows, run both from `C:\` with an upper-case drive letter; otherwise Vitest cannot find its runner.
+- **Modes:** the swap is real; the agent strategy runs in **paper** mode (real prices and fees, no real orders) until walk-forward validation passes. The PAPER badge appears on the swap page, in the Evidence header and next to every paper figure.
+
 ### Vault funding
 
 | Date (UTC) | Vault | ETH in | USDG received | Deposited | Shares | Log |

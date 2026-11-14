@@ -11,16 +11,16 @@ export type Stage = { label: string; done: boolean; note: string };
 export function OnChainStatus({ s, stages }: { s: ChainStatus; stages: Stage[] }) {
   const stats = [
     { label: "Latest block", value: s.block.toLocaleString("en-US"), note: ago(s.blockTime) },
-    { label: "Contracts live", value: `${Object.values(s.live).filter(Boolean).length} / ${CONTRACTS.length}`, note: "bytecode checked on this request" },
+    { label: "Contracts deployed", value: `${Object.values(s.live).filter(Boolean).length} / ${CONTRACTS.length}`, note: "bytecode checked on this request" },
     { label: "Agents registered", value: s.agents === null ? "—" : String(s.agents), note: "AgentRegistry.nextAgentId − 1" },
     { label: "USDG / USD", value: s.usdg ? `$${s.usdg.price.toFixed(4)}` : "—", note: s.usdg ? `Chainlink, updated ${ago(s.usdg.updatedAt)}` : "feed unavailable" },
   ];
   return (
     <div className="not-prose space-y-10">
-      <section aria-labelledby="live-title">
+      <section aria-labelledby="chain-title">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 id="live-title" className="text-xl font-medium">Live on Robinhood Chain</h2>
-          <span className="inline-flex items-center gap-2 text-sm text-fg-70"><span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden />Read from mainnet just now</span>
+          <h2 id="chain-title" className="text-xl font-medium">Deployed on Robinhood Chain</h2>
+          <span className="text-sm text-fg-70">Read from mainnet on this page load</span>
         </div>
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((x) => <div key={x.label} className={card}><p className="text-sm text-fg-70">{x.label}</p><p className="mt-2 text-2xl font-medium tabular-nums">{x.value}</p><p className="mt-1 text-xs text-fg-70">{x.note}</p></div>)}
@@ -34,7 +34,7 @@ export function OnChainStatus({ s, stages }: { s: ChainStatus; stages: Stage[] }
             <li key={k.name} className={`${card} flex items-start justify-between gap-4`}>
               <div><p className="font-medium">{k.name}</p><p className="mt-1 text-sm text-fg-70">{k.role}</p>
                 {EXPLORER ? <a className="mt-2 inline-block font-mono text-sm underline" href={`${EXPLORER}/address/${k.address}`} target="_blank" rel="noreferrer">{short(k.address)} ↗</a> : <code className="mt-2 inline-block text-sm">{short(k.address)}</code>}</div>
-              <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs ${s.live[k.name] ? "bg-emerald-400/15 text-emerald-300" : "bg-red-400/15 text-red-300"}`}>{s.live[k.name] ? "Live" : "Not found"}</span>
+              <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs ${s.live[k.name] ? "border border-line text-fg-70" : "bg-red-400/15 text-red-300"}`}>{s.live[k.name] ? "Deployed" : "Not found"}</span>
             </li>
           ))}
         </ul>
@@ -51,11 +51,11 @@ export function OnChainStatus({ s, stages }: { s: ChainStatus; stages: Stage[] }
       </section>
 
       <section aria-labelledby="pipeline-title">
-        <h2 id="pipeline-title" className="text-xl font-medium">What is live, what is next</h2>
+        <h2 id="pipeline-title" className="text-xl font-medium">What is deployed, what is next</h2>
         <ol className="mt-5 grid gap-3 md:grid-cols-2">
           {stages.map((x, i) => (
             <li key={x.label} className={`${card} flex gap-4`}>
-              <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-medium ${x.done ? "bg-emerald-400/15 text-emerald-300" : "border border-line text-fg-70"}`}>{x.done ? "✓" : i + 1}</span>
+              <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-medium border border-line ${x.done ? "text-ink" : "text-fg-70"}`}>{x.done ? "✓" : i + 1}</span>
               <div><p className="font-medium">{x.label}</p><p className="mt-1 text-sm text-fg-70">{x.note}</p></div>
             </li>
           ))}

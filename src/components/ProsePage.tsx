@@ -25,6 +25,7 @@ export function ProsePage({
   children,
   footNote,
   wide,
+  badge,
 }: {
   eyebrow?: string;
   title: string;
@@ -39,6 +40,8 @@ export function ProsePage({
   footNote?: ReactNode;
   /** Drop the reading-width cap, for pages that are mostly tables or data. */
   wide?: boolean;
+  /** Rendered in the header next to the eyebrow, e.g. the PAPER mode badge. */
+  badge?: ReactNode;
 }) {
   return (
     <>
@@ -46,7 +49,7 @@ export function ProsePage({
         <Header />
         <main className="rusd-frame rusd-main siro-doc" data-tone="light" id="main-content" tabIndex={-1}>
           <header className="siro-doc-head">
-            {eyebrow && <p className="siro-doc-eyebrow">{eyebrow}</p>}
+            {(eyebrow || badge) && <p className="siro-doc-eyebrow" style={{ display: "flex", alignItems: "center", gap: 10 }}>{eyebrow}{badge}</p>}
             <h1>{title}</h1>
             {lede && <p className="siro-doc-lede">{lede}</p>}
             {meta && meta.length > 0 && (
