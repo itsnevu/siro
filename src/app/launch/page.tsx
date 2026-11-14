@@ -43,7 +43,11 @@ function SignInModal({onClose}:{onClose:()=>void}) {
   const detected=connectors.filter(connector=>available.includes(connector.uid));
   // The generic injected connector duplicates whichever named wallet already announced itself.
   const named=detected.some(connector=>connector.type!=="injected"||connector.id!=="injected");
-  const wallets=detected.filter(connector=>!(named&&connector.id==="injected")&&connector.name.toLowerCase().includes(query.toLowerCase()));
+  // A wallet can announce itself more than once (EIP-6963 re-announce, or a re-mount registering it
+  // again), each time with a new uid. Show one entry per wallet, keyed by its id (rdns) and name.
+  const seen=new Set<string>();
+  const unique=detected.filter(connector=>!(named&&connector.id==="injected")).filter(connector=>{const key=connector.id.toLowerCase();const nameKey=connector.name.toLowerCase();if(seen.has(key)||seen.has(nameKey))return false;seen.add(key);seen.add(nameKey);return true;});
+  const wallets=unique.filter(connector=>connector.name.toLowerCase().includes(query.toLowerCase()));
   return <div className="launch-overlay" onClick={event=>{if(event.target===event.currentTarget)onClose();}}>
     <div className="launch-modal" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="wallet-title" aria-describedby="wallet-description">
       <div className="launch-modal-header"><span className="launch-modal-eyebrow">YOUR WALLET. YOUR CONTROL.</span><button type="button" className="launch-modal-close" aria-label="Close wallet selection" onClick={onClose}>×</button></div>
