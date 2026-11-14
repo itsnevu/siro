@@ -43,3 +43,23 @@ Total gas cost: **0.000006974 ETH**.
 | Deployer ETH before / after | 0.063435471 / **0.043428497 ETH** (reserve floor 0.01 ETH) |
 
 The dry run shown for approval, a few minutes earlier, quoted 35.467386 USDG. The script re-quotes at broadcast, so the on-chain minOut was set from the fresher 35.421552 quote.
+
+## Step D: SiroZap smoke test
+
+- **Tx:** `0x163f46808b368575bee28486f30b71a3bbe483a43bb587e2951ab5241b154c2f` (block 114481077), status success
+- **Call:** `SiroZap(0x6F63…7437).swapAndDeposit(vault #1, native ETH, 0.002 ETH, fee 100, minOut 3.518482, minSharesOut 3,518,482,000,000, deadline now+60s, receiver deployer)`, with `msg.value` exactly 0.002 ETH
+- **Pre-send checks:** `eth_call` simulation returned 3,535,651,000,000 shares; `estimateGas` returned 316,593
+
+| Item | Value |
+|---|---|
+| Quotes at 0.01% / 0.05% / 0.30% | 3.536163 / 3.534336 / 3.525962 USDG (best: 0.01%) |
+| minOut (quote − 0.5%) | 3.518482 USDG |
+| **Fill** (pool → zap) | **3.535866 USDG**, which is **−0.0084%** vs quote |
+| Deposited (zap → vault) | 3.535866 USDG (the full fill) |
+| **Shares minted to the receiver** | **3,535,866,000,000** (deployer shares: 35,244,444,000,000 → 38,780,310,000,000) |
+| Gas | 250,170 (≈ 0.000005067 ETH) |
+| Zap leftovers after the tx | ETH 0, WETH 0, USDG 0; USDG→vault allowance 0; WETH→router allowance 0 |
+| Vault `totalAssets()` after | 38.780310 USDG |
+| Deployer ETH after | 0.041423430 ETH |
+
+Total spent in Steps C and D: 0.022 ETH in swaps plus ≈ 0.000012 ETH in gas. The budget ceiling was 0.03 ETH.

@@ -34,6 +34,7 @@ Not audited by a third party. Records: `contracts/deployments/`.
 | Date (UTC) | Vault | ETH in | USDG received | Deposited | Shares | Log |
 |---|---|---|---|---|---|---|
 | 2026-11-14 21:59 | agent #1 `0xB9db…242A` | 0.02 | 35.426113 (quote 35.421552, +0.013%) | 35.244444 | 35,244,444,000,000 | [docs/funding/2026-11-14-agent1-tranche1.md](docs/funding/2026-11-14-agent1-tranche1.md) |
+| 2026-11-14 (block 114481077) | agent #1 via **SiroZap** smoke test | 0.002 | 3.535866 (quote 3.536163, −0.008%) | 3.535866 | 3,535,866,000,000 | same log, Step D |
 
 Script: `contracts/script/FundVault.s.sol`, configured through env (`FUND_VAULT`, `FUND_ETH_WEI`, reserve, slippage, USDG range). A new tranche needs explicit approval.
 
