@@ -1,10 +1,15 @@
+---
+status: LIVE
+last_reviewed: 2026-11-15
+---
+
 # Funding log: agent vault #1, tranche 1
 
 - **Date (block time):** 2026-11-14 21:59:25 UTC (blocks 114479280 to 114479289)
 - **Chain:** Robinhood Chain mainnet (4663)
 - **Vault:** `0xB9db625b97a45BF4741BF62CCfE96765E4d0242A` (agent #1, asset USDG)
 - **Funder and share receiver:** deployer `0xB4c47187dc00fA2991460FE57F9dBB0521AFa9a4`, which is also the vault owner and the SessionExecutor owner
-- **Script:** `contracts/script/FundVault.s.sol` with `FUND_ETH_WEI=20000000000000000` and the defaults: 0.5% slippage, 0.01 ETH reserve, 25–50 USDG deposit range
+- **Script:** `contracts/script/FundVault.s.sol` with `FUND_ETH_WEI=20000000000000000` and the defaults: minimum output = quote minus 0.5% slippage, 0.01 ETH reserve, 25–50 USDG deposit range
 - **Approved budget:** 0.02 ETH for this step (Step C). The C+D ceiling is 0.03 ETH.
 
 ## Pre-flight (read-only)
@@ -21,7 +26,7 @@
 
 | Step | Tx | Gas | Status |
 |---|---|---|---|
-| Swap 0.02 ETH to USDG via SwapRouter02 `multicall(deadline = now+60s)`, WETH/USDG fee tier 0.01% (pool `0x52e65B17…71Ca`) | `0x338ec1a749be2ca78af4d43c19fec6b258ffec04e38465830b993a29308bd74b` | 157,946 | success |
+| Swap 0.02 ETH to USDG via SwapRouter02 `multicall(deadline = now+60s)`, WETH/USDG fee tier 0.01% (pool `0x52e65B17…71Ca`) (gross, 2026-11-14 – 2026-11-14) | `0x338ec1a749be2ca78af4d43c19fec6b258ffec04e38465830b993a29308bd74b` | 157,946 | success |
 | Approve USDG to the vault | `0x8184e9e05be11cbc546605dfe0d4aa74c9647f0c87314997f05de74f08a37369` | 57,988 | success |
 | Deposit into the vault | `0x1f5fb59050cbda828389b0e20b9e8dea4ee3904c8dc001fcb6d92a6240fd4ee9` | 129,269 | success |
 
@@ -31,11 +36,11 @@ Total gas cost: **0.000006974 ETH**.
 
 | Item | Value |
 |---|---|
-| Quote at broadcast (best tier 0.01%) | 35.421552 USDG |
-| Quotes at 0.05% / 0.30% | 35.406393 / 35.315649 USDG |
-| minOut on chain (quote − 0.5%) | 35.244444 USDG |
+| Quote at broadcast (best tier 0.01%) (gross, 2026-11-14 – 2026-11-14) | 35.421552 USDG |
+| Quotes at 0.05% / 0.30% (gross, 2026-11-14 – 2026-11-14) | 35.406393 / 35.315649 USDG |
+| minOut on chain (quote − 0.5%) (gross, 2026-11-14 – 2026-11-14) | 35.244444 USDG |
 | **Actual USDG received** (Transfer pool → deployer) | **35.426113 USDG** |
-| **Fill vs quote** | **+0.0129%** (better than quote; well within the 1% limit) |
+| **Fill vs quote** (gross, 2026-11-14 – 2026-11-14) | **+0.0129%** (better than quote; well within the 1% limit) |
 | **Deposited** (fixed at minOut) | **35.244444 USDG** |
 | **Shares received** | **35,244,444,000,000** (vault `_decimalsOffset` = 6) |
 | USDG left on the deployer (fill above minOut) | 0.181669 USDG |
@@ -52,9 +57,9 @@ The dry run shown for approval, a few minutes earlier, quoted 35.467386 USDG. Th
 
 | Item | Value |
 |---|---|
-| Quotes at 0.01% / 0.05% / 0.30% | 3.536163 / 3.534336 / 3.525962 USDG (best: 0.01%) |
-| minOut (quote − 0.5%) | 3.518482 USDG |
-| **Fill** (pool → zap) | **3.535866 USDG**, which is **−0.0084%** vs quote |
+| Quotes at 0.01% / 0.05% / 0.30% (gross, 2026-11-14 – 2026-11-14) | 3.536163 / 3.534336 / 3.525962 USDG (best: 0.01%) |
+| minOut (quote − 0.5%) (gross, 2026-11-14 – 2026-11-14) | 3.518482 USDG |
+| **Fill** (pool → zap) (gross, 2026-11-14 – 2026-11-14) | **3.535866 USDG**, which is **−0.0084%** vs quote |
 | Deposited (zap → vault) | 3.535866 USDG (the full fill) |
 | **Shares minted to the receiver** | **3,535,866,000,000** (deployer shares: 35,244,444,000,000 → 38,780,310,000,000) |
 | Gas | 250,170 (≈ 0.000005067 ETH) |

@@ -1,3 +1,8 @@
+---
+status: TESTING
+last_reviewed: 2026-11-15
+---
+
 # docs/swap-brief.md — SIRO Swap + Zap
 
 Sumber kebenaran untuk halaman swap/zap. Kalau repo bertentangan dengan dokumen ini,
@@ -47,10 +52,10 @@ lewat factory.isVault().
 
 ## Tier fee
 
-Pool WETH/USDG: 0.01% `0x52e6…71Ca`, 0.05% `0x69Bf…8d9a`, 0.3% `0xa918…0334`,
-1% `0x5f00…680D`.
+Pool WETH/USDG (diukur 2026-11-14 – 2026-11-14): 0.01% `0x52e6…71Ca`, 0.05% `0x69Bf…8d9a`, 0.3% `0xa918…0334`,
+1% `0x5f00…680D`, diukur 2026-11-14 – 2026-11-14.
 
-Tier dipilih dari output terbaik. **Tier 1% di-exclude permanen** (terukur −2,54% dari
+Tier dipilih dari output terbaik. **Tier 1% di-exclude permanen** (terukur 2026-11-14 – 2026-11-14: −2,54% dari
 Chainlink); kalau suatu saat ia menang, cukup di-log. poolFee tidak dipilih user.
 
 ## Token
@@ -108,7 +113,7 @@ GasWarning, tombol full-width 56px rounded-2xl, sheet.
 TokenSelector: modal gaya command palette, pencarian fuzzy, logo + simbol + nama + saldo,
 Recent di atas, baris disabled abu-abu dengan tooltip. Focus trap, ESC, tombol panah.
 
-Settings: preset slippage 0,1 / 0,3 / 0,5% dan custom, default 0,3%. Deadline 30s / 2m / 10m
+Settings: batas slippage preset 0,1 / 0,3 / 0,5% dan custom, default maks 0,3%. Deadline 30s / 2m / 10m
 dan custom. Peringatkan, jangan blokir, di atas 2% atau 30 menit.
 
 ETH native: Max = saldo dikurangi buffer gas, value diisi persis amountIn.

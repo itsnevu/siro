@@ -40,7 +40,7 @@ Spec: [docs/swap-brief.md](docs/swap-brief.md). Every address and tunable lives 
   3. Add the token to `SWAP_TOKENS` with `enabled: true`.
 
   Disabled entries show "pool not ready".
-- **Fee tiers:** the tier with the best quoted output wins. `EXCLUDED_FEE_TIERS` (1% today) is a policy rule, applied only in `selectBestQuote`. The contract still accepts that tier.
+- **Fee tiers:** the tier with the best quoted output wins. `EXCLUDED_FEE_TIERS` (the 1% tier, measured 2026-11-14 – 2026-11-14 at −2.54% vs Chainlink) is a policy rule, applied only in `selectBestQuote`. The contract still accepts that tier.
 - **Deploy the zap:**
   1. Dry run: `DEX_V3_ROUTER=… WETH9=… VAULT_FACTORY=… ZAP_WHITELIST=<WETH9> ALLOW_MAINNET_DEPLOY=true forge script script/DeploySiroZap.s.sol --rpc-url $RH_RPC_URL`
   2. Run the same command again with `--broadcast`.
@@ -55,8 +55,8 @@ Spec: [docs/swap-brief.md](docs/swap-brief.md). Every address and tunable lives 
 
 | Date (UTC) | Vault | ETH in | USDG received | Deposited | Shares | Log |
 |---|---|---|---|---|---|---|
-| 2026-11-14 21:59 | agent #1 `0xB9db…242A` | 0.02 | 35.426113 (quote 35.421552, +0.013%) | 35.244444 | 35,244,444,000,000 | [docs/funding/2026-11-14-agent1-tranche1.md](docs/funding/2026-11-14-agent1-tranche1.md) |
-| 2026-11-14 (block 114481077) | agent #1 via **SiroZap** smoke test | 0.002 | 3.535866 (quote 3.536163, −0.008%) | 3.535866 | 3,535,866,000,000 | same log, Step D |
+| 2026-11-14 21:59 | agent #1 `0xB9db…242A` | 0.02 | 35.426113 (quote 35.421552, +0.013% gross, 2026-11-14 – 2026-11-14) | 35.244444 | 35,244,444,000,000 | [docs/funding/2026-11-14-agent1-tranche1.md](docs/funding/2026-11-14-agent1-tranche1.md) |
+| 2026-11-14 (block 114481077) | agent #1 via **SiroZap** smoke test | 0.002 | 3.535866 (quote 3.536163, −0.008% gross, 2026-11-14 – 2026-11-14) | 3.535866 | 3,535,866,000,000 | same log, Step D |
 
 Script: `contracts/script/FundVault.s.sol`, configured through env (`FUND_VAULT`, `FUND_ETH_WEI`, reserve, slippage, USDG range). A new tranche needs explicit approval.
 

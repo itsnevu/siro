@@ -28,6 +28,8 @@ jobs:
       - run: node scripts/check-performance.mjs
       - run: npm run test:trading
       - run: npm run build
+        env:
+          NEXT_PUBLIC_SIRO_ZAP: "0x6F635334962beadc61c42011B8A892bc23ab7437"
   trading-contracts:
     runs-on: ubuntu-latest
     steps:
