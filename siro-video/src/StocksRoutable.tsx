@@ -12,7 +12,7 @@ const STOCKS: {t: string; name: string; logo?: string}[] = [
   {t: 'AMZN', name: 'Amazon', logo: 'AMZN'}, {t: 'GOOGL', name: 'Alphabet', logo: 'GOOGL'}, {t: 'TSLA', name: 'Tesla', logo: 'TSLA'},
   {t: 'META', name: 'Meta', logo: 'META'}, {t: 'SPY', name: 'S&P 500 ETF'}, {t: 'QQQ', name: 'Nasdaq-100 ETF'}, {t: 'COIN', name: 'Coinbase', logo: 'COIN'},
 ];
-const PIPE = ['Priced by Chainlink', 'Traded on Uniswap v3', 'Held in a vault you own'];
+const PIPE: {label: string; icon: string | null}[] = [{label: 'Priced by Chainlink', icon: 'brands/chainlink.svg'}, {label: 'Traded on Uniswap v3', icon: 'brands/uniswap.svg'}, {label: 'Held in a vault you own', icon: null}];
 
 const pop = (f: number, d = 0) => spring({frame: f - d, fps: 30, config: {damping: 24, stiffness: 100, mass: 1.1}});
 const ramp = (f: number, a: number, b: number) => interpolate(f, [a, b], [0, 1], clamp);
@@ -56,10 +56,11 @@ const Pipeline = ({f}: {f: number}) => {
         ))}
         <defs><linearGradient id="pipe" x1="0" x2="1"><stop offset="0" stopColor={C.purple} /><stop offset="1" stopColor={C.peach} /></linearGradient></defs>
       </svg>
-      {PIPE.map((label, i) => {
+      {PIPE.map(({label, icon}, i) => {
         const p = pop(f, PIPE_AT(i));
         return (
-          <div key={label} style={{position: 'absolute', left: xs[i] - 200, width: 400, top: 10, height: 70, borderRadius: 18, display: 'grid', placeItems: 'center', fontSize: 27, fontWeight: 500, background: 'linear-gradient(150deg,#232535,#191B27)', border: '1px solid rgba(165,151,255,.28)', boxShadow: 'inset 1px 2px 1px rgba(244,242,238,.12),4px 5px 0 #2b2c3d,0 18px 34px rgba(0,0,0,.4)', opacity: ramp(f, PIPE_AT(i), PIPE_AT(i) + 8), transform: `perspective(1400px) rotateX(${lerp(40, 0, p)}deg) translateY(${lerp(30, 0, p)}px)`}}>
+          <div key={label} style={{position: 'absolute', left: xs[i] - 200, width: 400, top: 10, height: 70, borderRadius: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, fontSize: 27, fontWeight: 500, background: 'linear-gradient(150deg,#232535,#191B27)', border: '1px solid rgba(165,151,255,.28)', boxShadow: 'inset 1px 2px 1px rgba(244,242,238,.12),4px 5px 0 #2b2c3d,0 18px 34px rgba(0,0,0,.4)', opacity: ramp(f, PIPE_AT(i), PIPE_AT(i) + 8), transform: `perspective(1400px) rotateX(${lerp(40, 0, p)}deg) translateY(${lerp(30, 0, p)}px)`}}>
+            {icon ? <Img src={staticFile(icon)} style={{width: 48, height: 48, borderRadius: "50%"}} /> : <span style={{width: 48, height: 48, borderRadius: "50%", background: C.bg, border: "1px solid rgba(165,151,255,.4)", display: "grid", placeItems: "center"}}><Logo size={28} /></span>}
             {label}
           </div>
         );
