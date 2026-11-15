@@ -14,7 +14,7 @@ Mainnet only: Robinhood Chain (4663), explorer [robinhoodchain.blockscout.com](h
 |---|---|---|
 | `Anchor` | `0xbf9f13791c1c5bcd6e342fb500c711e574fb04e0` | deployed 2026-11-14 |
 | `SessionExecutor` | `0x3933768da40ead71fcf1104e45483d13112287e8` | deployed 2026-11-14 |
-| `ChainlinkOracle` (USDG/USD feed `0x61B7e5650328764B076A108EFF5fa7282a1B9aD2`) | `0x18d197cD6454eF08d80c5FA92209B3aF31926ea9` | deployed 2026-11-15 |
+| `ChainlinkOracle` (USDG/USD feed `0x61B7e5650328764B076A108EFF5fa7282a1B9aD2`) | `0x18d197cD6454eF08d80c5FA92209B3aF31926ea9` | deployed 2026-11-15 as **v1**: values stock tokens without their `uiMultiplier` (AAPL under by the multiplier, measured 2026-11-15 – 2026-11-15). Source is now v2; vaults keep the oracle they were created with, so the fix applies to the next oracle + factory deployment. |
 | `AgentRegistry` | `0x0662564d7Ead0A9eb85E4F17cD21d422d339c459` | deployed 2026-11-15 |
 | `GuardedVaultFactory` | `0x33f420792328958739e4983A9Bac7FB44297Cf91` | deployed 2026-11-15 |
 | `UniswapV3Adapter` (router) | `0x8E662a5D28d089960d601e817aBa430e5981fdd2` | deployed 2026-11-15; routes + feeds for AAPL, MSFT, NVDA, AMZN, GOOGL, TSLA, META, SPY, QQQ, COIN |

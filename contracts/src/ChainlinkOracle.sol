@@ -14,11 +14,15 @@ interface IAggregatorV3 {
 
 interface IStockToken {
     function oraclePaused() external view returns (bool);
+    /// Shares per token unit, 1e18-scaled (dividend and split adjustments). balanceOfUI = balanceOf * uiMultiplier / 1e18.
+    function uiMultiplier() external view returns (uint256);
 }
 
 /// Prices any pair of registered tokens through their Chainlink USD feeds, so a stock
 /// quoted in USDG accounts for USDG's own USD price. Freshness is enforced by the caller
 /// (GuardedVault.maxOracleDelay) against the returned, oldest `updatedAt`.
+/// v2 (source): stock prices are scaled by the token uiMultiplier. The instance deployed at
+/// 0x18d197cD6454eF08d80c5FA92209B3aF31926ea9 is v1 (no multiplier); new deployments get v2.
 contract ChainlinkOracle is ITwapOracle, Ownable2Step {
     struct Feed {
         IAggregatorV3 aggregator;
@@ -85,6 +89,14 @@ contract ChainlinkOracle is ITwapOracle, Ownable2Step {
         if (feed.checkOraclePause && IStockToken(token).oraclePaused()) revert PriceUnavailable();
         (, int256 answer,, uint256 at,) = feed.aggregator.latestRoundData();
         if (answer <= 0 || at == 0) revert InvalidPrice();
-        return (uint256(answer), at);
+        price = uint256(answer);
+        // Chainlink prices one share; a raw token unit represents uiMultiplier/1e18 shares. Without this the
+        // vault undervalues stock holdings by the accumulated dividend/split adjustment (AAPL: ~0.109%, 2026-11-15).
+        if (feed.checkOraclePause) {
+            uint256 m = IStockToken(token).uiMultiplier();
+            if (m == 0) revert InvalidPrice();
+            price = Math.mulDiv(price, m, 1e18);
+        }
+        return (price, at);
     }
 }

@@ -11,6 +11,8 @@ contract MockStockToken is MockERC20 {
     bool public oraclePaused;
     constructor() MockERC20("NVIDIA", "NVDA", 18) {}
     function setOraclePaused(bool p) external { oraclePaused = p; }
+    uint256 public uiMultiplier = 1e18;
+    function setUiMultiplier(uint256 m) external { uiMultiplier = m; }
 }
 
 contract ChainlinkOracleTest is Test {
@@ -114,5 +116,48 @@ contract ChainlinkOracleTest is Test {
         vm.prank(owner);
         vm.expectRevert(ChainlinkOracle.FeedAlreadySet.selector);
         oracle.setSequencerFeed(IAggregatorV3(address(usdgFeed)));
+    }
+
+    // --- uiMultiplier (dividend and split adjustments) ---
+    // Fixture from Robinhood Chain on 2026-11-15: AAPL uiMultiplier 1.001090616965388660, price $357.19.
+
+    function test_multiplierOneIsUnchanged() public view {
+        (uint256 out,) = oracle.quote(address(nvda), address(usdg), 1e18);
+        assertEq(out, 165_430_000); // $165.43, same as before the change
+    }
+
+    function test_multiplierScalesStockValue() public {
+        nvdaFeed.setAnswer(357_19e6, block.timestamp - 300, 2);
+        (uint256 before,) = oracle.quote(address(nvda), address(usdg), 1e18);
+        assertEq(before, 357_190_000); // v1 value: raw units priced as whole shares
+        nvda.setUiMultiplier(1_001_090_616_965_388_660);
+        (uint256 adjusted,) = oracle.quote(address(nvda), address(usdg), 1e18);
+        assertEq(adjusted, 357_579_557); // 357.19 * 1.00109061696... = 357.579557 USDG
+        assertEq(adjusted - before, 389_557); // the 0.109% gap v1 left uncounted
+    }
+
+    function test_splitDoublesValueOfHeldUnits() public {
+        nvda.setUiMultiplier(2e18); // 2-for-1 split: each unit is now two shares at half the price
+        nvdaFeed.setAnswer(82_715e5, block.timestamp - 300, 2); // $82.715 per share
+        (uint256 out,) = oracle.quote(address(nvda), address(usdg), 1e18);
+        assertEq(out, 165_430_000); // holding value unchanged across the split
+    }
+
+    function test_multiplierAppliesInBothDirections() public {
+        nvda.setUiMultiplier(1_001_090_616_965_388_660);
+        (uint256 units,) = oracle.quote(address(usdg), address(nvda), 165_430_000);
+        // USDG -> stock buys fewer raw units because each unit is worth more than one share.
+        assertApproxEqAbs(units, uint256(1e18) * 1e18 / 1_001_090_616_965_388_660, 1e11); // 8-decimal feed rounding
+    }
+
+    function test_zeroMultiplierReverts() public {
+        nvda.setUiMultiplier(0);
+        vm.expectRevert(ChainlinkOracle.InvalidPrice.selector);
+        oracle.quote(address(nvda), address(usdg), 1e18);
+    }
+
+    function test_nonStockFeedIgnoresMultiplier() public view {
+        (uint256 out,) = oracle.quote(address(usdg), address(usdg), 1e6);
+        assertEq(out, 1e6);
     }
 }
