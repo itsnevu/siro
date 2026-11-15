@@ -44,7 +44,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <nav className="workspace-sections" data-tour="sections" aria-label="Workspace">{[["Overview","/app"],["Portfolio","/app/portfolio"],["Strategies","/app/strategies"],["Studio","/app/studio"],["Agent","/app/agent"],["Deposit","/app/swap"],["Approvals","/app/approvals"],["Schedules","/app/schedules"],["Policies","/app/policies"],["Token","/app/token"],["Settings","/app/settings"]].map(([label,href])=><Link key={href} href={href} aria-current={path===href?"page":undefined}>{label}</Link>)}</nav>
+      <nav className="workspace-sections" data-tour="sections" aria-label="Workspace">{[["Overview","/app"],["Portfolio","/app/portfolio"],["Strategies","/app/strategies"],["Studio","/app/studio"],["Agent","/app/agent"],["Deposit","/app/swap"],["Withdraw","/app/withdraw"],["Approvals","/app/approvals"],["Schedules","/app/schedules"],["Policies","/app/policies"],["Token","/app/token"],["Settings","/app/settings"]].map(([label,href])=><Link key={href} href={href} aria-current={path===href?"page":undefined}>{label}</Link>)}</nav>
       <main data-tour="main" className="workspace-main mx-auto w-full max-w-[1040px] px-5 sm:px-6 pb-24" id="main-content" tabIndex={-1}>{children}</main>
     </div>
   );
