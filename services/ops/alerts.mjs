@@ -11,7 +11,7 @@ import { dirname, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { createPublicClient, http, parseAbi, formatEther, parseEther } from "viem";
 
-const cfg = JSON.parse(readFileSync(resolve(import.meta.dirname, "../../config/alerts.json"), "utf8"));
+const cfg = JSON.parse(readFileSync(process.env.SIRO_ALERTS_CONFIG ?? resolve(import.meta.dirname, "../../config/alerts.json"), "utf8"));
 const statePath = resolve(process.env.SIRO_ALERT_STATE ?? ".data/alerts-state.json");
 const rpc = process.env.SIRO_RPC_4663 || process.env.ALCHEMY_RPC_URL_4663;
 const log = (event, extra = {}) => console.log(JSON.stringify({ ts: new Date().toISOString(), scope: "ops.alerts", event, ...extra }));
