@@ -1,0 +1,77 @@
+{
+  "version": "1.0",
+  "chainId": "4663",
+  "createdAt": 0,
+  "meta": {
+    "name": "Siro: accept ownership of all contracts",
+    "description": "Step 2 of contracts/script/MoveOwnershipToSafe.s.sol. Run only after step 1 set pendingOwner to this Safe on every target."
+  },
+  "transactions": [
+    {
+      "to": "0x3933768da40eAd71FCf1104E45483d13112287e8",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [],
+        "name": "acceptOwnership",
+        "payable": false
+      },
+      "contractInputsValues": {}
+    },
+    {
+      "to": "0x18d197cD6454eF08d80c5FA92209B3aF31926ea9",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [],
+        "name": "acceptOwnership",
+        "payable": false
+      },
+      "contractInputsValues": {}
+    },
+    {
+      "to": "0x0662564d7Ead0A9eb85E4F17cD21d422d339c459",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [],
+        "name": "acceptOwnership",
+        "payable": false
+      },
+      "contractInputsValues": {}
+    },
+    {
+      "to": "0x8E662a5D28d089960d601e817aBa430e5981fdd2",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [],
+        "name": "acceptOwnership",
+        "payable": false
+      },
+      "contractInputsValues": {}
+    },
+    {
+      "to": "0x6F635334962beadc61c42011B8A892bc23ab7437",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [],
+        "name": "acceptOwnership",
+        "payable": false
+      },
+      "contractInputsValues": {}
+    },
+    {
+      "to": "0xB9db625b97a45BF4741BF62CCfE96765E4d0242A",
+      "value": "0",
+      "data": null,
+      "contractMethod": {
+        "inputs": [],
+        "name": "acceptOwnership",
+        "payable": false
+      },
+      "contractInputsValues": {}
+    }
+  ]
+}
