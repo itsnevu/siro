@@ -1,0 +1,25 @@
+{
+  "note": "Thresholds for services/ops/alerts.mjs. Edit here, not in code.",
+  "services": ["siro-web", "siro-engine-api", "siro-scheduler", "siro-anchor"],
+  "oracle": {
+    "feeds": [
+      { "name": "USDG/USD", "address": "0x61B7e5650328764B076A108EFF5fa7282a1B9aD2", "maxAgeSeconds": 90000 },
+      { "name": "ETH/USD", "address": "0x78F3556b67E17Df817D51Ef5a990cDaF09E8d3A9", "maxAgeSeconds": 90000 },
+      { "name": "AAPL/USD", "address": "0x6B22A786bAa607d76728168703a39Ea9C99f2cD0", "maxAgeSeconds": 302400 },
+      { "name": "NVDA/USD", "address": "0x379EC4f7C378F34a1B47E4F3cbeBCbAC3E8E9F15", "maxAgeSeconds": 302400 }
+    ]
+  },
+  "gas": {
+    "minEth": "0.0005",
+    "wallets": [
+      { "name": "executor", "address": "0x17317456d7B8de21423114EF5786957BA8BCD8cA" },
+      { "name": "anchor", "address": "0xc4822C92707441D1FF50361dDA2593600033B112" }
+    ]
+  },
+  "killSwitch": {
+    "sessionExecutor": "0x3933768da40ead71fcf1104e45483d13112287e8",
+    "vaults": ["0xB9db625b97a45BF4741BF62CCfE96765E4d0242A"]
+  },
+  "heartbeatHourUtc": 8,
+  "repeatAfterMinutes": 180
+}
