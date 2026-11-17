@@ -8,10 +8,12 @@ import { writeFileSync, unlinkSync, mkdirSync, existsSync, readFileSync } from "
 import { dirname, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { merkleRoot, pendingCommitHashes, witnessedLeaves } from "./witness-core.mjs";
+import { assertDedicatedWitness, canonicalBatch } from './witness-policy.mjs';
 
 const required = n => { if (!process.env[n]) throw new Error(`${n} is required`); return process.env[n]; };
 const chainId = Number(required("SIRO_ANCHOR_CHAIN_ID")), address = required("SIRO_ANCHOR_ADDRESS"), rpc = required("SIRO_ANCHOR_RPC");
-const account = privateKeyToAccount(required("SIRO_ANCHOR_PRIVATE_KEY"));
+const account = privateKeyToAccount(required("SIRO_WITNESS_PRIVATE_KEY"));
+assertDedicatedWitness(account.address, required('SIRO_OPERATOR_ADDRESS'), required('SIRO_ANCHOR_OWNER_ADDRESS'));
 const confirmations = Number(required("SIRO_ANCHOR_CONFIRMATIONS"));
 if (!Number.isInteger(confirmations) || confirmations < 2) throw new Error("At least two witness confirmations required");
 const intervalMs = Number(process.env.SIRO_WITNESS_INTERVAL_MS ?? 10_000);
@@ -40,10 +42,13 @@ async function tick() {
   if (!batch) {
     const leaves = await pendingCommitHashes(fetchJson, api, witnessed());
     if (!leaves.length) return;
-    batch = { root: `0x${merkleRoot(leaves)}`, leaves };
+    const hour = Math.floor(Date.now() / 3_600_000);
+    const last = existsSync(journal) ? Math.max(-1, ...readFileSync(journal, 'utf8').split('\n').filter(Boolean).map(line => JSON.parse(line)).filter(e => e.kind === 'witness_confirmed').map(e => e.payload.hour ?? -1)) : -1;
+    batch = canonicalBatch([...leaves].sort(), last, hour);
     writeFileSync(outbox, JSON.stringify(batch), { flag: "wx" });
   }
   const { root, leaves } = batch;
+  canonicalBatch(leaves, -1, batch.hour);
   if (`0x${merkleRoot(leaves)}` !== root) throw new Error("Witness outbox is corrupt; inspect before continuing");
   let receipt;
   const existing = await client.readContract({ address, abi, functionName: "witnessedAt", args: [root] });
