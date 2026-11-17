@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-17 — deployed is not decision evidence
+
+- Anchor `0xbf9f13791c1c5bcd6e342fb500c711e574fb04e0` has three lifetime transactions, all configuration; zero roots published and no decision commits on mainnet. Previous configuration transactions are not trading history.
+- `anchor()` is owner-only; `witness(bytes32)` is permissionless and accepts arbitrary roots. A root alone proves no decision content or execution.
+- `TradeExecuted` does not reveal the decision. `/verify` obtains content and trade associations from the operator journal and checks commitments separately.
+- `DecisionLog.sol` exists but is undeployed. No contract edits, deployment, or migration in this change.
+- The vault's 25 units of `0x7D5AfaBD…` USDG and the deposit asset `0x5fc5360D…` USDG are different tokens. No conversion or migration is claimed.
+
 Per versi: hash commit, ringkasan perubahan, dan **perubahan metrik**. Perubahan metrik
 mencakup formula, label, atau data yang mengubah angka publik. Setiap perubahan metrik
 juga dicatat di [docs/honesty-log.md](docs/honesty-log.md).

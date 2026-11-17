@@ -7,7 +7,7 @@ import { useLocale } from "@/lib/use-locale";
 const COLUMNS = [
   { title: "Explore", links: [["Strategies", "/strategies"], ["Studio", "/studio"], ["Agent", "/agent"], ["Markets", "/markets"], ["Evidence", "/evidence"], ["Verify decisions", "/verify"]] },
   { title: "Learn", links: [["Documentation", "/docs"], ["API", "/api"], ["Security", "/security"], ["Pricing", "/pricing"], ["FAQ", "/faq"], ["Blog", "/blog"]] },
-  { title: "Siro", links: [["About", "/about"], ["Roadmap", "/roadmap"], ["Get in touch", LINKS.support], ["Follow on X", LINKS.x]] },
+  { title: "Siro", links: [["About", "/about"], ["Team / key holders", "/team"], ["Public source", "https://github.com/itsnevu/siro"], ["SECURITY.md", "https://github.com/itsnevu/siro/blob/feat/phase-0-harness/SECURITY.md"], ["Roadmap", "/roadmap"], ["Get in touch", LINKS.support], ["Follow on X", LINKS.x]] },
 ];
 
 export function Footer() {

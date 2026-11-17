@@ -12,6 +12,7 @@ export type ButtonState =
   | { kind: "approving"; label: "Approving…" }
   | { kind: "preparing"; label: "Preparing…" }
   | { kind: "blocked"; label: "Price impact too high" }
+  | { kind: "depth_blocked"; label: "Depth limit — deposit held" }
   | { kind: "swap"; label: "Swap and deposit" | "Swap anyway" };
 
 export type ButtonInput = {

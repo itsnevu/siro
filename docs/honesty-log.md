@@ -5,6 +5,14 @@ last_reviewed: 2026-11-13
 
 # Honesty log
 
+## 2026-11-17: configuration transactions are not decision commitments
+
+- Corrected deployment and proof wording: Anchor is deployed, but its three lifetime transactions are configuration only and zero roots have been published.
+- Labelled the landing decision table as illustrative, with a visible no-onchain-decisions badge; removed the example tree's claim of a real onchain transaction.
+- Performance figures using PaperFig now carry mode and gross/net basis inline. No returns were recomputed.
+- Added explicit stop cadence and UI depth ceilings. The depth ceiling is a model from active liquidity and inventory, additionally checked against an exact quote; it is not a contract invariant or a guarantee across liquidity changes. Direct deposits without strategy-depth evidence are held.
+- Review basis: user-supplied chain ground truth and repository inspection. Fork witness/receipt tests do not establish a mainnet track record.
+
 Setiap koreksi klaim publik atau bug metrik. Tidak ada koreksi diam-diam. Format:
 tanggal, apa yang salah, angka sebelum dan sesudah, siapa yang menemukan, commit perbaikan.
 

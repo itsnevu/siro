@@ -6,6 +6,7 @@ export const quoterV2Abi = parseAbi([
 ]);
 export const v3FactoryAbi = parseAbi(["function getPool(address tokenA, address tokenB, uint24 fee) view returns (address pool)"]);
 export const v3PoolAbi = parseAbi([
+  "function liquidity() view returns(uint128)",
   "function slot0() view returns (uint160 sqrtPriceX96, int24 tick, uint16 observationIndex, uint16 observationCardinality, uint16 observationCardinalityNext, uint8 feeProtocol, bool unlocked)",
   "function token0() view returns (address)",
 ]);

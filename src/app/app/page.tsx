@@ -8,6 +8,7 @@ import { AppShell, Stat } from "@/components/app/AppShell";
 import { AddressLink } from "@/components/app/Explorer";
 import { useNetwork } from "@/lib/network";
 import { DEFAULT_POLICY, useAgents, useGuardedVault, useGuardedActions, type Policy } from "@/lib/guarded";
+import cadence from '../../../config/engine-cadence.json';
 
 const field = "rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink";
 const button = "rounded-pill border border-line px-4 py-2 text-sm disabled:opacity-40";
@@ -61,9 +62,11 @@ function VaultDashboard() {
     {data.total.isError && <p role="alert" className="text-sm">NAV could not be read. In-kind redemption remains available without an oracle.</p>}
     <section className="rounded-xl border border-line p-6 md:p-8 space-y-5">
       <h2 className="font-serif text-xl">Deposit / withdraw {net.symbol}</h2>
+      <p>stops are checked every {cadence.stopCheckMinutes} minutes; a gap can blow through them</p>
+      <p>Direct-deposit depth ceiling unavailable for this vault; deposits are held until a strategy-specific pool depth quote is configured.</p>
       <p className="text-sm text-fg-70">Wallet: {net.fmt(data.wallet.data)} {net.symbol}. USDG withdrawals require enough liquid USDG. Redeem all shares in kind to receive your proportional holdings of every vault asset.</p>
       <div className="flex flex-wrap gap-3"><input aria-label="Amount in USDG" className={field} inputMode="decimal" placeholder="Amount in USDG" value={amount} onChange={e => setAmount(e.target.value)} />
-      <button className={button} disabled={!ready || !vault || !amount} onClick={() => execute(() => actions.deposit(parseUnits(amount, net.decimals)), "Deposit confirmed.")}>Approve / deposit</button>
+      <button className={button} disabled title="Strategy pool depth ceiling unavailable">Deposit held — depth unavailable</button>
       <button className={button} disabled={!ready || !vault || !amount} onClick={() => execute(() => actions.withdraw(parseUnits(amount, net.decimals)), "Withdrawal confirmed.")}>Withdraw USDG</button>
       <button className={button} disabled={!ready || !vault || !data.shares.data} onClick={() => execute(() => actions.redeemInKind(data.shares.data!), "All shares redeemed into underlying assets.")}>Redeem all in kind</button></div>
     </section>

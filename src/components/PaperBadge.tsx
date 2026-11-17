@@ -18,7 +18,8 @@ export function PaperBadge({ className = "" }: { className?: string }) {
   );
 }
 
-/** Wraps one strategy figure; in paper mode the PAPER badge sits right next to the number. */
-export function PaperFig({ mode, children }: { mode: string; children: ReactNode }) {
-  return <span className="inline-flex items-center gap-1.5 whitespace-nowrap">{children}{mode === "paper" && <PaperBadge />}</span>;
+/** Keep provenance and cost basis beside the figure, including in cropped screenshots. */
+export function PaperFig({ mode, basis, children }: { mode: string; basis: 'gross' | 'net'; children: ReactNode }) {
+  const label = ['backtest', 'paper', 'live'].includes(mode) ? mode : 'unverified mode';
+  return <span className="inline-flex items-center gap-1.5 whitespace-nowrap">{children}<small>{label} / {basis}</small></span>;
 }

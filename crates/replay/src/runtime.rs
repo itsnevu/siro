@@ -567,6 +567,7 @@ async fn execute(c: &PortfolioConfig, single: bool) -> Result<serde_json::Value>
             .filter(|e| e.kind == "decision" && e.payload["tick_ts"] == tick_timestamp)
             .filter_map(|e| e.payload["commit_hash"].as_str().map(str::to_owned))
             .collect();
+        let mut staged_orders = Vec::new();
         for ((leg, p), f) in c.legs.iter().zip(&leg_points).zip(&feats).filter(|_| !late) {
             let s = &leg.strategy;
             let id = ledger::decision_id(&identity(&s.asset), s.version, tick)?;
@@ -656,7 +657,7 @@ async fn execute(c: &PortfolioConfig, single: bool) -> Result<serde_json::Value>
                 target = weight;
             } else {
                 let t = telemetry(&store, &state, c, &prices, net, &s.asset, tick)?;
-                let req = request(&log, &order, p, c, net, dd, f, &t)?;
+                let req = request(&log, &order, p, c, net, dd, f, &t, &staged_orders)?;
                 let permit = risk_client.evaluate(&req).await?;
                 log.append(tick, "risk_assessment", &permit)?;
                 veto = permit.veto.clone();
@@ -735,8 +736,18 @@ async fn execute(c: &PortfolioConfig, single: bool) -> Result<serde_json::Value>
             if action != "hold" && actual > 0. {
                 order.notional_usd = actual;
                 order.original_notional_usd = actual;
-                let event = log.append(tick, "order", &order)?;
+                // Reserve risk exposure in memory while building the batch. Durable orders
+                // are released only once every commitment has been frozen below.
+                let event = ledger::Event {
+                    seq: 0,
+                    ts: tick,
+                    prev_hash: ledger::GENESIS.into(),
+                    event_hash: ledger::GENESIS.into(),
+                    kind: "order".into(),
+                    payload: serde_json::to_value(&order)?,
+                };
                 state.apply(&event)?;
+                staged_orders.push(order);
             }
         }
         // The commit phase is closed here. All order execution below uses this frozen tree.
@@ -754,6 +765,9 @@ async fn execute(c: &PortfolioConfig, single: bool) -> Result<serde_json::Value>
         current_hashes.sort();
         if current_hashes != frozen_commit_hashes {
             return Err("frozen commitment set changed before execution".into());
+        }
+        for order in staged_orders {
+            log.append(tick, "order", &order)?;
         }
         if c.mode == "live" && frozen_root.is_none() && !state.pending.is_empty() {
             return Err("live execution requires a frozen commitment root".into());
@@ -778,7 +792,7 @@ async fn execute(c: &PortfolioConfig, single: bool) -> Result<serde_json::Value>
                 .ok_or("pending order for an asset outside the portfolio")?;
             let (leg, p, f) = (&c.legs[i], leg_points[i], &feats[i]);
             let t = telemetry(&store, &state, c, &prices, equity, &order.asset, tick)?;
-            let request = request(&log, &order, p, c, equity, dd, f, &t)?;
+            let request = request(&log, &order, p, c, equity, dd, f, &t, &[])?;
             let permit = match risk_client.evaluate(&request).await {
                 Ok(p) => p,
                 Err(e) => {
@@ -969,6 +983,7 @@ fn request(
     dd: f64,
     f: &features::FeatureSet,
     t: &Telemetry,
+    staged: &[engine::Order],
 ) -> Result<riskengine::Request> {
     let day = p.market.ts / 86_400_000;
     // Exclude the order being evaluated: the risk engine adds its notional itself. Counting its
@@ -982,11 +997,11 @@ fn request(
                 && e.payload["decision_id"] != o.decision_id.as_str()
         })
         .collect();
-    let turnover = todays
+    let staged_today: Vec<_> = staged.iter().filter(|order| order.decision_id != o.decision_id).collect();
+    let turnover = (todays
         .iter()
         .filter_map(|e| e.payload["original_notional_usd"].as_f64())
-        .sum::<f64>()
-        / equity;
+        .sum::<f64>() + staged_today.iter().map(|order| order.original_notional_usd).sum::<f64>()) / equity;
     Ok(riskengine::Request {
         decision_id: o.decision_id.clone(),
         order_hash: ledger::hash(o)?,
@@ -1009,7 +1024,7 @@ fn request(
         gap_sigma: p.gap_sigma,
         funding_bps_hour: p.market.funding_bps_hour,
         spread_ratio: p.spread_ratio,
-        trades_today: todays.len() as u32,
+        trades_today: (todays.len() + staged_today.len()) as u32,
         turnover_today: turnover,
         reducing: o.reducing,
         reconciliation_error: 0.,

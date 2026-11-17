@@ -15,6 +15,8 @@ const COLUMNS = [
     title: "Resources",
     links: [
       { label: "Docs", href: "/docs" },
+      { label: "Public source", href: "https://github.com/itsnevu/siro" },
+      { label: "SECURITY.md", href: "https://github.com/itsnevu/siro/blob/feat/phase-0-harness/SECURITY.md" },
       { label: "Blog", href: "/blog" },
       { label: "FAQ", href: "/faq" },
       { label: "Changelog", href: "/changelog" },
@@ -25,6 +27,7 @@ const COLUMNS = [
     title: "Company",
     links: [
       { label: "About", href: "/about" },
+      { label: "Team / key holders", href: "/team" },
       { label: "Brand", href: "/brand" },
       { label: "Contact", href: "/contact" },
       { label: "Community", href: "/community" },

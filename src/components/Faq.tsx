@@ -9,8 +9,8 @@ const FAQ: { q: string; a: ReactNode }[] = [
     a: (
       <p>
         An agent trades tokenized stocks on Robinhood Chain from a vault you own. Each hourly decision is
-        committed as a hash before it can execute and revealed afterwards, so anyone can check it at{" "}
-        <Link className="rusd-text-link" href="/verify">/verify</Link> without an account.
+        designed to be committed as a hash before it can execute and revealed afterwards; anyone can verify the content against the commitment at{" "}
+        <Link className="rusd-text-link" href="/verify">/verify</Link> without an account. As of 2026-11-17 no decision commitment has reached mainnet. Reveals are served by the operator; TradeExecuted does not contain the revealed decision.
       </p>
     ),
   },

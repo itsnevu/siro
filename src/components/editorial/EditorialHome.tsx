@@ -93,7 +93,7 @@ export function EditorialHome() {
       { title: "Describe.", description: "Type a strategy in one sentence. It becomes editable rule blocks, checked against a strict schema.", icon: <Glyph /> },
       { title: "Replay 30 days.", description: "Backtest hourly with a 0.5% cost per trade. Results sit next to buy-and-hold and cash, even when the agent loses.", icon: <Glyph kind={1} /> },
       { title: "Launch in a guarded vault.", description: "Funds sit in a per-agent contract. The agent’s key can only make whitelisted swaps inside your limits.", icon: <Glyph kind={2} /> },
-      { title: "Prove and tokenize.", description: "Every hour of decisions is committed onchain as a Merkle root. After 14 verified days an agent can launch its token.", icon: <Glyph kind={3} /> },
+      { title: "Prove and tokenize.", description: "Design target: witness decision roots before execution. No onchain decisions yet; agent token launch is not available.", icon: <Glyph kind={3} /> },
     ]} /></div></Section>
     <Section id="guard" className="ag-guard"><div className="ag-guard-layout">
       <div className="ag-shield-stage">
@@ -110,15 +110,15 @@ export function EditorialHome() {
         <p className="ag-note">Even if our server is compromised, the agent key can only trade whitelisted tokens inside these limits. Withdrawals stay open while a vault is paused.</p>
       </div>
     </div></Section>
-    <Section id="proof" className="ag-proof"><div className="ed-section-heading"><div><p className="eyebrow">Proof of Decision</p><h2>A record nobody<br />can <em>edit.</em></h2></div><p>Each hour, every decision becomes a Merkle leaf.<br />The root is committed onchain.</p></div>
-      <div className="ag-merkle" aria-label="Hourly decisions are hashed into one root, committed onchain">
+    <Section id="proof" className="ag-proof"><div className="ed-section-heading"><div><p className="eyebrow">Proof of Decision</p><h2>A record nobody<br />can <em>edit.</em></h2></div><p>Design target: each decision is a commitment leaf.<br />No onchain decisions yet.</p></div>
+      <div className="ag-merkle" aria-label="Illustrative Merkle tree; no onchain decisions yet">
         <div className="ag-merkle-leaves">{FEED.map((r) => <span key={r.ticker}>{r.act} {r.ticker}</span>)}<span>…</span></div>
         <div className="ag-merkle-join" aria-hidden="true" />
         <div className="ag-merkle-root"><small>Hourly root</small><code>0x9f3c…a71e</code></div>
         <div className="ag-merkle-join ag-merkle-join-short" aria-hidden="true" />
-        <div className="ag-merkle-tx">Committed onchain · verifiable</div>
+        <div className="ag-merkle-tx">Illustration only; no onchain decisions yet</div>
       </div>
-      <div className="ag-feed"><div className="ag-feed-head"><span>Action</span><span>Ticker</span><span>Reason</span><span>Proof</span></div>
+      <p role="status" className="ed-disclaimer"><strong>no onchain decisions yet</strong> · Illustrative paper examples; gross/net performance unavailable.</p><div className="ag-feed"><div className="ag-feed-head"><span>Action</span><span>Ticker</span><span>Reason</span><span>Proof</span></div>
         {FEED.map((row) => <div className="ag-feed-row" key={row.ticker}><span className={`ag-act ag-act-${row.act.toLowerCase()}`}>{row.act}</span><span>{row.ticker}</span><p>{row.reason}</p><span className="ag-verify">Illustrative</span></div>)}
       </div>
       <p className="ed-disclaimer">Example rows. No agent has committed decisions onchain yet; live rows will link to their transaction.</p>

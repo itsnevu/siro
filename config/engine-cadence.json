@@ -1,0 +1,4 @@
+{
+  "stopCheckMinutes": 60,
+  "note": "UI disclosure of the existing hourly runner cadence; this file does not change scheduling."
+}

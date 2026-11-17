@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function WhitepaperPage() {
   return (
-    <ProsePage eyebrow="Whitepaper" title="Trading agents you can check" lede="Siro's claim is narrow: an agent's decisions cannot be changed after prices move, and its numbers can be recomputed by anyone. It does not claim that any agent is profitable.">
+    <ProsePage eyebrow="Whitepaper" title="Trading agents you can check" lede="Design target: anyone can verify the content against the commitment. No decision commitment has reached mainnet as of 2026-11-17; this is not a proven live track record.">
       <h2>Problem</h2>
       <p>Published trading results are easy to select, back-date or overstate. A reader usually cannot tell which decisions were made before the price moved, which costs were subtracted, or how many strategies were tried before the one that is shown.</p>
       <h2>Design</h2>
@@ -23,6 +23,9 @@ export default function WhitepaperPage() {
       <h2>What would prove it wrong</h2>
       <p>The conditions under which Siro adds no value are written down in advance with metrics and dates, in the repository under <code>docs/falsification.md</code>. Corrections are logged in <code>docs/honesty-log.md</code>.</p>
       <h2>Status</h2>
+      <p>Anchor has three lifetime configuration transactions and zero published roots as of 2026-11-17. witness(bytes32) is permissionless and accepts arbitrary roots; a witnessed root proves nothing about a decision until its leaf, content hash, timing, and trade checks pass. It remains witnessed, unanchored until a covering daily anchor is confirmed. Label: commitment-bound reveal, served by operator. A mainnet witness key must be distinct from owner and operator and needs its own funded balance.</p>
+      <p>DecisionLog.sol exists but is undeployed. Per-decision onchain commitments and content availability could make the journal optional, with higher gas, storage, and metadata exposure. T2/T4/T6/T7/T8 are reserved for a v2 migration. No migration is included here.</p>
+      <p>Public source: <a href="https://github.com/itsnevu/siro">itsnevu/siro</a>. Disclosure process and response targets: <a href="https://github.com/itsnevu/siro/blob/feat/phase-0-harness/SECURITY.md">SECURITY.md</a>. Key-holder disclosures: <Link href="/team">Team</Link>.</p>
       <p>The evidence and vault contracts are on Robinhood Chain mainnet. A swap adapter over Uniswap V3 is live for 10 stock tokens; no agent trades real money until its vault owner grants permissions and the execution engine is online. Nothing has a third-party audit. See <Link href="/security">Security</Link>.</p>
     </ProsePage>
   );

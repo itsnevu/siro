@@ -181,9 +181,16 @@ async fn verify(State(path): State<Shared>, Path(id): Path<String>) -> impl Into
             })
             .map(|e| e.payload.clone());
         let publication = publication::verdict(d, &anchor_events, publication::max_lag_ms()?)?;
+        let execution_events = match std::env::var("SIRO_EXECUTION_JOURNAL") {
+            Ok(p) => ledger::read_events(std::path::Path::new(&p))?,
+            Err(_) => vec![],
+        };
+        let executions: Vec<_> = execution_events.iter()
+            .filter(|e| e.kind == "execution_receipt" && e.payload["decision_id"] == d.decision_id)
+            .map(|e| e.payload.clone()).collect();
         Ok(envelope(
             &events,
-            json!({"chain_integrity":true,"decision":public_decision(d,now()?)?,"hour_root":hours[hi]["root"],"daily_root":day["root"],"day":day["day"],"decision_proof":ledger::merkle_proof(&leaves,li)?,"hour_proof":ledger::merkle_proof(&hourly_roots,hi)?,"anchor":anchor,"publication_proven":publication["proven"],"publication":publication}),
+            json!({"chain_integrity":true,"decision":public_decision(d,now()?)?,"hour_root":hours[hi]["root"],"daily_root":day["root"],"day":day["day"],"decision_proof":ledger::merkle_proof(&leaves,li)?,"hour_proof":ledger::merkle_proof(&hourly_roots,hi)?,"anchor":anchor,"publication_proven":publication["proven"],"publication":publication,"executions":executions}),
         ))
     })();
     result.map_err(failure)

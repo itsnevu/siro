@@ -3,11 +3,12 @@ import { useCallback, useEffect, useState } from "react";
 import { usePublicClient } from "wagmi";
 import type { Address } from "viem";
 import { FEE_TIERS, QUOTE_DEBOUNCE_MS, QUOTE_REFRESH_MS, SWAP, SWAP_CHAIN_ID, type FeeTier } from "@/lib/config/swap";
-import { quoterV2Abi, v3FactoryAbi, v3PoolAbi } from "@/lib/swap/abis";
+import { quoterV2Abi, v3FactoryAbi, v3PoolAbi, erc20Abi } from "@/lib/swap/abis";
+import { depthCap } from '@/lib/swap/depthCap';
 import { selectBestQuote, type TierQuote } from "@/lib/swap/quotes";
 import { priceImpactPct } from "@/lib/swap/priceImpact";
 
-export type Quote = { fee: FeeTier; amountIn: bigint; amountOut: bigint; impactPct: number; gasEstimate: bigint; pool: Address; at: number };
+export type Quote = { fee: FeeTier; amountIn: bigint; amountOut: bigint; impactPct: number; gasEstimate: bigint; pool: Address; at: number; depositLimit?: bigint; inputDepth?: bigint; blockNumber?: bigint };
 export type QuoteStatus = "idle" | "loading" | "ready" | "no_route" | "error";
 export type QuoteState = { status: QuoteStatus; quote: Quote | null; error: string | null };
 type Settled = { key: string; status: Exclude<QuoteStatus, "idle" | "loading">; quote: Quote | null; error: string | null };
@@ -31,10 +32,12 @@ export function useQuote(tokenIn: Address | undefined, tokenOut: Address | undef
     const ac = new AbortController();
     const timer = setTimeout(async () => {
       try {
+        const blockNumber = await client.getBlockNumber({ cacheTime: 0 });
         const tiers = await Promise.all(FEE_TIERS.map(async (fee): Promise<TierQuote | null> => {
           try {
             const { result } = await client.simulateContract({
               address: SWAP.quoterV2, abi: quoterV2Abi, functionName: "quoteExactInputSingle",
+              blockNumber,
               args: [{ tokenIn, tokenOut, amountIn, fee, sqrtPriceLimitX96: 0n }],
             });
             return { fee, amountOut: result[0], gasEstimate: result[3] };
@@ -44,12 +47,17 @@ export function useQuote(tokenIn: Address | undefined, tokenOut: Address | undef
         const best = selectBestQuote(tiers.filter((t): t is TierQuote => t !== null));
         if (!best) { setSettled({ key, status: "no_route", quote: null, error: null }); return; }
         const pool = await client.readContract({ address: SWAP.v3Factory, abi: v3FactoryAbi, functionName: "getPool", args: [tokenIn, tokenOut, best.fee] });
-        const slot0 = await client.readContract({ address: pool, abi: v3PoolAbi, functionName: "slot0" });
+        const [slot0, liquidity, inputBalance] = await Promise.all([
+          client.readContract({ address: pool, abi: v3PoolAbi, functionName: 'slot0', blockNumber }),
+          client.readContract({ address: pool, abi: v3PoolAbi, functionName: 'liquidity', blockNumber }),
+          client.readContract({ address: tokenIn, abi: erc20Abi, functionName: 'balanceOf', args: [pool], blockNumber }),
+        ]);
         if (ac.signal.aborted) return;
         const zeroForOne = tokenIn.toLowerCase() < tokenOut.toLowerCase();
+        const capacity = depthCap(liquidity, slot0[0], inputBalance, zeroForOne);
         setSettled({
           key, status: "ready", error: null,
-          quote: { fee: best.fee, amountIn, amountOut: best.amountOut, impactPct: priceImpactPct(amountIn, best.amountOut, slot0[0], zeroForOne), gasEstimate: best.gasEstimate ?? 0n, pool, at: Date.now() },
+          quote: { fee: best.fee, amountIn, amountOut: best.amountOut, impactPct: priceImpactPct(amountIn, best.amountOut, slot0[0], zeroForOne), gasEstimate: best.gasEstimate ?? 0n, pool, at: Date.now(), depositLimit: capacity.limit, inputDepth: capacity.depth, blockNumber },
         });
       } catch {
         if (!ac.signal.aborted) setSettled({ key, status: "error", quote: null, error: "Could not get a quote. Check your connection and try again." });

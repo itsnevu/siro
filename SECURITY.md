@@ -8,6 +8,10 @@ decision record, atau melewati risk engine.
 Laporkan lewat **GitHub Security Advisory** di repo ini (tab Security → Report a vulnerability).
 Sertakan langkah reproduksi, commit hash, dan dampak.
 
+Repo publik: https://github.com/itsnevu/siro. Jika pelaporan privat GitHub tidak tersedia,
+kirim laporan ke support@usesiro.xyz dengan subjek `[SECURITY]`; jangan sertakan private key
+atau token akses. Tidak ada klaim bahwa private vulnerability reporting sudah diaktifkan.
+
 ## SLA respons
 
 | Tahap | Target |

@@ -24,6 +24,7 @@ import { GasWarning } from "./GasWarning";
 import { ConfirmHighImpactDialog } from "./ConfirmHighImpactDialog";
 import { SwapButton } from "./SwapButton";
 import { TxStatusSheet } from "./TxStatusSheet";
+import cadence from '../../../config/engine-cadence.json';
 
 export type VaultInfo = { address: Address; asset: Address; assetSymbol: string; assetDecimals: number; assetLogo: string; shareDecimals: number; name: string };
 const RANK: Record<ImpactLevel, number> = { neutral: 0, muted: 1, orange: 2, red: 3, blocked: 4 };
@@ -59,6 +60,7 @@ export function SwapCard({ vault }: { vault: VaultInfo }) {
   useEffect(() => { if (exec.phase === "error" && exec.error?.requote) requote(); }, [exec.phase, exec.error, requote]);
 
   const q = quote.status === "ready" || quote.status === "loading" ? quote.quote : null;
+  const depthBlocked = !q || q.depositLimit === undefined || amount === null || amount > q.depositLimit || q.impactPct > 0.5;
   const level = q ? impactLevel(q.impactPct) : "neutral";
   const correctChain = chainId === SWAP_CHAIN_ID;
   const needsApproval = tokenAddr !== "native" && amount !== null && amount > 0n && (allowance.data ?? 0n) < amount;
@@ -76,7 +78,7 @@ export function SwapCard({ vault }: { vault: VaultInfo }) {
   };
 
   const submit = () => {
-    if (!q || !address) return;
+    if (!q || !address || depthBlocked) return;
     // Quote changed since the user looked, or is older than one refresh: re-quote and warn instead of executing silently.
     if (Date.now() - q.at > QUOTE_REFRESH_MS || RANK[level] > RANK[seenLevel.current]) {
       seenLevel.current = level;
@@ -92,6 +94,7 @@ export function SwapCard({ vault }: { vault: VaultInfo }) {
     setNotice(null);
     if (state.kind === "connect") { const c = connectors[0]; if (c) connect({ connector: c }); return; }
     if (state.kind === "wrong_network") { switchChain({ chainId: SWAP_CHAIN_ID }); return; }
+    if (depthBlocked) { setNotice('Deposit held: no fresh depth cap or amount exceeds the computed limit.'); return; }
     if (state.kind === "approve" && tokenAddr !== "native") { if (await exec.approve(tokenAddr)) { setPollingState(true); allowance.refetch(); } return; }
     if (state.kind === "swap") { if (level === "red") { setConfirmOpen(true); return; } submit(); }
   };
@@ -108,6 +111,8 @@ export function SwapCard({ vault }: { vault: VaultInfo }) {
           <SettingsPopover settings={settings} update={update} />
         </div>
       </div>
+      <p>stops are checked every {cadence.stopCheckMinutes} minutes; a gap can blow through them</p>
+      <p aria-live="polite">{token.symbol}: {q?.depositLimit !== undefined ? `Computed deposit ceiling ${formatAmount(q.depositLimit, token.decimals, token.decimals)} ${token.symbol}; estimated slippage ${q.impactPct.toFixed(3)}% including pool fee (live quote, gross of gas).` : 'Pool depth unavailable; deposits held.'} Quotes over 0.5% are held even below the ceiling. This UI limit does not constrain direct contract calls.</p>
 
       <TokenInput id="pay-amount" label="You pay" value={input} onChange={(v) => { setNotice(null); setInput(v); }} invalid={state.kind === "insufficient"}
         tokenSlot={<TokenSelector selected={token} onSelect={(t) => { setNotice(null); setToken(t); setInput(""); exec.reset(); }} balances={balanceLabels} />}
@@ -137,7 +142,7 @@ export function SwapCard({ vault }: { vault: VaultInfo }) {
       )}
       {notice && <div className="banner banner-muted" role="status">{notice}</div>}
       <GasWarning show={lowGas} />
-      <SwapButton state={state} onClick={onClick} />
+      <SwapButton state={depthBlocked && !['connect', 'wrong_network'].includes(state.kind) ? { kind: 'depth_blocked', label: 'Depth limit — deposit held' } : state} onClick={onClick} />
 
       <ConfirmHighImpactDialog open={confirmOpen} pct={q?.impactPct ?? 0} onCancel={() => setConfirmOpen(false)} onConfirm={() => { setConfirmOpen(false); submit(); }} />
       <TxStatusSheet exec={exec} shareDecimals={vault.shareDecimals} onClose={() => { if (exec.phase === "success") setInput(""); exec.reset(); }} onRetry={() => { exec.reset(); quote.refetch(); }} />

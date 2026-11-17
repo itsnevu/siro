@@ -2,7 +2,7 @@ import { ProsePage } from "@/components/ProsePage";
 import { DecisionVerifier } from "@/components/trading/DecisionVerifier";
 export const metadata = { title: "Verify decisions | Siro" };
 const TEXT = {
-  en: { title: "Verify a decision", lede: "Inspect the commitment, reveal, hash chain, Merkle proofs, publication witness and anchor. Everything is recomputed in your browser; no account is needed." },
+  en: { title: "Verify a decision", lede: "The browser recomputes content hashes and Merkle paths. The server separately checks chain receipts and execution timing; no account is needed. Reveals and trade associations are served by the operator." },
 };
 export default function VerifyPage() {
   const t = TEXT.en;
