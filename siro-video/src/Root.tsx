@@ -1,5 +1,6 @@
 import {useEffect,useState} from 'react';
-import {Composition,continueRender,delayRender,cancelRender} from 'remotion';
+import {Composition,Still,continueRender,delayRender,cancelRender} from 'remotion';
+import {DecisionPoster} from './DecisionPoster';
 import {fontsReady} from './fonts';
 import {W,H,FPS,DUR} from './theme';
 import {Montage} from './Montage';
@@ -16,7 +17,9 @@ const LiveStudy=()=>{useFonts();return <LiveLoop/>;};
 const PlanStudy=()=>{useFonts();return <PlanBanner/>;};
 const HowToStudy=()=>{useFonts();return <HowTo/>;};
 const StocksStudy=()=>{useFonts();return <StocksRoutable/>;};
+const DecisionStudy=()=>{useFonts();return <DecisionPoster/>;};
 export const RemotionRoot=()=> <>
+ <Still id="SIRO-DECISION-POSTER" component={DecisionStudy} width={1200} height={1200}/>
  <Composition id="SIRO-AGENT-LAUNCH" component={MotionStudy} durationInFrames={DUR} fps={FPS} width={W} height={H}/>
  <Composition id="SIRO-LIVE-LOOP" component={LiveStudy} durationInFrames={LOOP} fps={FPS} width={LOOP_W} height={LOOP_H}/>
  <Composition id="SIRO-PLAN-BANNER" component={PlanStudy} durationInFrames={PB_DUR} fps={FPS} width={PB_W} height={PB_H}/>
