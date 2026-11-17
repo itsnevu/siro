@@ -9,6 +9,7 @@ import { executionEvents,recordExecution } from "./journal.mjs";
 import { assertConfirmedReceipt } from "./receipt.mjs";
 import { resolveOutcome, quorum, bumpedFees, NOT_EXECUTED_EXIT } from "./resolve.mjs";
 import { parseTransaction } from "viem";
+import { confirmDecisionWitness } from '../anchor/confirmed-witness.mjs';
 const required=n=>{if(!process.env[n])throw new Error(`${n} is required`);return process.env[n];};
 function canonical(v){if(v===null||typeof v!=="object")return JSON.stringify(v);if(Array.isArray(v))return `[${v.map(canonical).join(",")}]`;return `{${Object.keys(v).sort().map(k=>`${JSON.stringify(k)}:${canonical(v[k])}`).join(",")}}`;}
 const hash=v=>createHash("sha256").update(canonical(v)).digest("hex");
@@ -39,6 +40,9 @@ const account=privateKeyToAccount(required("SIRO_SESSION_PRIVATE_KEY"));const rp
 const chain={id:c.chain_id,name:"Configured execution chain",nativeCurrency:{name:"Native",symbol:"NATIVE",decimals:18},rpcUrls:{default:{http:[rpc]}}};
 const client=createPublicClient({chain,transport:http(rpc,{timeout:5000,retryCount:0})});const wallet=createWalletClient({account,chain,transport:http(relay,{timeout:5000,retryCount:0})});
 if(await client.getChainId()!==c.chain_id)throw new Error("Execution chain mismatch");
+if(Number(required('SIRO_ANCHOR_CHAIN_ID'))!==c.chain_id)throw new Error('Witness and execution chains differ');
+await confirmDecisionWitness(client, required('SIRO_ANCHOR_ADDRESS'), c.chain_id,
+  Number(required('SIRO_ANCHOR_CONFIRMATIONS')), decision, journal(required('SIRO_ANCHOR_JOURNAL')));
 const erc20=parseAbi(["function balanceOf(address) view returns(uint256)","function decimals() view returns(uint8)"]);
 const oracleAbi=parseAbi(["function quote(address,address,uint256) view returns(uint256,uint256)"]);
 const sessionAbi=parseAbi(["function execute(bytes32,address,address,address,uint256,uint256) returns(uint256)","function executed(bytes32) view returns(bool)"]);

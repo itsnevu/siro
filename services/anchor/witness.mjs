@@ -9,10 +9,17 @@ import { dirname, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { merkleRoot, pendingCommitHashes, witnessedLeaves } from "./witness-core.mjs";
 import { assertDedicatedWitness, canonicalBatch } from './witness-policy.mjs';
+import { freezeBatch, receiptGate } from './execution-gate.mjs';
 
 const required = n => { if (!process.env[n]) throw new Error(`${n} is required`); return process.env[n]; };
 const chainId = Number(required("SIRO_ANCHOR_CHAIN_ID")), address = required("SIRO_ANCHOR_ADDRESS"), rpc = required("SIRO_ANCHOR_RPC");
-const account = privateKeyToAccount(required("SIRO_WITNESS_PRIVATE_KEY"));
+const gated = process.argv.includes('--batch');
+const account = privateKeyToAccount(required(gated ? 'WITNESS_KEY' : 'SIRO_WITNESS_PRIVATE_KEY'));
+if (gated) {
+  const url = new URL(rpc);
+  if (chainId !== 4663 || !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) throw new Error('Execution witness gate is fork-only: local chain 4663 required');
+  if (account.address.toLowerCase() !== required('WITNESS_ADDRESS').toLowerCase()) throw new Error('Witness key/address mismatch');
+}
 assertDedicatedWitness(account.address, required('SIRO_OPERATOR_ADDRESS'), required('SIRO_ANCHOR_OWNER_ADDRESS'));
 const confirmations = Number(required("SIRO_ANCHOR_CONFIRMATIONS"));
 if (!Number.isInteger(confirmations) || confirmations < 2) throw new Error("At least two witness confirmations required");
@@ -23,7 +30,7 @@ const client = createPublicClient({ chain, transport: http(rpc, { timeout: 10000
 const wallet = createWalletClient({ account, chain, transport: http(rpc, { timeout: 10000, retryCount: 0 }) });
 const abi = parseAbi(["function witnessedAt(bytes32) view returns(uint64)", "function witness(bytes32 root)", "event Witnessed(bytes32 indexed root,uint64 timestamp)"]);
 const journal = resolve(required("SIRO_ANCHOR_JOURNAL")); mkdirSync(dirname(journal), { recursive: true });
-const api = required("SIRO_ENGINE_API").replace(/\/$/, "");
+const api = (gated ? '' : required("SIRO_ENGINE_API")).replace(/\/$/, "");
 const witnessed = () => (existsSync(journal) ? witnessedLeaves(readFileSync(journal, "utf8")) : new Set());
 
 async function fetchJson(url) {
@@ -36,15 +43,28 @@ async function fetchJson(url) {
 // batch is formed. Otherwise a slow confirmation would make the next tick send a different root
 // and the earliest on-chain timestamp for these leaves would never reach the journal.
 const outbox = `${journal}.witness-outbox.json`;
+let frozen;
+if (gated) {
+  let input = '';
+  for await (const chunk of process.stdin) { input += chunk; if (input.length > 300000) throw new Error('Batch too large'); }
+  const requested = JSON.parse(input);
+  frozen = freezeBatch(requested.leaves, -1, requested.hour);
+  if (frozen.root !== `0x${requested.root}`) throw new Error('Frozen root mismatch');
+}
 
 async function tick() {
+  if (await client.getChainId() !== chainId) throw new Error('Witness chain mismatch');
   let batch = existsSync(outbox) ? JSON.parse(readFileSync(outbox, "utf8")) : null;
+  if (frozen && batch && (batch.root !== frozen.root || batch.hour !== frozen.hour)) throw new Error('Unresolved earlier witness batch');
   if (!batch) {
-    const leaves = await pendingCommitHashes(fetchJson, api, witnessed());
+    const leaves = frozen?.leaves ?? await pendingCommitHashes(fetchJson, api, witnessed());
     if (!leaves.length) return;
-    const hour = Math.floor(Date.now() / 3_600_000);
+    const hour = frozen?.hour ?? Math.floor(Date.now() / 3_600_000);
     const last = existsSync(journal) ? Math.max(-1, ...readFileSync(journal, 'utf8').split('\n').filter(Boolean).map(line => JSON.parse(line)).filter(e => e.kind === 'witness_confirmed').map(e => e.payload.hour ?? -1)) : -1;
-    batch = canonicalBatch([...leaves].sort(), last, hour);
+    const confirmed = existsSync(journal) ? readFileSync(journal, 'utf8').split('\n').filter(Boolean).map(JSON.parse).find(e => e.kind === 'witness_confirmed' && e.payload.root === frozen?.root.slice(2) && e.payload.hour === hour) : null;
+    batch = confirmed
+      ? { ...canonicalBatch([...leaves].sort(), -1, hour), tx_hash: confirmed.payload.tx_hash }
+      : canonicalBatch([...leaves].sort(), last, hour);
     writeFileSync(outbox, JSON.stringify(batch), { flag: "wx" });
   }
   const { root, leaves } = batch;
@@ -67,10 +87,10 @@ async function tick() {
     // Already witnessed (by us before a crash, or by a third party). Recover that transaction.
     const logs = await client.getLogs({ address, event: abi.find(e => e.type === "event"), args: { root }, fromBlock: BigInt(required("SIRO_ANCHOR_DEPLOYMENT_BLOCK")), toBlock: "latest" });
     if (logs.length !== 1) throw new Error("Cannot resolve witness transaction");
-    receipt = await client.getTransactionReceipt({ hash: logs[0].transactionHash });
+    receipt = await client.waitForTransactionReceipt({ hash: logs[0].transactionHash, confirmations, timeout: 120000 });
   }
   if (receipt.status !== "success") throw new Error("Witness reverted");
-  if ((await client.getBlockNumber()) - receipt.blockNumber + 1n < BigInt(confirmations)) return;
+  if ((await client.getBlockNumber({ cacheTime: 0 })) - receipt.blockNumber + 1n < BigInt(confirmations)) throw new Error('Witness needs more confirmations');
   const block = await client.getBlock({ blockNumber: receipt.blockNumber });
   if (block.hash !== receipt.blockHash) throw new Error("Witness reorg detected");
   const event = receipt.logs.filter(l => l.address.toLowerCase() === address.toLowerCase())
@@ -78,17 +98,22 @@ async function tick() {
     .find(e => e?.eventName === "Witnessed" && e.args.root === root);
   if (!event || event.args.timestamp !== block.timestamp) throw new Error("Witness receipt lacks matching event");
   const temp = resolve(`${journal}.${process.pid}.witness.json`);
-  writeFileSync(temp, JSON.stringify({ root: root.slice(2), leaves, chain_id: chainId, contract: address, tx_hash: receipt.transactionHash, block_hash: receipt.blockHash, block_number: receipt.blockNumber.toString(), block_timestamp_ms: Number(block.timestamp) * 1000, confirmations, confirmed_at: Date.now() }), { flag: "wx" });
+  writeFileSync(temp, JSON.stringify({ hour: batch.hour, root: root.slice(2), leaves, chain_id: chainId, contract: address, tx_hash: receipt.transactionHash, block_hash: receipt.blockHash, block_number: receipt.blockNumber.toString(), block_timestamp_ms: Number(block.timestamp) * 1000, confirmations, confirmed_at: Date.now() }), { flag: "wx" });
   try {
     const r = spawnSync(required("SIRO_LEDGER_BINARY"), ["witness-receipt", journal, temp], { stdio: "inherit" });
     if (r.error) throw r.error;
     if (r.status !== 0) throw new Error("Witness append failed");
   } finally { unlinkSync(temp); }
   unlinkSync(outbox);
+  return { root, status: 'success' };
 }
 
-await tick();
-if (!process.argv.includes("--once")) {
+if (gated) {
+  await receiptGate({ batch: frozen, currentLeaves: () => frozen.leaves, publish: tick,
+    execute: async () => {}, sleep: ms => new Promise(resolve => setTimeout(resolve, ms)),
+    missedBatch: async batch => console.error(JSON.stringify({ kind: 'missed-batch', ...batch })) });
+} else await tick();
+if (!gated && !process.argv.includes("--once")) {
   let busy = false;
   setInterval(() => {
     if (busy) return;

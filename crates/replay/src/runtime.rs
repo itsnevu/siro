@@ -68,6 +68,31 @@ pub struct PortfolioConfig {
 pub const MAX_LEGS: usize = 16;
 /// The commit window closes this long before the next hourly boundary.
 pub const COMMIT_CLOSE_BEFORE_MS: i64 = 5_000;
+
+/// This process must finish successfully before any live adapter is invoked.
+async fn witness_batch(leaves: &[String], root: &str, tick: i64) -> Result<()> {
+    let service_root = std::env::var("SIRO_SERVICE_ROOT")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let mut child = tokio::process::Command::new("node")
+        .arg(service_root.join("services/anchor/witness.mjs"))
+        .args(["--batch", "--once"])
+        .stdin(Stdio::piped())
+        .stdout(Stdio::null())
+        .stderr(Stdio::inherit())
+        .kill_on_drop(true)
+        .spawn()?;
+    let mut input = child.stdin.take().ok_or("witness stdin unavailable")?;
+    input.write_all(&serde_json::to_vec(&json!({
+        "leaves": leaves, "root": root, "hour": tick / H
+    }))?).await?;
+    drop(input);
+    let status = tokio::time::timeout(std::time::Duration::from_secs(390), child.wait()).await??;
+    if !status.success() {
+        return Err("witness receipt unavailable; execution held".into());
+    }
+    Ok(())
+}
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Point {
@@ -537,8 +562,17 @@ async fn execute(c: &PortfolioConfig, single: bool) -> Result<serde_json::Value>
         } else {
             false
         };
+        let tick_timestamp = ledger::timestamp(tick)?;
+        let mut frozen_commit_hashes: Vec<String> = log.events().iter()
+            .filter(|e| e.kind == "decision" && e.payload["tick_ts"] == tick_timestamp)
+            .filter_map(|e| e.payload["commit_hash"].as_str().map(str::to_owned))
+            .collect();
         for ((leg, p), f) in c.legs.iter().zip(&leg_points).zip(&feats).filter(|_| !late) {
             let s = &leg.strategy;
+            let id = ledger::decision_id(&identity(&s.asset), s.version, tick)?;
+            if log.events().iter().any(|e| e.kind == "decision" && e.payload["decision_id"] == id) {
+                continue;
+            }
             let held = state
                 .positions
                 .get(&s.asset)
@@ -579,7 +613,6 @@ async fn execute(c: &PortfolioConfig, single: bool) -> Result<serde_json::Value>
                     }
                 }
             }
-            let id = ledger::decision_id(&identity(&s.asset), s.version, tick)?;
             let notional = ((signal.target_weight - weight) * net).abs();
             let estimate = if notional > 0. {
                 costmodel::decision_quote(
@@ -698,11 +731,39 @@ async fn execute(c: &PortfolioConfig, single: bool) -> Result<serde_json::Value>
             };
             d.seal()?;
             log.commit(&d)?;
+            frozen_commit_hashes.push(d.commit_hash.clone());
             if action != "hold" && actual > 0. {
                 order.notional_usd = actual;
                 order.original_notional_usd = actual;
                 let event = log.append(tick, "order", &order)?;
                 state.apply(&event)?;
+            }
+        }
+        // The commit phase is closed here. All order execution below uses this frozen tree.
+        // No later code in this tick may create a decision.
+        frozen_commit_hashes.sort();
+        let frozen_root = if frozen_commit_hashes.is_empty() {
+            None
+        } else {
+            Some(ledger::merkle_root(&frozen_commit_hashes)?)
+        };
+        let mut current_hashes: Vec<String> = log.events().iter()
+            .filter(|e| e.kind == "decision" && e.payload["tick_ts"] == tick_timestamp)
+            .map(|e| e.payload["commit_hash"].as_str().unwrap_or("").to_string())
+            .collect();
+        current_hashes.sort();
+        if current_hashes != frozen_commit_hashes {
+            return Err("frozen commitment set changed before execution".into());
+        }
+        if c.mode == "live" && frozen_root.is_none() && !state.pending.is_empty() {
+            return Err("live execution requires a frozen commitment root".into());
+        }
+        if c.mode == "live" {
+            if let Some(root) = &frozen_root {
+                if let Err(error) = witness_batch(&frozen_commit_hashes, root, tick).await {
+                    log.append(tick, "missed_batch", &json!({"root": root, "reason": error.to_string()}))?;
+                    return Err(error);
+                }
             }
         }
         let pending: Vec<_> = state.pending.values().cloned().collect();
