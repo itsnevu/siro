@@ -9,7 +9,7 @@ last_reviewed: 2026-11-17
 
 - `2093ca7`: frozen witness receipt gate and killed-publication recovery tests.
 - `f5296d4`: dedicated fork witness configuration, Rust receipt gate, chain authentication before signing, pinned Anvil kill/recovery test.
-- `HEAD` (the commit containing this report): four-row verifier, evidence strip, truth corrections, stop disclosure, UI depth limits, security/team links, inline performance labels, and v2 note. The final response supplies this commit's hash.
+- `ac9976a7c14b548e644293f59c705f5e4895c2b0` (S1 baseline, tagged `t1-fork-only`): four-row verifier, evidence strip, truth corrections, stop disclosure, UI depth limits, security/team links, inline performance labels, and v2 note.
 
 ## DoD, verbatim, with results
 
@@ -17,7 +17,9 @@ last_reviewed: 2026-11-17
 
 > 3 batches pass all four checks; stripped event shows "committed, never executed"; tampered reveal fails at hash match; out-of-order root flagged; junk root resolves nothing; killed witness tx holds execution and resumes clean.
 
-The four checks, stripped-event state, tampered reveal, reversed order, and junk root pass unit fixtures. A real pinned Anvil fork passes three witnessed receipts plus killed-publisher recovery using the identical signed transaction and idempotent receipt append. Three complete Rust-to-vault execution batches passing all four checks on that fork have **not** been demonstrated. Publisher recovery is not a claim that the entire runner recovers every crash boundary.
+The four checks, stripped-event state, tampered reveal, reversed order, and junk root pass unit fixtures. A real pinned Anvil fork passes three witnessed receipts plus killed-publisher recovery using the identical signed transaction and idempotent receipt append. Three complete Rust-to-vault execution batches passing all four checks on that fork have **not** been demonstrated.
+
+publisher recovery is proven, runner crash recovery across every boundary is not
 
 **T3 — PARTIAL / FAIL pending an exhaustive claims and live-status acceptance check.**
 
@@ -29,7 +31,7 @@ Known contradictory deployment/root claims were corrected in roadmap, changelog,
 
 **T10 — PARTIAL / FAIL for all-token, all-vault coverage.** Enabled swap routes display a computed ceiling in input-token units and a live quote estimate. The ceiling is 25 basis points of the lesser of active virtual reserve and actual input inventory. Above-ceiling or above-50-basis-point-impact quotes cannot submit; missing depth holds deposits. Direct deposits are held because no strategy-specific depth configuration exists. This is a UI restriction, not a contract invariant. Disabled stock-token routes were not enabled, and portfolio allocation capacity has not been implemented.
 
-**T11 — PASS for repository/disclosure scope.** Anonymous `git -c credential.helper= ls-remote https://github.com/itsnevu/siro.git HEAD` succeeds. SECURITY.md provides private disclosure and response targets, with links in both footers and whitepaper. Private GitHub vulnerability reporting is not claimed to be enabled. These local commits have not been pushed.
+**T11 — PASS for repository/disclosure scope.** Anonymous `git -c credential.helper= ls-remote https://github.com/itsnevu/siro.git HEAD` succeeds. SECURITY.md provides private disclosure and response targets, with links in both footers and whitepaper. Private GitHub vulnerability reporting is not claimed to be enabled. S1 publishes the branch and the `t1-fork-only` baseline tag; neither publication activates mainnet execution.
 
 **T13 — PARTIAL / FAIL for complete identity disclosure.** `/team` links public handle @itsnevu, reviewable Rust/Next.js work, and deployment owner addresses; both footers link it. Human key custody and external prior work remain unattested rather than invented.
 
@@ -54,7 +56,7 @@ Known contradictory deployment/root claims were corrected in roadmap, changelog,
 - Complete key-holder attestations, external prior-work disclosure, and site-wide number-label audit.
 - Production acceptance of chain-status scanning and its log-provider availability.
 - Next.js 16.4.3 emitted a security-advisory reminder at dev startup. Dependency upgrades are outside this task's edits and remain unresolved.
-- Publishing these local commits is not performed; no deployed website or running mainnet service was updated.
+- No deployed website or running mainnet service was updated. S1 publishes Git refs only; remote-ref acceptance is recorded separately from trading acceptance.
 
 ## Three riskiest changes
 
