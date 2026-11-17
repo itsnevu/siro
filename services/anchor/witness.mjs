@@ -10,14 +10,14 @@ import { spawnSync } from "node:child_process";
 import { merkleRoot, pendingCommitHashes, witnessedLeaves } from "./witness-core.mjs";
 import { assertDedicatedWitness, canonicalBatch } from './witness-policy.mjs';
 import { freezeBatch, receiptGate } from './execution-gate.mjs';
+import { assertAllowedRpc } from './rpc-policy.mjs';
 
 const required = n => { if (!process.env[n]) throw new Error(`${n} is required`); return process.env[n]; };
 const chainId = Number(required("SIRO_ANCHOR_CHAIN_ID")), address = required("SIRO_ANCHOR_ADDRESS"), rpc = required("SIRO_ANCHOR_RPC");
 const gated = process.argv.includes('--batch');
 const account = privateKeyToAccount(required(gated ? 'WITNESS_KEY' : 'SIRO_WITNESS_PRIVATE_KEY'));
 if (gated) {
-  const url = new URL(rpc);
-  if (chainId !== 4663 || !['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)) throw new Error('Execution witness gate is fork-only: local chain 4663 required');
+  if (chainId !== 4663) throw new Error('Execution witness gate requires chain 4663');
   if (account.address.toLowerCase() !== required('WITNESS_ADDRESS').toLowerCase()) throw new Error('Witness key/address mismatch');
 }
 assertDedicatedWitness(account.address, required('SIRO_OPERATOR_ADDRESS'), required('SIRO_ANCHOR_OWNER_ADDRESS'));
@@ -53,6 +53,9 @@ if (gated) {
 }
 
 async function tick() {
+  // Policy rejection follows the same retry/missed-batch path as a failed receipt.
+  // This check precedes all RPC reads, signing, and broadcasting, including recovery.
+  assertAllowedRpc(rpc, process.env.ALLOWED_RPC_HOSTS);
   if (await client.getChainId() !== chainId) throw new Error('Witness chain mismatch');
   let batch = existsSync(outbox) ? JSON.parse(readFileSync(outbox, "utf8")) : null;
   if (frozen && batch && (batch.root !== frozen.root || batch.hour !== frozen.hour)) throw new Error('Unresolved earlier witness batch');

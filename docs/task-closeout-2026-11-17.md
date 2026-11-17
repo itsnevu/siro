@@ -21,6 +21,12 @@ The four checks, stripped-event state, tampered reveal, reversed order, and junk
 
 publisher recovery is proven, runner crash recovery across every boundary is not
 
+## S1–S5 execution progress
+
+- S1: remote branch `refs/heads/feat/phase-0-harness` confirmed at `0585d6e18aabd74d541f72c35bcdf745f999fb11`; annotated tag `t1-fork-only` peels to `ac9976a7c14b548e644293f59c705f5e4895c2b0`. The tag remains the fork-only baseline even when the branch advances.
+- S2: publisher RPC policy uses `ALLOWED_RPC_HOSTS`, exact comma-separated hostnames. Default is loopback; an explicit empty list denies all. An unlisted host follows the failed-receipt retry/missed-batch path before any RPC request or signature. Chain ID remains 4663. Nine policy/gate tests pass, including allowlisted non-loopback release after a receipt, unlisted-host hold, and actual publisher CLI rejection without a signed outbox. The pinned Anvil receipt/kill test also passes. No mainnet hostname has been enabled in local secrets or service configuration.
+- S4 remains required before S5; there are no new mainnet batch transactions.
+
 **T3 — PARTIAL / FAIL pending an exhaustive claims and live-status acceptance check.**
 
 > no claim the chain contradicts; strip chain-driven.
@@ -60,7 +66,7 @@ Known contradictory deployment/root claims were corrected in roadmap, changelog,
 
 ## Three riskiest changes
 
-1. Execution now depends on witness receipt availability and dedicated configuration. The new batch publisher is deliberately fork-only; live runs against non-loopback RPCs hold execution. Mainnet activation is not ready.
+1. Execution depends on witness receipt availability and dedicated configuration. The tagged baseline is fork-only; S2 replaces that hardcoded restriction with an explicit hostname allowlist whose default remains loopback. Configuring a mainnet hostname is not evidence that S4 passed. Mainnet activation is not ready.
 2. Deposit caps reduce availability: direct deposits are disabled without strategy-depth evidence, and swap ceilings are a liquidity model plus a current quote, not a future execution guarantee.
 3. Verification still needs operator-served content and execution associations. RPC failure, absent new ordinal metadata, old receipts, configuration mismatch, or missing events fail closed. A matching event does not publish the revealed decision content.
 
