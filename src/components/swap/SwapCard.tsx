@@ -25,11 +25,13 @@ import { ConfirmHighImpactDialog } from "./ConfirmHighImpactDialog";
 import { SwapButton } from "./SwapButton";
 import { TxStatusSheet } from "./TxStatusSheet";
 import cadence from '../../../config/engine-cadence.json';
+import { useDepositCapEnforced } from '@/components/app/DepositCapPolicy';
 
 export type VaultInfo = { address: Address; asset: Address; assetSymbol: string; assetDecimals: number; assetLogo: string; shareDecimals: number; name: string };
 const RANK: Record<ImpactLevel, number> = { neutral: 0, muted: 1, orange: 2, red: 3, blocked: 4 };
 
 export function SwapCard({ vault }: { vault: VaultInfo }) {
+  const capEnforced = useDepositCapEnforced();
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const { connectors, connect } = useConnect();
@@ -60,7 +62,7 @@ export function SwapCard({ vault }: { vault: VaultInfo }) {
   useEffect(() => { if (exec.phase === "error" && exec.error?.requote) requote(); }, [exec.phase, exec.error, requote]);
 
   const q = quote.status === "ready" || quote.status === "loading" ? quote.quote : null;
-  const depthBlocked = !q || q.depositLimit === undefined || amount === null || amount > q.depositLimit || q.impactPct > 0.5;
+  const depthBlocked = capEnforced && (!q || q.depositLimit === undefined || amount === null || amount > q.depositLimit || q.impactPct > 0.5);
   const level = q ? impactLevel(q.impactPct) : "neutral";
   const correctChain = chainId === SWAP_CHAIN_ID;
   const needsApproval = tokenAddr !== "native" && amount !== null && amount > 0n && (allowance.data ?? 0n) < amount;
@@ -112,7 +114,8 @@ export function SwapCard({ vault }: { vault: VaultInfo }) {
         </div>
       </div>
       <p>stops are checked every {cadence.stopCheckMinutes} minutes; a gap can blow through them</p>
-      <p aria-live="polite">{token.symbol}: {q?.depositLimit !== undefined ? `Computed deposit ceiling ${formatAmount(q.depositLimit, token.decimals, token.decimals)} ${token.symbol}; estimated slippage ${q.impactPct.toFixed(3)}% including pool fee (live quote, gross of gas).` : 'Pool depth unavailable; deposits held.'} Quotes over 0.5% are held even below the ceiling. This UI limit does not constrain direct contract calls.</p>
+      <p>{capEnforced ? 'Deposit cap enforcement is on.' : 'Capacity is not yet strategy-specific. Deposit cap enforcement is off; depth estimates are advisory.'}</p>
+      <p aria-live="polite">{token.symbol}: {q?.depositLimit !== undefined ? `${capEnforced ? 'Computed' : 'Advisory'} deposit ceiling ${formatAmount(q.depositLimit, token.decimals, token.decimals)} ${token.symbol}; estimated slippage ${q.impactPct.toFixed(3)}% including pool fee (live quote, gross of gas).` : `Pool depth unavailable${capEnforced ? '; deposits held' : ''}.`} {capEnforced && 'Quotes over 0.5% are held even below the ceiling.'} This UI policy does not constrain direct contract calls.</p>
 
       <TokenInput id="pay-amount" label="You pay" value={input} onChange={(v) => { setNotice(null); setInput(v); }} invalid={state.kind === "insufficient"}
         tokenSlot={<TokenSelector selected={token} onSelect={(t) => { setNotice(null); setToken(t); setInput(""); exec.reset(); }} balances={balanceLabels} />}

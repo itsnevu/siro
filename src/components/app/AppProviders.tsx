@@ -1,0 +1,11 @@
+'use client';
+import { useState, type ReactNode } from 'react';
+import { WagmiProvider } from 'wagmi';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { wagmiConfig } from '@/lib/chain';
+import { NetworkProvider } from '@/lib/network';
+import { RiskDisclaimerClient } from '@/components/RiskDisclaimerClient';
+export function AppProviders({ children }: { children: ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { refetchInterval: 6000, staleTime: 3000 } } }));
+  return <WagmiProvider config={wagmiConfig}><QueryClientProvider client={queryClient}><NetworkProvider>{children}<RiskDisclaimerClient /></NetworkProvider></QueryClientProvider></WagmiProvider>;
+}

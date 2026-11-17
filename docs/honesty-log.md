@@ -5,6 +5,12 @@ last_reviewed: 2026-11-13
 
 # Honesty log
 
+## 2026-11-17: S3 capacity enforcement is optional, default off
+
+- `DEPOSIT_CAP_ENFORCED=false` (including an unset flag) restores direct deposits. Both deposit flows disclose that capacity is not yet strategy-specific; swap depth estimates are advisory in this setting.
+- `DEPOSIT_CAP_ENFORCED=true` retains the earlier direct-deposit hold and swap depth checks. This supersedes the baseline hold described below; no strategy-specific capacity or contract protection is claimed.
+- The flag is read by the server at request time. No contract edits, migrations, or mainnet activation accompany this UI policy change.
+
 ## 2026-11-17: configuration transactions are not decision commitments
 
 - Corrected deployment and proof wording: Anchor is deployed, but its three lifetime transactions are configuration only and zero roots have been published.

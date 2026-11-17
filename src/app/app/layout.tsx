@@ -1,21 +1,11 @@
-"use client";
+import type { ReactNode } from 'react';
+import { connection } from 'next/server';
+import { AppProviders } from '@/components/app/AppProviders';
+import { DepositCapPolicy } from '@/components/app/DepositCapPolicy';
+import { readDepositCapEnforced } from '@/lib/deposit-cap-policy';
 
-import { useState, type ReactNode } from "react";
-import { WagmiProvider } from "wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { wagmiConfig } from "@/lib/chain";
-import { NetworkProvider } from "@/lib/network";
-import { RiskDisclaimerClient } from "@/components/RiskDisclaimerClient";
-
-export default function AppLayout({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(
-    () => new QueryClient({ defaultOptions: { queries: { refetchInterval: 6_000, staleTime: 3_000 } } }),
-  );
-  return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <NetworkProvider>{children}<RiskDisclaimerClient /></NetworkProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
-  );
+export default async function AppLayout({ children }: { children: ReactNode }) {
+  await connection();
+  const enforced = readDepositCapEnforced(process.env.DEPOSIT_CAP_ENFORCED);
+  return <DepositCapPolicy enforced={enforced}><AppProviders>{children}</AppProviders></DepositCapPolicy>;
 }
